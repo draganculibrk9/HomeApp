@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package home.app.grpc;
+
+import "registration_message.proto";
+import "login_message.proto";
+
+option java_multiple_files = true;
+
+message LoginRequest {
+  LoginMessage login = 1;
+}
+
+message LoginResponse {
+  string token = 1;
+}
+
+message RegistrationRequest {
+  RegistrationMessage registration = 1;
+}
+
+message RegistrationResponse {
+  bool success = 1;
+}
+
+service AuthService {
+  rpc Register(RegistrationRequest) returns (RegistrationResponse) {};
+  rpc Login(LoginRequest) returns (LoginResponse) {};
+}
