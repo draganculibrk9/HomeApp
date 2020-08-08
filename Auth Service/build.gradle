@@ -26,6 +26,18 @@ dependencies {
 	compile group: 'io.grpc', name: 'grpc-all', version: '1.30.2'
 
 	implementation 'net.devh:grpc-spring-boot-starter:2.9.0.RELEASE'
+
+	compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
+
+	compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.3.2.RELEASE'
+
+	compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '2.3.2.RELEASE'
+
+	compile group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
+
+	compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.3.2.RELEASE'
+
+
 }
 
 sourceSets {
