@@ -20,7 +20,7 @@ message RegistrationRequest {
 }
 
 message RegistrationResponse {
-  bool success = 1;
+  int64 user_id = 1;
 }
 
 service AuthService {
