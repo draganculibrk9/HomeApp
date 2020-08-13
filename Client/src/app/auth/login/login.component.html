@@ -1,1 +1,18 @@
-<p>login works!</p>
+<mat-card>
+  <mat-card-title>Login</mat-card-title>
+  <mat-card-content>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <mat-form-field>
+        <input type="email" matInput placeholder="Email" formControlName="email"
+               (click)="loginForm.controls.email.markAsTouched()">
+        <mat-error id="errorEmail" *ngIf="loginForm.controls.email.invalid">Not a valid email</mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input id="password" type="password" matInput placeholder="Password" formControlName="password">
+      </mat-form-field>
+
+      <button type="submit" id="loginButton" [disabled]="!loginForm.valid" mat-button>Login</button>
+    </form>
+  </mat-card-content>
+</mat-card>
