@@ -3,9 +3,9 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {AuthModule} from "./auth/auth.module";
-import {AppRoutingModule} from "./routing/app-routing.module";
-import {ServicesModule} from "./services/services.module";
+import {AuthModule} from './auth/auth.module';
+import {AppRoutingModule} from './routing/app-routing.module';
+import {ServicesModule} from './services/services.module';
 
 @NgModule({
   declarations: [
