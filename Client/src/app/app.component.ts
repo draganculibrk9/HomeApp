@@ -21,7 +21,7 @@ export class AppComponent implements OnInit {
 
     grpc.unary(AuthService.Login, {
         request: login_request,
-        host: "http://localhost:9090",
+        host: "http://localhost:8080",
         onEnd: res => {
           console.log(res);
         }
