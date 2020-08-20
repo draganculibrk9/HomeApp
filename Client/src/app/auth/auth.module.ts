@@ -9,6 +9,8 @@ import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {RouterModule} from '@angular/router';
+import {MatIconModule} from "@angular/material/icon";
+import {MatCheckboxModule} from "@angular/material/checkbox";
 
 
 
@@ -22,7 +24,9 @@ import {RouterModule} from '@angular/router';
     MatInputModule,
     MatButtonModule,
     FlexLayoutModule,
-    RouterModule
+    RouterModule,
+    MatIconModule,
+    MatCheckboxModule
   ]
 })
 export class AuthModule { }
