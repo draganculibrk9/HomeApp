@@ -1,11 +1,11 @@
 import {Component} from '@angular/core';
-import {SnackbarService} from "../../services/snackbar.service";
-import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {RegistrationRequest} from "../../proto/generated/auth_service_pb";
-import {Address, RegistrationMessage} from "../../proto/generated/registration_message_pb";
-import {grpc} from "grpc-web-client";
-import {AuthService} from "../../proto/generated/auth_service_pb_service";
-import {Router} from "@angular/router";
+import {SnackbarService} from '../../services/snackbar.service';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {RegistrationRequest} from '../../proto/generated/auth_service_pb';
+import {Address, RegistrationMessage} from '../../proto/generated/registration_message_pb';
+import {grpc} from 'grpc-web-client';
+import {AuthService} from '../../proto/generated/auth_service_pb_service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-registration',
@@ -43,19 +43,19 @@ export class RegistrationComponent {
     const registration_request = new RegistrationRequest();
     const registration_message = new RegistrationMessage();
     const address = new Address();
-    address.setCity(this.registrationForm.controls['city'].value);
-    address.setCountry(this.registrationForm.controls['country'].value);
-    address.setNumber(this.registrationForm.controls['number'].value);
-    address.setStreet(this.registrationForm.controls['street'].value);
+    address.setCity(this.registrationForm.controls.city.value);
+    address.setCountry(this.registrationForm.controls.country.value);
+    address.setNumber(this.registrationForm.controls.number.value);
+    address.setStreet(this.registrationForm.controls.street.value);
 
     registration_message.setAddress(address);
-    registration_message.setEmail(this.registrationForm.controls['email'].value);
-    registration_message.setFirstName(this.registrationForm.controls['firstName'].value);
-    registration_message.setLastName(this.registrationForm.controls['lastName'].value);
-    registration_message.setPassword(this.registrationForm.controls['password'].value);
-    registration_message.setPhone(this.registrationForm.controls['phone'].value);
+    registration_message.setEmail(this.registrationForm.controls.email.value);
+    registration_message.setFirstName(this.registrationForm.controls.firstName.value);
+    registration_message.setLastName(this.registrationForm.controls.lastName.value);
+    registration_message.setPassword(this.registrationForm.controls.password.value);
+    registration_message.setPhone(this.registrationForm.controls.phone.value);
 
-    if (this.registrationForm.controls['isServiceAdmin'].value) {
+    if (this.registrationForm.controls.isServiceAdmin.value) {
       registration_message.setRole(RegistrationMessage.Role.SERVICE_ADMINISTRATOR);
     } else {
       registration_message.setRole(RegistrationMessage.Role.USER);
@@ -76,7 +76,7 @@ export class RegistrationComponent {
               this.snackbarService.displayMessage(res.statusMessage);
               break;
             default:
-              this.snackbarService.displayMessage("Failed to register");
+              this.snackbarService.displayMessage('Failed to register');
           }
         }
       }

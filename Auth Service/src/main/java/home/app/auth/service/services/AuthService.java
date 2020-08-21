@@ -60,7 +60,6 @@ public class AuthService extends AuthServiceGrpc.AuthServiceImplBase {
     @Override
     public void login(LoginRequest request, StreamObserver<LoginResponse> responseObserver) {
         LoginMessage loginMessage = request.getLogin();
-        ;
         Authentication authentication;
         try {
             authentication =
@@ -68,7 +67,7 @@ public class AuthService extends AuthServiceGrpc.AuthServiceImplBase {
                             loginMessage.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            String token = tokenService.generateToken((UserDetails) authentication.getDetails());
+            String token = tokenService.generateToken((User) authentication.getPrincipal());
 
             LoginResponse response = LoginResponse.newBuilder().setToken(token).build();
             responseObserver.onNext(response);
