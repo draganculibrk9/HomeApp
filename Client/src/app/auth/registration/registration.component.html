@@ -1,0 +1,79 @@
+<div fxLayoutAlign="center center" id="background">
+  <mat-card>
+    <mat-card-title>Register</mat-card-title>
+    <mat-card-content>
+      <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()" fxLayout="column" fxLayoutGap="2%" fxLayoutAlign="start center">
+        <div>
+          <div fxLayout="row" fxLayoutGap="10%">
+            <mat-form-field>
+              <input type="email" matInput placeholder="Email" formControlName="email"
+                     (click)="registrationForm.controls.email.markAsTouched()">
+              <mat-error *ngIf="registrationForm.controls.email.invalid">Not a valid email</mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+              <input type="text" matInput placeholder="Country" formControlName="country"
+                     (click)="registrationForm.controls.country.markAsTouched()">
+              <mat-error *ngIf="registrationForm.controls.country.invalid">Countr cannot be empty</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div fxLayout="row" fxLayoutGap="4%">
+            <mat-form-field>
+              <input [type]="hide ? 'password' : 'text'" matInput placeholder="Password" formControlName="password">
+              <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+              <mat-error *ngIf="registrationForm.controls.password.invalid">Password cannot be empty</mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+              <input type="text" matInput placeholder="City" formControlName="city"
+                     (click)="registrationForm.controls.city.markAsTouched()">
+              <mat-error *ngIf="registrationForm.controls.city.invalid">City cannot be empty</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div fxLayout="row" fxLayoutGap="10%">
+            <mat-form-field>
+              <input type="text" matInput placeholder="First name" formControlName="firstName"
+                     (click)="registrationForm.controls.firstName.markAsTouched()">
+              <mat-error *ngIf="registrationForm.controls.firstName.invalid">First name cannot be empty</mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+              <input type="text" matInput placeholder="Street" formControlName="street"
+                     (click)="registrationForm.controls.street.markAsTouched()">
+              <mat-error *ngIf="registrationForm.controls.street.invalid">Street cannot be empty</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div fxLayout="row" fxLayoutGap="10%">
+            <mat-form-field>
+              <input type="text" matInput placeholder="Last name" formControlName="lastName"
+                     (click)="registrationForm.controls.lastName.markAsTouched()">
+              <mat-error *ngIf="registrationForm.controls.lastName.invalid">Last name cannot be empty</mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+              <input type="text" matInput placeholder="Number" formControlName="number"
+                     (click)="registrationForm.controls.number.markAsTouched()">
+              <mat-error *ngIf="registrationForm.controls.number.invalid">Number cannot be empty</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div fxLayout="row" fxLayoutGap="10%">
+            <mat-form-field>
+              <input type="text" matInput placeholder="Phone" formControlName="phone"
+                     (click)="registrationForm.controls.phone.markAsTouched()">
+              <mat-error *ngIf="registrationForm.controls.phone.invalid">Not a valid phone</mat-error>
+            </mat-form-field>
+
+            <mat-checkbox formControlName="isServiceAdmin">Register as a service administrator</mat-checkbox>
+          </div>
+        </div>
+        <button color="primary" mat-raised-button type="submit" [disabled]="!registrationForm.valid">Register
+        </button>
+        <button mat-raised-button type="button" routerLink="/login" mat-button>Login</button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
