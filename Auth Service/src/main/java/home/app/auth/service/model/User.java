@@ -7,6 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 @Entity
 public class User implements UserDetails {
@@ -32,6 +33,7 @@ public class User implements UserDetails {
     private String phone;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private UserRole role;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -66,7 +68,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Arrays.asList(role);
+        return Collections.singletonList(role);
     }
 
     public String getPassword() {
