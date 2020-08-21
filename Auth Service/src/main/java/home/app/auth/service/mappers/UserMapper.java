@@ -12,6 +12,9 @@ public class UserMapper implements IMapper<User, RegistrationMessage> {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private AddressMapper addressMapper;
+
     @Override
     public User toEntity(RegistrationMessage dto) {
         User user = new User();
@@ -31,6 +34,7 @@ public class UserMapper implements IMapper<User, RegistrationMessage> {
         }
 
         user.setRole(role);
+        user.setAddress(addressMapper.toEntity(dto.getAddress()));
 
         return user;
     }

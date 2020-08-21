@@ -1,10 +1,11 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {SnackbarService} from "../../services/snackbar.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {RegistrationRequest} from "../../proto/generated/auth_service_pb";
 import {Address, RegistrationMessage} from "../../proto/generated/registration_message_pb";
 import {grpc} from "grpc-web-client";
 import {AuthService} from "../../proto/generated/auth_service_pb_service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-registration',
@@ -35,7 +36,7 @@ export class RegistrationComponent {
 
   hide = true;
 
-  constructor(private snackbarService: SnackbarService) {
+  constructor(private snackbarService: SnackbarService, private router: Router) {
   }
 
   onSubmit() {
@@ -60,14 +61,22 @@ export class RegistrationComponent {
       registration_message.setRole(RegistrationMessage.Role.USER);
     }
 
+    registration_request.setRegistration(registration_message);
+
     grpc.unary(AuthService.Register, {
         request: registration_request,
         host: 'http://localhost:8080',
         onEnd: res => {
-          if (res.status != 0) {
-            this.snackbarService.displayMessage(res.statusMessage);
-          } else {
-            this.snackbarService.displayMessage(res.message.toObject().toString());
+          switch (res.status) {
+            case grpc.Code.OK:
+              this.snackbarService.displayMessage('Registration successful');
+              this.router.navigateByUrl('/login').then();
+              break;
+            case grpc.Code.AlreadyExists:
+              this.snackbarService.displayMessage(res.statusMessage);
+              break;
+            default:
+              this.snackbarService.displayMessage("Failed to register");
           }
         }
       }
