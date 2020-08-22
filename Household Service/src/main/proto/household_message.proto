@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package home.app.grpc;
+
+option java_multiple_files = true;
+
+message HouseholdMessage {
+  int64 id = 1;
+  double balance = 2;
+  int64 owner = 3;
+}

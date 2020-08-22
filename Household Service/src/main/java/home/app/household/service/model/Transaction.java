@@ -1,6 +1,7 @@
 package home.app.household.service.model;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -19,6 +20,9 @@ public class Transaction {
 
     @Column(nullable = false)
     private Double amount;
+
+    @Column(nullable = false)
+    private Date date;
 
     public Transaction() {
 
@@ -54,5 +58,13 @@ public class Transaction {
 
     public void setAmount(Double amount) {
         this.amount = amount;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 }

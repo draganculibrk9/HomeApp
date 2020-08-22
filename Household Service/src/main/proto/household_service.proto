@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package home.app.grpc;
+
+import "household_message.proto";
+import "transaction_message.proto";
+import "google/protobuf/empty.proto";
+
+option java_multiple_files = true;
+
+message HouseholdRequest {
+  int64 owner = 1;
+}
+
+message HouseholdResponse {
+  HouseholdMessage household = 1;
+}
+
+message TransactionsRequest {
+  int64 household_id = 1;
+}
+
+message TransactionResponse {
+  TransactionMessage transaction = 1;
+}
+
+message CreateOrEditTransactionRequest {
+  bool transaction_id = 1;
+  TransactionMessage transaction = 2;
+}
+
+message GetOrDeleteTransactionRequest {
+  int64 transaction_id = 1;
+}
+
+service HouseholdService {
+  rpc GetHousehold(HouseholdRequest) returns (HouseholdResponse) {};
+
+  rpc GetTransactions(TransactionsRequest) returns (stream TransactionResponse) {};
+  rpc GetTransaction(GetOrDeleteTransactionRequest) returns (TransactionResponse) {};
+  rpc EditTransaction(CreateOrEditTransactionRequest) returns (TransactionResponse) {};
+  rpc CreateTransaction(CreateOrEditTransactionRequest) returns (TransactionResponse) {};
+  rpc DeleteTransaction(GetOrDeleteTransactionRequest) returns (google.protobuf.Empty) {};
+}

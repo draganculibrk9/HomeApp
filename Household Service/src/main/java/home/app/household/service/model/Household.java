@@ -11,8 +11,14 @@ public class Household {
     @Column(unique = true, nullable = false)
     private Long id;
 
-    @OneToMany(mappedBy = "household", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Column(nullable = false)
+    private Double balance;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Transaction> transactions;
+
+    @Column(nullable = false, unique = true)
+    private Long owner;
 
     public Household() {
     }
@@ -31,5 +37,21 @@ public class Household {
 
     public void setTransactions(Set<Transaction> transactions) {
         this.transactions = transactions;
+    }
+
+    public Double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(Double balance) {
+        this.balance = balance;
+    }
+
+    public Long getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Long owner) {
+        this.owner = owner;
     }
 }
