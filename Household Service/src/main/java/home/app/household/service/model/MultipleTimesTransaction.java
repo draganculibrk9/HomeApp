@@ -6,13 +6,13 @@ import javax.persistence.Entity;
 @Entity
 public class MultipleTimesTransaction extends Transaction {
     @Column(nullable = false)
-    private Integer numberOfTimes;
+    private Long numberOfTimes;
 
-    public Integer getNumberOfTimes() {
+    public Long getNumberOfTimes() {
         return numberOfTimes;
     }
 
-    public void setNumberOfTimes(Integer numberOfTimes) {
+    public void setNumberOfTimes(Long numberOfTimes) {
         this.numberOfTimes = numberOfTimes;
     }
 }
