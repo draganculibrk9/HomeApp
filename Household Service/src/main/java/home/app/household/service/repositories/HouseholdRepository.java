@@ -7,4 +7,6 @@ public interface HouseholdRepository extends JpaRepository<Household, Long> {
     Household getById(Long id);
 
     Household getByOwner(Long owner);
+
+    Household getByOwner(String owner);
 }

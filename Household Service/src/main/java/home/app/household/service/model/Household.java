@@ -18,7 +18,7 @@ public class Household {
     private Set<Transaction> transactions;
 
     @Column(nullable = false, unique = true)
-    private Long owner;
+    private String owner;
 
     public Household() {
     }
@@ -47,11 +47,11 @@ public class Household {
         this.balance = balance;
     }
 
-    public Long getOwner() {
+    public String getOwner() {
         return owner;
     }
 
-    public void setOwner(Long owner) {
+    public void setOwner(String owner) {
         this.owner = owner;
     }
 }

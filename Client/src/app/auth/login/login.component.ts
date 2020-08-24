@@ -6,6 +6,7 @@ import {LoginMessage} from '../../proto/generated/login_message_pb';
 import {grpc} from 'grpc-web-client';
 import {AuthService} from '../../proto/generated/auth_service_pb_service';
 import {TokenService} from '../../services/token.service';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-login',
@@ -23,7 +24,7 @@ export class LoginComponent {
     }
   );
 
-  constructor(private snackbarService: SnackbarService, private tokenService: TokenService) {
+  constructor(private snackbarService: SnackbarService, private tokenService: TokenService, private router: Router) {
   }
 
   onSubmit() {
@@ -40,7 +41,7 @@ export class LoginComponent {
           if (res.status === grpc.Code.OK) {
             const token = res.message.toObject()['token'];
             this.tokenService.localLogin(token);
-            console.log(token);
+            this.router.navigateByUrl("/dashboard").then();
           } else {
             this.snackbarService.displayMessage('Bad email or password');
           }

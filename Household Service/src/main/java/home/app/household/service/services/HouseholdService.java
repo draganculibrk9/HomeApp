@@ -31,14 +31,14 @@ public class HouseholdService extends HouseholdServiceGrpc.HouseholdServiceImplB
 
     @Override
     public void getHousehold(HouseholdRequest request, StreamObserver<HouseholdResponse> responseObserver) {
-        Long ownerId = request.getOwner();
+        String ownerEmail = request.getOwner();
 
-        Household household = householdRepository.getByOwner(ownerId);
+        Household household = householdRepository.getByOwner(ownerEmail);
 
         if (household == null) {
             responseObserver.onError(
                     Status.NOT_FOUND
-                            .withDescription(String.format("Household with owner '%d' not found", ownerId))
+                            .withDescription(String.format("Household with owner '%s' not found", ownerEmail))
                             .asRuntimeException()
             );
             return;
@@ -175,7 +175,7 @@ public class HouseholdService extends HouseholdServiceGrpc.HouseholdServiceImplB
         if (householdRepository.getByOwner(request.getOwner()) != null) {
             responseObserver.onError(
                     Status.ALREADY_EXISTS
-                            .withDescription(String.format("Household for owner '%d' already exists", request.getOwner()))
+                            .withDescription(String.format("Household for owner '%s' already exists", request.getOwner()))
                             .asRuntimeException()
             );
             return;

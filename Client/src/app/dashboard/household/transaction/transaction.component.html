@@ -1,0 +1,24 @@
+<mat-card>
+  <mat-card-header>
+    <mat-icon mat-card-avatar
+              [matTooltip]="transaction.getTransactionType() === type.INCOME ? 'Income' : 'Expenditure'">
+      trending_{{transaction.getTransactionType() === type.INCOME ? 'up' : 'down'}}
+    </mat-icon>
+    <mat-icon mat-card-avatar *ngIf="transaction.getPeriod() !== period.UNKNOWN" matTooltip="Periodical transaction">
+      calendar_today
+    </mat-icon>
+    <mat-icon mat-card-avatar *ngIf="transaction.getNumberOfTimes() > 0" matTooltip="Multiple times transaction">repeat
+    </mat-icon>
+    <mat-card-title>{{transaction.getName()}}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <p>Date: {{transaction.getDate() | date: 'dd.MM.yyyy'}}</p>
+    <p>Amount: {{transaction.getAmount() | currency: 'RSD'}}</p>
+    <p *ngIf="transaction.getPeriod() !== period.UNKNOWN">Period: {{transaction.getPeriod() | period}}</p>
+    <p *ngIf="transaction.getNumberOfTimes() > 0">Number of times left: {{transaction.getNumberOfTimes()}}</p>
+  </mat-card-content>
+  <mat-card-actions>
+    <button color="accent" mat-raised-button>Edit</button>
+    <button color="warn" mat-raised-button>Delete</button>
+  </mat-card-actions>
+</mat-card>
