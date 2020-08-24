@@ -1,6 +1,5 @@
 package home.app.household.service.services;
 
-import com.google.protobuf.Empty;
 import home.app.grpc.*;
 import home.app.household.service.mappers.HouseholdMapper;
 import home.app.household.service.mappers.TransactionMapper;
@@ -145,7 +144,7 @@ public class HouseholdService extends HouseholdServiceGrpc.HouseholdServiceImplB
     }
 
     @Override
-    public void deleteTransaction(GetOrDeleteTransactionRequest request, StreamObserver<Empty> responseObserver) {
+    public void deleteTransaction(GetOrDeleteTransactionRequest request, StreamObserver<SuccessResponse> responseObserver) {
         if (!request.hasField(request.getDescriptorForType().findFieldByName("id"))) {
             responseObserver.onError(
                     Status.INVALID_ARGUMENT
@@ -167,7 +166,66 @@ public class HouseholdService extends HouseholdServiceGrpc.HouseholdServiceImplB
             transactionRepository.delete(transaction.get());
         }
 
-        responseObserver.onNext(Empty.newBuilder().build());
+        responseObserver.onNext(SuccessResponse.newBuilder().setSuccess(true).build());
         responseObserver.onCompleted();
+    }
+
+    @Override
+    public void createHousehold(HouseholdRequest request, StreamObserver<SuccessResponse> responseObserver) {
+        if (householdRepository.getByOwner(request.getOwner()) != null) {
+            responseObserver.onError(
+                    Status.ALREADY_EXISTS
+                            .withDescription(String.format("Household for owner '%d' already exists", request.getOwner()))
+                            .asRuntimeException()
+            );
+            return;
+        }
+
+        Household household = new Household();
+
+        household.setOwner(request.getOwner());
+        household.setBalance(0.0);
+        household.setId(null);
+        household.setTransactions(null);
+
+        try {
+            householdRepository.save(household);
+            responseObserver.onNext(SuccessResponse.newBuilder().setSuccess(true).build());
+            responseObserver.onCompleted();
+        } catch (Exception e) {
+            responseObserver.onError(
+                    Status.INTERNAL
+                            .withDescription(e.getMessage())
+                            .asRuntimeException()
+            );
+        }
+    }
+
+    @Override
+    public void editHousehold(EditHouseholdRequest request, StreamObserver<SuccessResponse> responseObserver) {
+        Household household = householdRepository.getById(request.getId());
+
+        if (household == null) {
+            responseObserver.onError(
+                    Status.NOT_FOUND
+                            .withDescription(String.format("Household with id '%d' not found", request.getId()))
+                            .asRuntimeException()
+            );
+            return;
+        }
+
+        household.setBalance(request.getBalance());
+
+        try {
+            householdRepository.save(household);
+            responseObserver.onNext(SuccessResponse.newBuilder().setSuccess(true).build());
+            responseObserver.onCompleted();
+        } catch (Exception e) {
+            responseObserver.onError(
+                    Status.INTERNAL
+                            .withDescription(e.getMessage())
+                            .asRuntimeException()
+            );
+        }
     }
 }
