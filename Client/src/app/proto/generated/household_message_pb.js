@@ -68,7 +68,7 @@ proto.home.app.grpc.HouseholdMessage.toObject = function(includeInstance, msg) {
   var f, obj = {
     id: jspb.Message.getFieldWithDefault(msg, 1, 0),
     balance: jspb.Message.getFloatingPointFieldWithDefault(msg, 2, 0.0),
-    owner: jspb.Message.getFieldWithDefault(msg, 3, 0)
+    owner: jspb.Message.getFieldWithDefault(msg, 3, "")
   };
 
   if (includeInstance) {
@@ -114,7 +114,7 @@ proto.home.app.grpc.HouseholdMessage.deserializeBinaryFromReader = function(msg,
       msg.setBalance(value);
       break;
     case 3:
-      var value = /** @type {number} */ (reader.readInt64());
+      var value = /** @type {string} */ (reader.readString());
       msg.setOwner(value);
       break;
     default:
@@ -161,8 +161,8 @@ proto.home.app.grpc.HouseholdMessage.serializeBinaryToWriter = function(message,
     );
   }
   f = message.getOwner();
-  if (f !== 0) {
-    writer.writeInt64(
+  if (f.length > 0) {
+    writer.writeString(
       3,
       f
     );
@@ -207,20 +207,20 @@ proto.home.app.grpc.HouseholdMessage.prototype.setBalance = function(value) {
 
 
 /**
- * optional int64 owner = 3;
- * @return {number}
+ * optional string owner = 3;
+ * @return {string}
  */
 proto.home.app.grpc.HouseholdMessage.prototype.getOwner = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
 };
 
 
 /**
- * @param {number} value
+ * @param {string} value
  * @return {!proto.home.app.grpc.HouseholdMessage} returns this
  */
 proto.home.app.grpc.HouseholdMessage.prototype.setOwner = function(value) {
-  return jspb.Message.setProto3IntField(this, 3, value);
+  return jspb.Message.setProto3StringField(this, 3, value);
 };
 
 

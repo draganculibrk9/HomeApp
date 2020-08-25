@@ -30,7 +30,7 @@ static_resources:
                   - name: envoy.grpc_web
                   - name: envoy.cors
                   - name: envoy.router
-  - name: listener_household
+    - name: listener_household
       address:
         socket_address: { address: 0.0.0.0, port_value: 8079 }
       filter_chains:

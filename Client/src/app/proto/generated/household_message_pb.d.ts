@@ -10,8 +10,8 @@ export class HouseholdMessage extends jspb.Message {
   getBalance(): number;
   setBalance(value: number): void;
 
-  getOwner(): number;
-  setOwner(value: number): void;
+  getOwner(): string;
+  setOwner(value: string): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): HouseholdMessage.AsObject;
@@ -27,7 +27,7 @@ export namespace HouseholdMessage {
   export type AsObject = {
     id: number,
     balance: number,
-    owner: number,
+    owner: string,
   }
 }
 
