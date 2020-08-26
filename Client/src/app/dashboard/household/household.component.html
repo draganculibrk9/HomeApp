@@ -1,13 +1,22 @@
-<mat-list>
-  <div mat-subheader>Incomes</div>
-  <mat-list-item>
-    <app-transaction></app-transaction>
-  </mat-list-item>
-</mat-list>
+<div fxLayout="column" fxLayoutGap="2%">
+  <div fxLayoutAlign="start center" fxLayout="column">
+    <h1 *ngIf="this.household">Balance: {{this.household.getBalance() | currency: 'RSD'}}</h1>
+    <button id="create-transaction" mat-raised-button color="primary" (click)="this.openDialog()">Create transaction</button>
+  </div>
 
-<mat-list>
-  <div mat-subheader>Expenditures</div>
-  <mat-list-item>
-    <app-transaction></app-transaction>
-  </mat-list-item>
-</mat-list>
+  <div fxLayout="row" fxLayoutAlign="space-between">
+    <mat-list fxFlex="46%" fxLayoutAlign="center">
+      <div mat-subheader>Incomes</div>
+      <mat-list-item *ngFor="let transaction of this.transactions.filter(isIncome)">
+        <app-transaction [transaction]="transaction"></app-transaction>
+      </mat-list-item>
+    </mat-list>
+
+    <mat-list fxFlex="46%" fxLayoutAlign="center">
+      <div mat-subheader>Expenditures</div>
+      <mat-list-item *ngFor="let transaction of lodash.reject(this.transactions, isIncome)">
+        <app-transaction [transaction]="transaction"></app-transaction>
+      </mat-list-item>
+    </mat-list>
+  </div>
+</div>

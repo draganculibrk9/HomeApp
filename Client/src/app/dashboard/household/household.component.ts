@@ -6,6 +6,7 @@ import {HouseholdService} from "../../proto/generated/household_service_pb_servi
 import {SnackbarService} from "../../services/snackbar.service";
 import {grpc} from "@improbable-eng/grpc-web";
 import {TransactionMessage} from "../../proto/generated/transaction_message_pb";
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-household',
@@ -14,7 +15,8 @@ import {TransactionMessage} from "../../proto/generated/transaction_message_pb";
 })
 export class HouseholdComponent implements OnInit {
   household: HouseholdMessage;
-  transactions: TransactionMessage[];
+  transactions: TransactionMessage[] = [];
+  lodash = _;
 
   constructor(private tokenService: TokenService, private snackbarService: SnackbarService) {
   }
@@ -33,7 +35,11 @@ export class HouseholdComponent implements OnInit {
       onEnd: res => {
         switch (res.status) {
           case grpc.Code.OK:
-            this.household = res.message['household'];
+            const {id, balance, owner} = res.message.toObject()['household'];
+            this.household = new HouseholdMessage();
+            this.household.setBalance(balance);
+            this.household.setId(id);
+            this.household.setOwner(owner);
             this.getTransactions();
             break;
           case grpc.Code.NotFound:
@@ -65,4 +71,11 @@ export class HouseholdComponent implements OnInit {
     });
   }
 
+  public isIncome(transaction: TransactionMessage) {
+    return transaction.getTransactionType() === TransactionMessage.TransactionType.INCOME;
+  }
+
+  public openDialog() {
+    console.log("paprika babura");
+  }
 }

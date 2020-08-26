@@ -2,6 +2,7 @@ package home.app.household.service.model;
 
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -14,7 +15,7 @@ public class Household {
     @Column(nullable = false)
     private Double balance;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Transaction> transactions;
 
     @Column(nullable = false, unique = true)

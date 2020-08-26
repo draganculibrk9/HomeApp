@@ -70,7 +70,7 @@
     <modules>
         <module>Auth Service</module>
         <module>Household Service</module>
-        <module>gRPC API</module>
+        <module>gRPC-API</module>
     </modules>
 
     <build>

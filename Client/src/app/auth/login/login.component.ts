@@ -3,10 +3,10 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {SnackbarService} from '../../services/snackbar.service';
 import {LoginRequest} from '../../proto/generated/auth_service_pb';
 import {LoginMessage} from '../../proto/generated/login_message_pb';
-import {grpc} from 'grpc-web-client';
 import {AuthService} from '../../proto/generated/auth_service_pb_service';
 import {TokenService} from '../../services/token.service';
 import {Router} from "@angular/router";
+import {grpc} from "@improbable-eng/grpc-web";
 
 @Component({
   selector: 'app-login',

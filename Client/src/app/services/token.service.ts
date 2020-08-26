@@ -19,7 +19,7 @@ export class TokenService {
   localLogin(token) {
     this._token.next(token);
     this._role.next(jwt_decode(this._token.getValue()).role[0]);
-    this._subject.next(jwt_decode(this._token.getValue()).subject);
+    this._subject.next(jwt_decode(this._token.getValue()).sub);
   }
 
   get subject() {
