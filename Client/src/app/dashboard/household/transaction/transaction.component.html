@@ -18,7 +18,7 @@
     <p *ngIf="transaction.getNumberOfTimes() > 0">Number of times left: {{transaction.getNumberOfTimes()}}</p>
   </mat-card-content>
   <mat-card-actions>
-    <button color="accent" mat-raised-button>Edit</button>
-    <button color="warn" mat-raised-button>Delete</button>
+    <button color="accent" mat-raised-button (click)="openDialog()">Edit</button>
+    <button color="warn" mat-raised-button (click)="deleteTransaction()">Delete</button>
   </mat-card-actions>
 </mat-card>

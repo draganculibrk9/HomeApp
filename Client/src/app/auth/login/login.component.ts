@@ -5,8 +5,8 @@ import {LoginRequest} from '../../proto/generated/auth_service_pb';
 import {LoginMessage} from '../../proto/generated/login_message_pb';
 import {AuthService} from '../../proto/generated/auth_service_pb_service';
 import {TokenService} from '../../services/token.service';
-import {Router} from "@angular/router";
-import {grpc} from "@improbable-eng/grpc-web";
+import {Router} from '@angular/router';
+import {grpc} from '@improbable-eng/grpc-web';
 
 @Component({
   selector: 'app-login',
@@ -28,6 +28,11 @@ export class LoginComponent {
   }
 
   onSubmit() {
+    if (this.loginForm.invalid) {
+      this.snackbarService.displayMessage('Some form fields are invalid');
+      return;
+    }
+
     const login_request = new LoginRequest();
     const login_message = new LoginMessage();
     login_message.setEmail(this.loginForm.controls.email.value);
@@ -39,9 +44,9 @@ export class LoginComponent {
         host: 'http://localhost:8080',
         onEnd: res => {
           if (res.status === grpc.Code.OK) {
-            const token = res.message.toObject()['token'];
+            const token = res.message.toObject().token;
             this.tokenService.localLogin(token);
-            this.router.navigateByUrl("/dashboard").then();
+            this.router.navigateByUrl('/dashboard').then();
           } else {
             this.snackbarService.displayMessage('Bad email or password');
           }

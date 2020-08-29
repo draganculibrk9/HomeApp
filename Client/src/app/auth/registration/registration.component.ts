@@ -5,7 +5,7 @@ import {RegistrationRequest} from '../../proto/generated/auth_service_pb';
 import {Address, RegistrationMessage} from '../../proto/generated/registration_message_pb';
 import {AuthService} from '../../proto/generated/auth_service_pb_service';
 import {Router} from '@angular/router';
-import {grpc} from "@improbable-eng/grpc-web";
+import {grpc} from '@improbable-eng/grpc-web';
 
 @Component({
   selector: 'app-registration',
@@ -40,6 +40,11 @@ export class RegistrationComponent {
   }
 
   onSubmit() {
+    if (this.registrationForm.invalid) {
+      this.snackbarService.displayMessage('Some form fields are invalid');
+      return;
+    }
+
     const registration_request = new RegistrationRequest();
     const registration_message = new RegistrationMessage();
     const address = new Address();

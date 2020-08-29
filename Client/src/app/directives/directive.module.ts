@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {DisableFormControlDirective} from "./disable-form-control.directive";
+import {DisableFormControlDirective} from './disable-form-control.directive';
 
 
 

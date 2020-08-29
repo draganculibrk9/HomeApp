@@ -1,23 +1,22 @@
-import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
-import {TokenService} from "../../services/token.service";
-import {HouseholdRequest, TransactionResponse, TransactionsRequest} from "../../proto/generated/household_service_pb";
-import {HouseholdMessage} from "../../proto/generated/household_message_pb";
-import {HouseholdService} from "../../proto/generated/household_service_pb_service";
-import {SnackbarService} from "../../services/snackbar.service";
-import {grpc} from "@improbable-eng/grpc-web";
-import {TransactionMessage} from "../../proto/generated/transaction_message_pb";
+import {Component, OnInit} from '@angular/core';
+import {TokenService} from '../../services/token.service';
+import {HouseholdRequest, TransactionResponse, TransactionsRequest} from '../../proto/generated/household_service_pb';
+import {HouseholdMessage} from '../../proto/generated/household_message_pb';
+import {HouseholdService} from '../../proto/generated/household_service_pb_service';
+import {SnackbarService} from '../../services/snackbar.service';
+import {grpc} from '@improbable-eng/grpc-web';
+import {TransactionMessage} from '../../proto/generated/transaction_message_pb';
 import * as _ from 'lodash';
-import {MatDialog} from "@angular/material/dialog";
-import {CreateTransactionComponent} from "./create-transaction/create-transaction.component";
-import {disableBodyScroll, clearAllBodyScrollLocks} from "body-scroll-lock";
-import {PageEvent} from "@angular/material/paginator";
+import {MatDialog} from '@angular/material/dialog';
+import {CreateTransactionComponent} from './create-transaction/create-transaction.component';
+import {PageEvent} from '@angular/material/paginator';
 
 @Component({
   selector: 'app-household',
   templateUrl: './household.component.html',
   styleUrls: ['./household.component.css']
 })
-export class HouseholdComponent implements OnInit, AfterViewInit, OnDestroy {
+export class HouseholdComponent implements OnInit {
   household: HouseholdMessage;
   transactions: TransactionMessage[] = [];
   lodash = _;
@@ -29,16 +28,7 @@ export class HouseholdComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
-
     this.getHousehold();
-  }
-
-  ngAfterViewInit() {
-    //disableBodyScroll(this);
-  }
-
-  ngOnDestroy() {
-    //clearAllBodyScrollLocks();
   }
 
   private getHousehold() {
@@ -51,7 +41,7 @@ export class HouseholdComponent implements OnInit, AfterViewInit, OnDestroy {
       onEnd: res => {
         switch (res.status) {
           case grpc.Code.OK:
-            const {id, balance, owner} = res.message.toObject()['household'];
+            const {id, balance, owner} = res.message.toObject().household;
             this.household = new HouseholdMessage();
             this.household.setBalance(balance);
             this.household.setId(id);
@@ -68,7 +58,7 @@ export class HouseholdComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  private getTransactions() {
+  public getTransactions() {
     this.transactions = [];
     this.incomePage = [];
     this.expenditurePage = [];
@@ -78,7 +68,7 @@ export class HouseholdComponent implements OnInit, AfterViewInit, OnDestroy {
 
     grpc.invoke(HouseholdService.GetTransactions, {
       request: transaction_request,
-      host: "http://localhost:8079",
+      host: 'http://localhost:8079',
       onMessage: (res: TransactionResponse) => {
         this.transactions.push(res.getTransaction());
       },
@@ -87,6 +77,7 @@ export class HouseholdComponent implements OnInit, AfterViewInit, OnDestroy {
           this.snackbarService.displayMessage(message);
           this.transactions = [];
         } else {
+          this.transactions = _.orderBy(this.transactions, [transaction => transaction.getName().toLowerCase()], ['asc']);
           this.incomePage = this.transactions.filter(this.isIncome).slice(0, 3);
           this.expenditurePage = this.lodash.reject(this.transactions, this.isIncome).slice(0, 3);
         }
@@ -107,13 +98,14 @@ export class HouseholdComponent implements OnInit, AfterViewInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result)
+      if (result) {
         this.getTransactions();
+      }
     });
   }
 
-  OnPageChange($event: PageEvent, source: string) {
-    let startIndex = $event.pageIndex * $event.pageSize;
+  public OnPageChange($event: PageEvent, source: string) {
+    const startIndex = $event.pageIndex * $event.pageSize;
     let endIndex = startIndex + $event.pageSize;
 
     if (source === 'INCOME') {
