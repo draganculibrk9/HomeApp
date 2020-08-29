@@ -1,22 +1,33 @@
-<div fxLayout="column" fxLayoutGap="2%">
+<div fxLayout="column" fxLayoutGap="1%">
   <div fxLayoutAlign="start center" fxLayout="column">
     <h1 *ngIf="this.household">Balance: {{this.household.getBalance() | currency: 'RSD'}}</h1>
-    <button id="create-transaction" mat-raised-button color="primary" (click)="this.openDialog()">Create transaction</button>
+    <button id="create-transaction" mat-raised-button color="primary" (click)="this.openDialog()">Create transaction
+    </button>
   </div>
 
-  <div fxLayout="row" fxLayoutAlign="space-between">
-    <mat-list fxFlex="46%" fxLayoutAlign="center">
-      <div mat-subheader>Incomes</div>
-      <mat-list-item *ngFor="let transaction of this.transactions.filter(isIncome)">
-        <app-transaction [transaction]="transaction"></app-transaction>
-      </mat-list-item>
-    </mat-list>
+  <div fxLayout="row" fxLayoutAlign="space-between start">
+    <div fxFlex="46%" fxLayout="column">
+      <mat-grid-list cols="3">
+        <h2 fxLayoutAlign="center" mat-subheader>Incomes</h2>
+        <mat-grid-tile *ngFor="let transaction of this.incomePage">
+          <app-transaction [transaction]="transaction"></app-transaction>
+        </mat-grid-tile>
+      </mat-grid-list>
+      <mat-paginator fxLayoutAlign="center" [length]="this.transactions.filter(isIncome).length"
+                     [pageSize]="3" [pageSizeOptions]="[3, 6]" (page)="OnPageChange($event, 'INCOME')">
+      </mat-paginator>
+    </div>
 
-    <mat-list fxFlex="46%" fxLayoutAlign="center">
-      <div mat-subheader>Expenditures</div>
-      <mat-list-item *ngFor="let transaction of lodash.reject(this.transactions, isIncome)">
-        <app-transaction [transaction]="transaction"></app-transaction>
-      </mat-list-item>
-    </mat-list>
+    <div fxFlex="46%" fxLayout="column">
+      <mat-grid-list cols="3">
+        <h2 fxLayoutAlign="center" mat-subheader>Expenditures</h2>
+        <mat-grid-tile *ngFor="let transaction of this.expenditurePage">
+          <app-transaction [transaction]="transaction"></app-transaction>
+        </mat-grid-tile>
+      </mat-grid-list>
+      <mat-paginator fxLayoutAlign="center" [length]="lodash.reject(this.transactions, isIncome).length"
+                     [pageSize]="3" [pageSizeOptions]="[3, 6]">
+      </mat-paginator>
+    </div>
   </div>
 </div>

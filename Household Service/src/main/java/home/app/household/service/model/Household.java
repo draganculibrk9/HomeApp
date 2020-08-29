@@ -16,7 +16,7 @@ public class Household {
     private Double balance;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Transaction> transactions;
+    private Set<Transaction> transactions = new HashSet<>();
 
     @Column(nullable = false, unique = true)
     private String owner;

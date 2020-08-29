@@ -946,7 +946,7 @@ proto.home.app.grpc.CreateOrEditTransactionRequest.prototype.toObject = function
  */
 proto.home.app.grpc.CreateOrEditTransactionRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-    transactionId: jspb.Message.getBooleanFieldWithDefault(msg, 1, false),
+    householdId: jspb.Message.getFieldWithDefault(msg, 1, 0),
     transaction: (f = msg.getTransaction()) && transaction_message_pb.TransactionMessage.toObject(includeInstance, f)
   };
 
@@ -985,8 +985,8 @@ proto.home.app.grpc.CreateOrEditTransactionRequest.deserializeBinaryFromReader =
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {boolean} */ (reader.readBool());
-      msg.setTransactionId(value);
+      var value = /** @type {number} */ (reader.readInt64());
+      msg.setHouseholdId(value);
       break;
     case 2:
       var value = new transaction_message_pb.TransactionMessage;
@@ -1022,9 +1022,9 @@ proto.home.app.grpc.CreateOrEditTransactionRequest.prototype.serializeBinary = f
  */
 proto.home.app.grpc.CreateOrEditTransactionRequest.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getTransactionId();
-  if (f) {
-    writer.writeBool(
+  f = message.getHouseholdId();
+  if (f !== 0) {
+    writer.writeInt64(
       1,
       f
     );
@@ -1041,20 +1041,20 @@ proto.home.app.grpc.CreateOrEditTransactionRequest.serializeBinaryToWriter = fun
 
 
 /**
- * optional bool transaction_id = 1;
- * @return {boolean}
+ * optional int64 household_id = 1;
+ * @return {number}
  */
-proto.home.app.grpc.CreateOrEditTransactionRequest.prototype.getTransactionId = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 1, false));
+proto.home.app.grpc.CreateOrEditTransactionRequest.prototype.getHouseholdId = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
 };
 
 
 /**
- * @param {boolean} value
+ * @param {number} value
  * @return {!proto.home.app.grpc.CreateOrEditTransactionRequest} returns this
  */
-proto.home.app.grpc.CreateOrEditTransactionRequest.prototype.setTransactionId = function(value) {
-  return jspb.Message.setProto3BooleanField(this, 1, value);
+proto.home.app.grpc.CreateOrEditTransactionRequest.prototype.setHouseholdId = function(value) {
+  return jspb.Message.setProto3IntField(this, 1, value);
 };
 
 

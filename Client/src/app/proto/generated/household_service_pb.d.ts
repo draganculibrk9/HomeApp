@@ -114,8 +114,8 @@ export namespace TransactionResponse {
 }
 
 export class CreateOrEditTransactionRequest extends jspb.Message {
-  getTransactionId(): boolean;
-  setTransactionId(value: boolean): void;
+  getHouseholdId(): number;
+  setHouseholdId(value: number): void;
 
   hasTransaction(): boolean;
   clearTransaction(): void;
@@ -134,7 +134,7 @@ export class CreateOrEditTransactionRequest extends jspb.Message {
 
 export namespace CreateOrEditTransactionRequest {
   export type AsObject = {
-    transactionId: boolean,
+    householdId: number,
     transaction?: transaction_message_pb.TransactionMessage.AsObject,
   }
 }

@@ -8,7 +8,7 @@ import javax.persistence.Enumerated;
 
 @Entity
 public class PeriodicalTransaction extends Transaction {
-    @Column(nullable = false)
+    @Column
     @Enumerated(EnumType.STRING)
     private Period period;
 

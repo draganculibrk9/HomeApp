@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import {TokenService} from "../../services/token.service";
 import {HouseholdRequest, TransactionResponse, TransactionsRequest} from "../../proto/generated/household_service_pb";
 import {HouseholdMessage} from "../../proto/generated/household_message_pb";
@@ -7,22 +7,38 @@ import {SnackbarService} from "../../services/snackbar.service";
 import {grpc} from "@improbable-eng/grpc-web";
 import {TransactionMessage} from "../../proto/generated/transaction_message_pb";
 import * as _ from 'lodash';
+import {MatDialog} from "@angular/material/dialog";
+import {CreateTransactionComponent} from "./create-transaction/create-transaction.component";
+import {disableBodyScroll, clearAllBodyScrollLocks} from "body-scroll-lock";
+import {PageEvent} from "@angular/material/paginator";
 
 @Component({
   selector: 'app-household',
   templateUrl: './household.component.html',
   styleUrls: ['./household.component.css']
 })
-export class HouseholdComponent implements OnInit {
+export class HouseholdComponent implements OnInit, AfterViewInit, OnDestroy {
   household: HouseholdMessage;
   transactions: TransactionMessage[] = [];
   lodash = _;
+  incomePage: TransactionMessage[] = [];
+  expenditurePage: TransactionMessage[] = [];
 
-  constructor(private tokenService: TokenService, private snackbarService: SnackbarService) {
+  constructor(private tokenService: TokenService, private snackbarService: SnackbarService,
+              private dialog: MatDialog) {
   }
 
   ngOnInit(): void {
+
     this.getHousehold();
+  }
+
+  ngAfterViewInit() {
+    //disableBodyScroll(this);
+  }
+
+  ngOnDestroy() {
+    //clearAllBodyScrollLocks();
   }
 
   private getHousehold() {
@@ -53,6 +69,10 @@ export class HouseholdComponent implements OnInit {
   }
 
   private getTransactions() {
+    this.transactions = [];
+    this.incomePage = [];
+    this.expenditurePage = [];
+
     const transaction_request = new TransactionsRequest();
     transaction_request.setHouseholdId(this.household.getId());
 
@@ -66,6 +86,9 @@ export class HouseholdComponent implements OnInit {
         if (code !== grpc.Code.OK) {
           this.snackbarService.displayMessage(message);
           this.transactions = [];
+        } else {
+          this.incomePage = this.transactions.filter(this.isIncome).slice(0, 3);
+          this.expenditurePage = this.lodash.reject(this.transactions, this.isIncome).slice(0, 3);
         }
       }
     });
@@ -76,6 +99,33 @@ export class HouseholdComponent implements OnInit {
   }
 
   public openDialog() {
-    console.log("paprika babura");
+    const dialogRef = this.dialog.open(CreateTransactionComponent, {
+      width: '250px',
+      data: {
+        household_id: this.household.getId()
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result)
+        this.getTransactions();
+    });
+  }
+
+  OnPageChange($event: PageEvent, source: string) {
+    let startIndex = $event.pageIndex * $event.pageSize;
+    let endIndex = startIndex + $event.pageSize;
+
+    if (source === 'INCOME') {
+      if (endIndex > this.transactions.filter(this.isIncome).length) {
+        endIndex = this.transactions.filter(this.isIncome).length;
+      }
+      this.incomePage = this.transactions.filter(this.isIncome).slice(startIndex, endIndex);
+    } else {
+      if (endIndex > this.lodash.reject(this.transactions, this.isIncome).length) {
+        endIndex = this.lodash.reject(this.transactions, this.isIncome).length;
+      }
+      this.expenditurePage = this.lodash.reject(this.transactions, this.isIncome).slice(startIndex, endIndex);
+    }
   }
 }

@@ -22,6 +22,7 @@ public class Transaction {
     private Double amount;
 
     @Column(nullable = false)
+    @Temporal(TemporalType.DATE)
     private Date date;
 
     public Transaction() {

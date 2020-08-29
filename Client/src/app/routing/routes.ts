@@ -1,7 +1,7 @@
 import {Routes} from '@angular/router';
 import {LoginComponent} from '../auth/login/login.component';
 import {RegistrationComponent} from '../auth/registration/registration.component';
-import {DashboardComponent} from "../dashboard/dashboard/dashboard.component";
+import {DashboardComponent} from "../dashboard/dashboard.component";
 import {HouseholdComponent} from "../dashboard/household/household.component";
 import {ServiceComponent} from "../dashboard/service/service.component";
 

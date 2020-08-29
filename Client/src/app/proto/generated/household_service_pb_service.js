@@ -61,7 +61,7 @@ HouseholdService.EditTransaction = {
   requestStream: false,
   responseStream: false,
   requestType: household_service_pb.CreateOrEditTransactionRequest,
-  responseType: household_service_pb.TransactionResponse
+  responseType: household_service_pb.SuccessResponse
 };
 
 HouseholdService.CreateTransaction = {
@@ -70,7 +70,7 @@ HouseholdService.CreateTransaction = {
   requestStream: false,
   responseStream: false,
   requestType: household_service_pb.CreateOrEditTransactionRequest,
-  responseType: household_service_pb.TransactionResponse
+  responseType: household_service_pb.SuccessResponse
 };
 
 HouseholdService.DeleteTransaction = {

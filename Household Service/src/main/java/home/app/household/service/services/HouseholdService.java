@@ -99,7 +99,7 @@ public class HouseholdService extends HouseholdServiceGrpc.HouseholdServiceImplB
     }
 
     @Override
-    public void editTransaction(CreateOrEditTransactionRequest request, StreamObserver<TransactionResponse> responseObserver) {
+    public void editTransaction(CreateOrEditTransactionRequest request, StreamObserver<SuccessResponse> responseObserver) {
         if (!request.getTransaction().hasField(request.getTransaction().getDescriptorForType().findFieldByName("id"))) {
             responseObserver.onError(
                     Status.INVALID_ARGUMENT
@@ -120,27 +120,36 @@ public class HouseholdService extends HouseholdServiceGrpc.HouseholdServiceImplB
             return;
         }
 
-        transaction = transactionRepository.save(transaction);
+        transactionRepository.save(transaction);
 
         responseObserver.onNext(
-                TransactionResponse.newBuilder()
-                        .setTransaction(transactionMapper.toDTO(transaction))
-                        .build()
+                SuccessResponse.newBuilder().setSuccess(true).build()
         );
         responseObserver.onCompleted();
     }
 
     @Override
-    public void createTransaction(CreateOrEditTransactionRequest request, StreamObserver<TransactionResponse> responseObserver) {
+    public void createTransaction(CreateOrEditTransactionRequest request, StreamObserver<SuccessResponse> responseObserver) {
+        long householdId = request.getHouseholdId();
+
+        Household household = householdRepository.getById(householdId);
+
+        if (household == null) {
+            responseObserver.onError(
+                    Status.NOT_FOUND
+                            .withDescription(String.format("Household with id '%d' not found", householdId))
+                            .asRuntimeException()
+            );
+            return;
+        }
         Transaction transaction = transactionMapper.toEntity(request.getTransaction());
         transaction.setId(null);
 
-        transaction = transactionRepository.save(transaction);
+        household.getTransactions().add(transaction);
+        householdRepository.save(household);
 
         responseObserver.onNext(
-                TransactionResponse.newBuilder()
-                        .setTransaction(transactionMapper.toDTO(transaction))
-                        .build()
+                SuccessResponse.newBuilder().setSuccess(true).build()
         );
         responseObserver.onCompleted();
     }

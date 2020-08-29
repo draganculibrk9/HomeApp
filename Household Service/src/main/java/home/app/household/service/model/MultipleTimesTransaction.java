@@ -5,7 +5,7 @@ import javax.persistence.Entity;
 
 @Entity
 public class MultipleTimesTransaction extends Transaction {
-    @Column(nullable = false)
+    @Column
     private Long numberOfTimes;
 
     public Long getNumberOfTimes() {

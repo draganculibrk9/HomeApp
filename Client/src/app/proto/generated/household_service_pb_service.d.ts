@@ -55,7 +55,7 @@ type HouseholdServiceEditTransaction = {
   readonly requestStream: false;
   readonly responseStream: false;
   readonly requestType: typeof household_service_pb.CreateOrEditTransactionRequest;
-  readonly responseType: typeof household_service_pb.TransactionResponse;
+  readonly responseType: typeof household_service_pb.SuccessResponse;
 };
 
 type HouseholdServiceCreateTransaction = {
@@ -64,7 +64,7 @@ type HouseholdServiceCreateTransaction = {
   readonly requestStream: false;
   readonly responseStream: false;
   readonly requestType: typeof household_service_pb.CreateOrEditTransactionRequest;
-  readonly responseType: typeof household_service_pb.TransactionResponse;
+  readonly responseType: typeof household_service_pb.SuccessResponse;
 };
 
 type HouseholdServiceDeleteTransaction = {
@@ -160,20 +160,20 @@ export class HouseholdServiceClient {
   editTransaction(
     requestMessage: household_service_pb.CreateOrEditTransactionRequest,
     metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: household_service_pb.TransactionResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: household_service_pb.SuccessResponse|null) => void
   ): UnaryResponse;
   editTransaction(
     requestMessage: household_service_pb.CreateOrEditTransactionRequest,
-    callback: (error: ServiceError|null, responseMessage: household_service_pb.TransactionResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: household_service_pb.SuccessResponse|null) => void
   ): UnaryResponse;
   createTransaction(
     requestMessage: household_service_pb.CreateOrEditTransactionRequest,
     metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: household_service_pb.TransactionResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: household_service_pb.SuccessResponse|null) => void
   ): UnaryResponse;
   createTransaction(
     requestMessage: household_service_pb.CreateOrEditTransactionRequest,
-    callback: (error: ServiceError|null, responseMessage: household_service_pb.TransactionResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: household_service_pb.SuccessResponse|null) => void
   ): UnaryResponse;
   deleteTransaction(
     requestMessage: household_service_pb.GetOrDeleteTransactionRequest,
