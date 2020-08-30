@@ -3,6 +3,16 @@
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$/Auth Service" />
+    <file type="web" url="file://$PROJECT_DIR$/Household Service" />
+  </component>
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/Auth Service/pom.xml" />
+        <option value="$PROJECT_DIR$/gRPC API/pom.xml" />
+      </list>
+    </option>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_14" default="true" project-jdk-name="14 (2)" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />

@@ -1,0 +1,70 @@
+<h1 mat-dialog-title>Create transaction</h1>
+<div mat-dialog-content>
+  <form [formGroup]="transactionForm" fxLayout="column">
+    <mat-form-field appearance="fill">
+      <mat-label>Transaction type</mat-label>
+      <mat-select formControlName="transactionType">
+        <mat-option [value]="this.transactionType.INCOME">Income</mat-option>
+        <mat-option [value]="this.transactionType.EXPENDITURE">Expenditure</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Transaction subtype</mat-label>
+      <mat-select formControlName="transactionSubtype"
+                  [disabled]="transactionForm.controls['transactionType'].value === null">
+        <mat-option *ngFor="let subtype of _.keys(transactionSubtype)"
+                    [value]="transactionSubtype[subtype]">{{transactionSubtype[subtype]}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input type="text" matInput placeholder="Name" formControlName="name"
+             (click)="transactionForm.controls.name.markAsTouched()"
+             [disableControl]="transactionForm.controls['transactionType'].value === null
+             || transactionForm.controls['transactionSubtype'].value === null">
+      <mat-error *ngIf="transactionForm.controls.name.invalid">Name must be specified</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input type="number" matInput placeholder="Amount" formControlName="amount"
+             (click)="transactionForm.controls.amount.markAsTouched()"
+             [disableControl]="transactionForm.controls['transactionType'].value === null
+             || transactionForm.controls['transactionSubtype'].value === null">
+      <mat-error *ngIf="transactionForm.controls.amount.invalid">Amount must be greater than zero</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Date</mat-label>
+      <input matInput [min]="this.minDate" [max]="this.maxDate" [matDatepicker]="picker" formControlName="date"
+             (click)="transactionForm.controls.date.markAsTouched()"
+             [disabled]="transactionForm.controls['transactionType'].value === null
+             || transactionForm.controls['transactionSubtype'].value === null">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+      <mat-error *ngIf="transactionForm.controls.date.invalid">Date must be specified</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input type="number" matInput placeholder="Number of times" formControlName="numberOfTimes"
+             (click)="transactionForm.controls.numberOfTimes.markAsTouched()"
+             [disableControl]="transactionForm.controls['transactionSubtype'].value !== this.transactionSubtype.MULTIPLE_TIMES_TRANSACTION">
+      <mat-error *ngIf="transactionForm.controls.numberOfTimes.invalid">Number of times must be greater than zero
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Period</mat-label>
+      <mat-select formControlName="period"
+                  [disabled]="transactionForm.controls['transactionSubtype'].value !== this.transactionSubtype.PERIODICAL_TRANSACTION">
+        <mat-option [value]="this.period.WEEK">Week</mat-option>
+        <mat-option [value]="this.period.MONTH">Month</mat-option>
+        <mat-option [value]="this.period.YEAR">Year</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button color="primary" (click)="this.createTransaction()">Create</button>
+  <button mat-raised-button color="warn" (click)="this.dialogRef.close()">Cancel</button>
+</div>

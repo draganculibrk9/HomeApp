@@ -1,0 +1,35 @@
+<div fxLayout="column" fxLayoutGap="1%">
+  <div fxLayoutAlign="start center" fxLayout="column">
+    <h1 *ngIf="this.household">Balance: {{this.household.getBalance() | currency: 'RSD'}}</h1>
+    <button id="create-transaction" mat-raised-button color="primary" (click)="this.openDialog()">Create transaction
+    </button>
+  </div>
+
+  <div fxLayout="row" fxLayoutAlign="space-between start">
+    <div fxFlex="46%" fxLayout="column">
+      <mat-grid-list cols="3">
+        <h2 fxLayoutAlign="center" mat-subheader>Incomes</h2>
+        <mat-grid-tile *ngFor="let transaction of this.incomePage">
+          <app-transaction [transaction]="transaction" [householdId]="this.household.getId()"
+                           (reloadTransactions)="this.getTransactions()"></app-transaction>
+        </mat-grid-tile>
+      </mat-grid-list>
+      <mat-paginator fxLayoutAlign="center" [length]="this.transactions.filter(isIncome).length"
+                     [pageSize]="3" [pageSizeOptions]="[3, 6]" (page)="OnPageChange($event, 'INCOME')">
+      </mat-paginator>
+    </div>
+
+    <div fxFlex="46%" fxLayout="column">
+      <mat-grid-list cols="3">
+        <h2 fxLayoutAlign="center" mat-subheader>Expenditures</h2>
+        <mat-grid-tile *ngFor="let transaction of this.expenditurePage">
+          <app-transaction [transaction]="transaction" [householdId]="this.household.getId()"
+                           (reloadTransactions)="this.getTransactions()"></app-transaction>
+        </mat-grid-tile>
+      </mat-grid-list>
+      <mat-paginator fxLayoutAlign="center" [length]="lodash.reject(this.transactions, isIncome).length"
+                     [pageSize]="3" [pageSizeOptions]="[3, 6]">
+      </mat-paginator>
+    </div>
+  </div>
+</div>

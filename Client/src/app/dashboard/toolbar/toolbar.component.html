@@ -1,0 +1,10 @@
+<mat-toolbar color="primary" fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-between center">
+  <span>
+  <a mat-button routerLink="household">Home App</a>
+  <button routerLink="household" mat-button>Household</button>
+  <button routerLink="service" mat-button>Services</button>
+  </span>
+  <span fxLayoutAlign="right">
+      <button (click)="tokenService.logout()" mat-button>Logout</button>
+    </span>
+</mat-toolbar>

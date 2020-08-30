@@ -8,6 +8,7 @@ import * as jwt_decode from 'jwt-decode';
 export class TokenService {
   _token = new BehaviorSubject<string>(null);
   _role = new BehaviorSubject<string>(null);
+  _subject = new BehaviorSubject<string>(null);
 
   // renew authentication later...
   // private authFlag = 'isLoggedIn';
@@ -18,6 +19,11 @@ export class TokenService {
   localLogin(token) {
     this._token.next(token);
     this._role.next(jwt_decode(this._token.getValue()).role[0]);
+    this._subject.next(jwt_decode(this._token.getValue()).sub);
+  }
+
+  get subject() {
+    return this._subject.getValue();
   }
 
   get authenticated() {
@@ -41,5 +47,6 @@ export class TokenService {
   private localLogout() {
     this._token.next(null);
     this._role.next(null);
+    this._subject.next(null);
   }
 }

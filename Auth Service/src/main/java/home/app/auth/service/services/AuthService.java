@@ -7,15 +7,17 @@ import home.app.auth.service.security.TokenService;
 import home.app.grpc.*;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
+import net.devh.boot.grpc.client.inject.GrpcClient;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.transaction.annotation.Transactional;
 
 @GrpcService
+@Transactional
 public class AuthService extends AuthServiceGrpc.AuthServiceImplBase {
     @Autowired
     private UserRepository userRepository;
@@ -28,6 +30,9 @@ public class AuthService extends AuthServiceGrpc.AuthServiceImplBase {
 
     @Autowired
     private TokenService tokenService;
+
+    @GrpcClient("householdService")
+    private HouseholdServiceGrpc.HouseholdServiceBlockingStub householdServiceStub;
 
     @Override
     public void register(RegistrationRequest request, StreamObserver<RegistrationResponse> responseObserver) {
@@ -44,6 +49,16 @@ public class AuthService extends AuthServiceGrpc.AuthServiceImplBase {
 
         try {
             User newUser = userRepository.save(userMapper.toEntity(registrationMessage));
+
+            if (!householdServiceStub.createHousehold(HouseholdRequest.newBuilder().setOwner(newUser.getEmail()).build()).getSuccess()) {
+                responseObserver.onError(
+                        Status.INTERNAL
+                                .withDescription("Failed to create household for new user")
+                                .asRuntimeException()
+                );
+                return;
+            }
+
             RegistrationResponse response = RegistrationResponse.newBuilder().setUserId(newUser.getId()).build();
             responseObserver.onNext(response);
             responseObserver.onCompleted();
