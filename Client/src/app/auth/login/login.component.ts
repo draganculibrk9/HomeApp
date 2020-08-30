@@ -44,7 +44,7 @@ export class LoginComponent {
         host: 'http://localhost:8080',
         onEnd: res => {
           if (res.status === grpc.Code.OK) {
-            const token = res.message.toObject().token;
+            const token = res.message.toObject()['token'];
             this.tokenService.localLogin(token);
             this.router.navigateByUrl('/dashboard').then();
           } else {

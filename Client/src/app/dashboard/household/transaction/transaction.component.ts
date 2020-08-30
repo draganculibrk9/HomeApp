@@ -52,6 +52,7 @@ export class TransactionComponent implements OnInit {
       onEnd: res => {
         switch (res.status) {
           case grpc.Code.OK:
+            this.snackbarService.displayMessage('Transaction deleted successfully');
             this.reloadTransactions.emit();
             return;
           case grpc.Code.InvalidArgument || grpc.Code.NotFound:

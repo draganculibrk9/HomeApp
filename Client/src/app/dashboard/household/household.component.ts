@@ -41,7 +41,7 @@ export class HouseholdComponent implements OnInit {
       onEnd: res => {
         switch (res.status) {
           case grpc.Code.OK:
-            const {id, balance, owner} = res.message.toObject().household;
+            const {id, balance, owner} = res.message.toObject()['household'];
             this.household = new HouseholdMessage();
             this.household.setBalance(balance);
             this.household.setId(id);

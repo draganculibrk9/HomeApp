@@ -156,7 +156,7 @@ public class HouseholdService extends HouseholdServiceGrpc.HouseholdServiceImplB
 
     @Override
     public void deleteTransaction(GetOrDeleteTransactionRequest request, StreamObserver<SuccessResponse> responseObserver) {
-        if (!request.hasField(request.getDescriptorForType().findFieldByName("id"))) {
+        if (!request.hasField(request.getDescriptorForType().findFieldByName("transaction_id"))) {
             responseObserver.onError(
                     Status.INVALID_ARGUMENT
                             .withDescription("Transaction id must be provided")
@@ -165,18 +165,26 @@ public class HouseholdService extends HouseholdServiceGrpc.HouseholdServiceImplB
             return;
         }
 
-        Optional<Transaction> transaction = transactionRepository.findById(request.getTransactionId());
+        Household household = householdRepository.getByTransactionId(request.getTransactionId());
 
-        if (!transaction.isPresent()) {
+        if (household == null) {
             responseObserver.onError(
                     Status.NOT_FOUND
                             .withDescription(String.format("Transaction with id '%d' not found", request.getTransactionId()))
                             .asRuntimeException()
             );
-        } else {
-            transactionRepository.delete(transaction.get());
+            return;
         }
 
+        if (!household.getTransactions().removeIf(t -> t.getId() == request.getTransactionId())) {
+            responseObserver.onError(
+                    Status.INTERNAL
+                            .withDescription(String.format("Failed to delete transaction with id '%d'", request.getTransactionId()))
+                            .asRuntimeException()
+            );
+            return;
+        }
+        householdRepository.save(household);
         responseObserver.onNext(SuccessResponse.newBuilder().setSuccess(true).build());
         responseObserver.onCompleted();
     }
