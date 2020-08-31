@@ -429,10 +429,11 @@ proto.home.app.grpc.Address.prototype.toObject = function(opt_includeInstance) {
  */
 proto.home.app.grpc.Address.toObject = function(includeInstance, msg) {
   var f, obj = {
-    country: jspb.Message.getFieldWithDefault(msg, 1, ""),
-    city: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    street: jspb.Message.getFieldWithDefault(msg, 3, ""),
-    number: jspb.Message.getFieldWithDefault(msg, 4, 0)
+    id: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    country: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    city: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    street: jspb.Message.getFieldWithDefault(msg, 4, ""),
+    number: jspb.Message.getFieldWithDefault(msg, 5, 0)
   };
 
   if (includeInstance) {
@@ -470,18 +471,22 @@ proto.home.app.grpc.Address.deserializeBinaryFromReader = function(msg, reader) 
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setCountry(value);
+      var value = /** @type {number} */ (reader.readInt64());
+      msg.setId(value);
       break;
     case 2:
       var value = /** @type {string} */ (reader.readString());
-      msg.setCity(value);
+      msg.setCountry(value);
       break;
     case 3:
       var value = /** @type {string} */ (reader.readString());
-      msg.setStreet(value);
+      msg.setCity(value);
       break;
     case 4:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setStreet(value);
+      break;
+    case 5:
       var value = /** @type {number} */ (reader.readUint32());
       msg.setNumber(value);
       break;
@@ -514,31 +519,38 @@ proto.home.app.grpc.Address.prototype.serializeBinary = function() {
  */
 proto.home.app.grpc.Address.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getCountry();
-  if (f.length > 0) {
-    writer.writeString(
+  f = message.getId();
+  if (f !== 0) {
+    writer.writeInt64(
       1,
       f
     );
   }
-  f = message.getCity();
+  f = message.getCountry();
   if (f.length > 0) {
     writer.writeString(
       2,
       f
     );
   }
-  f = message.getStreet();
+  f = message.getCity();
   if (f.length > 0) {
     writer.writeString(
       3,
       f
     );
   }
+  f = message.getStreet();
+  if (f.length > 0) {
+    writer.writeString(
+      4,
+      f
+    );
+  }
   f = message.getNumber();
   if (f !== 0) {
     writer.writeUint32(
-      4,
+      5,
       f
     );
   }
@@ -546,28 +558,28 @@ proto.home.app.grpc.Address.serializeBinaryToWriter = function(message, writer) 
 
 
 /**
- * optional string country = 1;
+ * optional int64 id = 1;
+ * @return {number}
+ */
+proto.home.app.grpc.Address.prototype.getId = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.home.app.grpc.Address} returns this
+ */
+proto.home.app.grpc.Address.prototype.setId = function(value) {
+  return jspb.Message.setProto3IntField(this, 1, value);
+};
+
+
+/**
+ * optional string country = 2;
  * @return {string}
  */
 proto.home.app.grpc.Address.prototype.getCountry = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.home.app.grpc.Address} returns this
- */
-proto.home.app.grpc.Address.prototype.setCountry = function(value) {
-  return jspb.Message.setProto3StringField(this, 1, value);
-};
-
-
-/**
- * optional string city = 2;
- * @return {string}
- */
-proto.home.app.grpc.Address.prototype.getCity = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
@@ -576,16 +588,16 @@ proto.home.app.grpc.Address.prototype.getCity = function() {
  * @param {string} value
  * @return {!proto.home.app.grpc.Address} returns this
  */
-proto.home.app.grpc.Address.prototype.setCity = function(value) {
+proto.home.app.grpc.Address.prototype.setCountry = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
 };
 
 
 /**
- * optional string street = 3;
+ * optional string city = 3;
  * @return {string}
  */
-proto.home.app.grpc.Address.prototype.getStreet = function() {
+proto.home.app.grpc.Address.prototype.getCity = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
 };
 
@@ -594,17 +606,35 @@ proto.home.app.grpc.Address.prototype.getStreet = function() {
  * @param {string} value
  * @return {!proto.home.app.grpc.Address} returns this
  */
-proto.home.app.grpc.Address.prototype.setStreet = function(value) {
+proto.home.app.grpc.Address.prototype.setCity = function(value) {
   return jspb.Message.setProto3StringField(this, 3, value);
 };
 
 
 /**
- * optional uint32 number = 4;
+ * optional string street = 4;
+ * @return {string}
+ */
+proto.home.app.grpc.Address.prototype.getStreet = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.home.app.grpc.Address} returns this
+ */
+proto.home.app.grpc.Address.prototype.setStreet = function(value) {
+  return jspb.Message.setProto3StringField(this, 4, value);
+};
+
+
+/**
+ * optional uint32 number = 5;
  * @return {number}
  */
 proto.home.app.grpc.Address.prototype.getNumber = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 5, 0));
 };
 
 
@@ -613,7 +643,7 @@ proto.home.app.grpc.Address.prototype.getNumber = function() {
  * @return {!proto.home.app.grpc.Address} returns this
  */
 proto.home.app.grpc.Address.prototype.setNumber = function(value) {
-  return jspb.Message.setProto3IntField(this, 4, value);
+  return jspb.Message.setProto3IntField(this, 5, value);
 };
 
 

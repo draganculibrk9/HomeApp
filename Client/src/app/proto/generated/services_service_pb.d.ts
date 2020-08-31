@@ -84,10 +84,8 @@ export class SearchServiceRequest extends jspb.Message {
   getMaximumPrice(): number;
   setMaximumPrice(value: number): void;
 
-  hasAddress(): boolean;
-  clearAddress(): void;
-  getAddress(): registration_message_pb.Address | undefined;
-  setAddress(value?: registration_message_pb.Address): void;
+  getCity(): string;
+  setCity(value: string): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): SearchServiceRequest.AsObject;
@@ -105,7 +103,7 @@ export namespace SearchServiceRequest {
     type: accommodation_message_pb.AccommodationMessage.AccommodationTypeMap[keyof accommodation_message_pb.AccommodationMessage.AccommodationTypeMap],
     minimumPrice: number,
     maximumPrice: number,
-    address?: registration_message_pb.Address.AsObject,
+    city: string,
   }
 }
 

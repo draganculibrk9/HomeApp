@@ -581,7 +581,7 @@ proto.home.app.grpc.SearchServiceRequest.toObject = function(includeInstance, ms
     type: jspb.Message.getFieldWithDefault(msg, 2, 0),
     minimumPrice: jspb.Message.getFloatingPointFieldWithDefault(msg, 3, 0.0),
     maximumPrice: jspb.Message.getFloatingPointFieldWithDefault(msg, 4, 0.0),
-    address: (f = msg.getAddress()) && registration_message_pb.Address.toObject(includeInstance, f)
+    city: jspb.Message.getFieldWithDefault(msg, 5, "")
   };
 
   if (includeInstance) {
@@ -635,9 +635,8 @@ proto.home.app.grpc.SearchServiceRequest.deserializeBinaryFromReader = function(
       msg.setMaximumPrice(value);
       break;
     case 5:
-      var value = new registration_message_pb.Address;
-      reader.readMessage(value,registration_message_pb.Address.deserializeBinaryFromReader);
-      msg.setAddress(value);
+      var value = /** @type {string} */ (reader.readString());
+      msg.setCity(value);
       break;
     default:
       reader.skipField();
@@ -696,12 +695,11 @@ proto.home.app.grpc.SearchServiceRequest.serializeBinaryToWriter = function(mess
       f
     );
   }
-  f = message.getAddress();
-  if (f != null) {
-    writer.writeMessage(
+  f = message.getCity();
+  if (f.length > 0) {
+    writer.writeString(
       5,
-      f,
-      registration_message_pb.Address.serializeBinaryToWriter
+      f
     );
   }
 };
@@ -780,39 +778,20 @@ proto.home.app.grpc.SearchServiceRequest.prototype.setMaximumPrice = function(va
 
 
 /**
- * optional Address address = 5;
- * @return {?proto.home.app.grpc.Address}
+ * optional string city = 5;
+ * @return {string}
  */
-proto.home.app.grpc.SearchServiceRequest.prototype.getAddress = function() {
-  return /** @type{?proto.home.app.grpc.Address} */ (
-    jspb.Message.getWrapperField(this, registration_message_pb.Address, 5));
+proto.home.app.grpc.SearchServiceRequest.prototype.getCity = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 5, ""));
 };
 
 
 /**
- * @param {?proto.home.app.grpc.Address|undefined} value
- * @return {!proto.home.app.grpc.SearchServiceRequest} returns this
-*/
-proto.home.app.grpc.SearchServiceRequest.prototype.setAddress = function(value) {
-  return jspb.Message.setWrapperField(this, 5, value);
-};
-
-
-/**
- * Clears the message field making it undefined.
+ * @param {string} value
  * @return {!proto.home.app.grpc.SearchServiceRequest} returns this
  */
-proto.home.app.grpc.SearchServiceRequest.prototype.clearAddress = function() {
-  return this.setAddress(undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.home.app.grpc.SearchServiceRequest.prototype.hasAddress = function() {
-  return jspb.Message.getField(this, 5) != null;
+proto.home.app.grpc.SearchServiceRequest.prototype.setCity = function(value) {
+  return jspb.Message.setProto3StringField(this, 5, value);
 };
 
 

@@ -58,6 +58,9 @@ export namespace RegistrationMessage {
 }
 
 export class Address extends jspb.Message {
+  getId(): number;
+  setId(value: number): void;
+
   getCountry(): string;
   setCountry(value: string): void;
 
@@ -82,6 +85,7 @@ export class Address extends jspb.Message {
 
 export namespace Address {
   export type AsObject = {
+    id: number,
     country: string,
     city: string,
     street: string,

@@ -20,8 +20,9 @@ message RegistrationMessage {
 }
 
 message Address {
-  string country = 1;
-  string city = 2;
-  string street = 3;
-  uint32 number = 4;
+  int64 id = 1;
+  string country = 2;
+  string city = 3;
+  string street = 4;
+  uint32 number = 5;
 }

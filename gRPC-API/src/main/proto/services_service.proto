@@ -28,7 +28,7 @@ message SearchServiceRequest {
   AccommodationMessage.AccommodationType type = 2;
   double minimum_price = 3;
   double maximum_price = 4;
-  Address address = 5;
+  string city = 5;
 }
 
 message AccommodationResponse {
