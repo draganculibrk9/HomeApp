@@ -71,6 +71,7 @@
         <module>Auth Service</module>
         <module>Household Service</module>
         <module>gRPC-API</module>
+        <module>Services Service</module>
     </modules>
 
     <build>
