@@ -13,6 +13,9 @@ public class Service {
     @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
+    private String administrator;
+
     @OneToOne(fetch = FetchType.EAGER)
     private Contact contact;
 
@@ -52,5 +55,13 @@ public class Service {
 
     public void setAccommodations(Set<Accommodation> accommodations) {
         this.accommodations = accommodations;
+    }
+
+    public String getAdministrator() {
+        return administrator;
+    }
+
+    public void setAdministrator(String administrator) {
+        this.administrator = administrator;
     }
 }

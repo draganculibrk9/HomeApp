@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package home.app.grpc;
+
+import "registration_message.proto";
+
+option java_multiple_files = true;
+
+message ContactMessage {
+  int64 id = 1;
+  string email = 2;
+  string phone = 3;
+  string website = 4;
+  Address address = 5;
+}

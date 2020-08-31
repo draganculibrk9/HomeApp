@@ -31,6 +31,9 @@ public class AccommodationRequest {
     @OneToOne(fetch = FetchType.EAGER)
     private Accommodation accommodation;
 
+    @OneToOne(fetch = FetchType.EAGER)
+    private Comment comment;
+
     public AccommodationRequest() {
     }
 
@@ -88,5 +91,13 @@ public class AccommodationRequest {
 
     public void setAccommodation(Accommodation accommodation) {
         this.accommodation = accommodation;
+    }
+
+    public Comment getComment() {
+        return comment;
+    }
+
+    public void setComment(Comment comment) {
+        this.comment = comment;
     }
 }

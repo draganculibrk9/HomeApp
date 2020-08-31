@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package home.app.grpc;
+
+option java_multiple_files = true;
+
+message AccommodationMessage {
+  int64 id = 1;
+  string name = 2;
+  enum AccommodationType {
+    UNKNOWN = 0;
+    REPAIRS = 1;
+    HYGIENE = 2;
+    CATERING = 3;
+  }
+  AccommodationType type = 3;
+  double price = 4;
+  bool available = 5;
+  double rating = 6;
+}

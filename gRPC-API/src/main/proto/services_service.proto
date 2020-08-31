@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package home.app.grpc;
+
+import "accommodation_message.proto";
+import "accommodation_request_message.proto";
+import "comment_message.proto";
+import "contact_message.proto";
+import "service_message.proto";
+import "registration_message.proto";
+
+option java_multiple_files = true;
+
+message ServiceRequest {
+  int64 id = 1;
+}
+
+message ServiceByAdministratorRequest {
+  string administrator = 1;
+}
+
+message ServiceResponse {
+  ServiceMessage service = 1;
+}
+
+message SearchServiceRequest {
+  string name = 1;
+  AccommodationMessage.AccommodationType type = 2;
+  double minimum_price = 3;
+  double maximum_price = 4;
+  Address address = 5;
+}
+
+message AccommodationResponse {
+  AccommodationMessage accommodation = 1;
+}
+
+service ServicesService {
+  rpc SearchServices(SearchServiceRequest) returns (stream ServiceResponse) {};
+
+  rpc GetService(ServiceRequest) returns (ServiceResponse) {};
+  rpc GetServiceByAdministrator(ServiceByAdministratorRequest) returns (ServiceResponse) {};
+
+  rpc GetAccommodations(ServiceRequest) returns (stream AccommodationResponse) {};
+}
