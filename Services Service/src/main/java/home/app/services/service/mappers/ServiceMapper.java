@@ -1,6 +1,7 @@
 package home.app.services.service.mappers;
 
 import home.app.grpc.ServiceMessage;
+import home.app.grpc.api.model.IMapper;
 import home.app.services.service.model.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

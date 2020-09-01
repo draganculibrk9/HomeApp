@@ -1,9 +1,16 @@
 package home.app.services.service.model;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 public class AccommodationRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,56 +34,4 @@ public class AccommodationRequest {
 
     @OneToOne(fetch = FetchType.EAGER)
     private Accommodation accommodation;
-
-
-    public AccommodationRequest() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getHousehold() {
-        return household;
-    }
-
-    public void setHousehold(Long household) {
-        this.household = household;
-    }
-
-    public Date getFiledOn() {
-        return filedOn;
-    }
-
-    public void setFiledOn(Date filedOn) {
-        this.filedOn = filedOn;
-    }
-
-    public Date getRequestedFor() {
-        return requestedFor;
-    }
-
-    public void setRequestedFor(Date requestedFor) {
-        this.requestedFor = requestedFor;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public Accommodation getAccommodation() {
-        return accommodation;
-    }
-
-    public void setAccommodation(Accommodation accommodation) {
-        this.accommodation = accommodation;
-    }
 }

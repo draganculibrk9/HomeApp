@@ -1,13 +1,16 @@
 package home.app.auth.service.mappers;
 
 import home.app.auth.service.model.Address;
+import home.app.grpc.AddressMessage;
+import home.app.grpc.api.model.IMapper;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AddressMapper implements IMapper<Address, home.app.grpc.Address> {
+public class AddressMapper implements IMapper<Address, AddressMessage> {
     @Override
-    public Address toEntity(home.app.grpc.Address dto) {
+    public Address toEntity(AddressMessage dto) {
         Address address = new Address();
+
         address.setId(dto.getId());
         address.setCity(dto.getCity());
         address.setCountry(dto.getCountry());
@@ -18,7 +21,13 @@ public class AddressMapper implements IMapper<Address, home.app.grpc.Address> {
     }
 
     @Override
-    public home.app.grpc.Address toDTO(Address address) {
-        throw new UnsupportedOperationException();
+    public AddressMessage toDTO(Address address) {
+        return AddressMessage.newBuilder()
+                .setCity(address.getCity())
+                .setCountry(address.getCountry())
+                .setId(address.getId())
+                .setNumber(address.getNumber())
+                .setStreet(address.getStreet())
+                .build();
     }
 }

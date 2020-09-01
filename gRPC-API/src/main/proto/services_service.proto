@@ -6,7 +6,6 @@ import "accommodation_message.proto";
 import "accommodation_request_message.proto";
 import "contact_message.proto";
 import "service_message.proto";
-import "registration_message.proto";
 
 option java_multiple_files = true;
 

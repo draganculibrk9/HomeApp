@@ -36,19 +36,19 @@ public class AuthService extends AuthServiceGrpc.AuthServiceImplBase {
 
     @Override
     public void register(RegistrationRequest request, StreamObserver<RegistrationResponse> responseObserver) {
-        RegistrationMessage registrationMessage = request.getRegistration();
+        UserMessage user = request.getRegistration();
 
-        if (userRepository.findByEmail(registrationMessage.getEmail()) != null) {
+        if (userRepository.findByEmail(user.getEmail()) != null) {
             responseObserver.onError(
                     Status.ALREADY_EXISTS
-                            .withDescription("User with specified email already exists")
+                            .withDescription(String.format("User with email '%s' already exists", user.getEmail()))
                             .asRuntimeException()
             );
             return;
         }
 
         try {
-            User newUser = userRepository.save(userMapper.toEntity(registrationMessage));
+            User newUser = userRepository.save(userMapper.toEntity(user));
 
             if (!householdServiceStub.createHousehold(HouseholdRequest.newBuilder().setOwner(newUser.getEmail()).build()).getSuccess()) {
                 responseObserver.onError(

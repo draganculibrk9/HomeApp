@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package home.app.grpc;
 
-import "registration_message.proto";
+import "user_message.proto";
 import "login_message.proto";
 
 option java_multiple_files = true;
@@ -16,7 +16,7 @@ message LoginResponse {
 }
 
 message RegistrationRequest {
-  RegistrationMessage registration = 1;
+  UserMessage registration = 1;
 }
 
 message RegistrationResponse {

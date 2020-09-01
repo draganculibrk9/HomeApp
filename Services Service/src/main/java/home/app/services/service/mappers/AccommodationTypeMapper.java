@@ -1,6 +1,7 @@
 package home.app.services.service.mappers;
 
 import home.app.grpc.AccommodationMessage;
+import home.app.grpc.api.model.IMapper;
 import home.app.services.service.model.AccommodationType;
 import org.springframework.stereotype.Component;
 

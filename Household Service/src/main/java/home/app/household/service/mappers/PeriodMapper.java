@@ -1,5 +1,6 @@
 package home.app.household.service.mappers;
 
+import home.app.grpc.api.model.IMapper;
 import home.app.household.service.model.Period;
 import org.springframework.stereotype.Component;
 
