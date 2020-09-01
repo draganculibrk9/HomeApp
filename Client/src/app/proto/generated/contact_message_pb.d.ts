@@ -2,7 +2,7 @@
 // file: contact_message.proto
 
 import * as jspb from "google-protobuf";
-import * as registration_message_pb from "./registration_message_pb";
+import * as address_message_pb from "./address_message_pb";
 
 export class ContactMessage extends jspb.Message {
   getId(): number;
@@ -19,8 +19,8 @@ export class ContactMessage extends jspb.Message {
 
   hasAddress(): boolean;
   clearAddress(): void;
-  getAddress(): registration_message_pb.Address | undefined;
-  setAddress(value?: registration_message_pb.Address): void;
+  getAddress(): address_message_pb.AddressMessage | undefined;
+  setAddress(value?: address_message_pb.AddressMessage): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ContactMessage.AsObject;
@@ -38,7 +38,7 @@ export namespace ContactMessage {
     email: string,
     phone: string,
     website: string,
-    address?: registration_message_pb.Address.AsObject,
+    address?: address_message_pb.AddressMessage.AsObject,
   }
 }
 

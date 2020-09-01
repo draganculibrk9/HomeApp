@@ -1,11 +1,11 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Period, TransactionMessage} from '../../../proto/generated/transaction_message_pb';
 import {MatDialog} from '@angular/material/dialog';
 import {EditTransactionComponent} from '../edit-transaction/edit-transaction.component';
-import {GetOrDeleteTransactionRequest} from '../../../proto/generated/household_service_pb';
 import {grpc} from '@improbable-eng/grpc-web';
-import {HouseholdService} from '../../../proto/generated/household_service_pb_service';
 import {SnackbarService} from '../../../services/snackbar.service';
+import {Period, TransactionMessage} from "../../../proto/generated/transaction_message_pb";
+import {GetOrDeleteTransactionRequest} from "../../../proto/generated/household_service_pb";
+import {HouseholdService} from "../../../proto/generated/household_service_pb_service";
 
 @Component({
   selector: 'app-transaction',

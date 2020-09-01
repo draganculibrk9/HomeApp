@@ -2,7 +2,7 @@
 // file: auth_service.proto
 
 import * as jspb from "google-protobuf";
-import * as registration_message_pb from "./registration_message_pb";
+import * as user_message_pb from "./user_message_pb";
 import * as login_message_pb from "./login_message_pb";
 
 export class LoginRequest extends jspb.Message {
@@ -50,8 +50,8 @@ export namespace LoginResponse {
 export class RegistrationRequest extends jspb.Message {
   hasRegistration(): boolean;
   clearRegistration(): void;
-  getRegistration(): registration_message_pb.RegistrationMessage | undefined;
-  setRegistration(value?: registration_message_pb.RegistrationMessage): void;
+  getRegistration(): user_message_pb.UserMessage | undefined;
+  setRegistration(value?: user_message_pb.UserMessage): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): RegistrationRequest.AsObject;
@@ -65,7 +65,7 @@ export class RegistrationRequest extends jspb.Message {
 
 export namespace RegistrationRequest {
   export type AsObject = {
-    registration?: registration_message_pb.RegistrationMessage.AsObject,
+    registration?: user_message_pb.UserMessage.AsObject,
   }
 }
 

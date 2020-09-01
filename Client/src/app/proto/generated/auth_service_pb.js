@@ -12,8 +12,8 @@ var jspb = require('google-protobuf');
 var goog = jspb;
 var global = Function('return this')();
 
-var registration_message_pb = require('./registration_message_pb.js');
-goog.object.extend(proto, registration_message_pb);
+var user_message_pb = require('./user_message_pb.js');
+goog.object.extend(proto, user_message_pb);
 var login_message_pb = require('./login_message_pb.js');
 goog.object.extend(proto, login_message_pb);
 goog.exportSymbol('proto.home.app.grpc.LoginRequest', null, global);
@@ -417,7 +417,7 @@ proto.home.app.grpc.RegistrationRequest.prototype.toObject = function(opt_includ
  */
 proto.home.app.grpc.RegistrationRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-    registration: (f = msg.getRegistration()) && registration_message_pb.RegistrationMessage.toObject(includeInstance, f)
+    registration: (f = msg.getRegistration()) && user_message_pb.UserMessage.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -455,8 +455,8 @@ proto.home.app.grpc.RegistrationRequest.deserializeBinaryFromReader = function(m
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = new registration_message_pb.RegistrationMessage;
-      reader.readMessage(value,registration_message_pb.RegistrationMessage.deserializeBinaryFromReader);
+      var value = new user_message_pb.UserMessage;
+      reader.readMessage(value,user_message_pb.UserMessage.deserializeBinaryFromReader);
       msg.setRegistration(value);
       break;
     default:
@@ -493,24 +493,24 @@ proto.home.app.grpc.RegistrationRequest.serializeBinaryToWriter = function(messa
     writer.writeMessage(
       1,
       f,
-      registration_message_pb.RegistrationMessage.serializeBinaryToWriter
+      user_message_pb.UserMessage.serializeBinaryToWriter
     );
   }
 };
 
 
 /**
- * optional RegistrationMessage registration = 1;
- * @return {?proto.home.app.grpc.RegistrationMessage}
+ * optional UserMessage registration = 1;
+ * @return {?proto.home.app.grpc.UserMessage}
  */
 proto.home.app.grpc.RegistrationRequest.prototype.getRegistration = function() {
-  return /** @type{?proto.home.app.grpc.RegistrationMessage} */ (
-    jspb.Message.getWrapperField(this, registration_message_pb.RegistrationMessage, 1));
+  return /** @type{?proto.home.app.grpc.UserMessage} */ (
+    jspb.Message.getWrapperField(this, user_message_pb.UserMessage, 1));
 };
 
 
 /**
- * @param {?proto.home.app.grpc.RegistrationMessage|undefined} value
+ * @param {?proto.home.app.grpc.UserMessage|undefined} value
  * @return {!proto.home.app.grpc.RegistrationRequest} returns this
 */
 proto.home.app.grpc.RegistrationRequest.prototype.setRegistration = function(value) {

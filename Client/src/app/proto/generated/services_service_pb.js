@@ -20,8 +20,6 @@ var contact_message_pb = require('./contact_message_pb.js');
 goog.object.extend(proto, contact_message_pb);
 var service_message_pb = require('./service_message_pb.js');
 goog.object.extend(proto, service_message_pb);
-var registration_message_pb = require('./registration_message_pb.js');
-goog.object.extend(proto, registration_message_pb);
 goog.exportSymbol('proto.home.app.grpc.AccommodationResponse', null, global);
 goog.exportSymbol('proto.home.app.grpc.SearchServiceRequest', null, global);
 goog.exportSymbol('proto.home.app.grpc.ServiceByAdministratorRequest', null, global);

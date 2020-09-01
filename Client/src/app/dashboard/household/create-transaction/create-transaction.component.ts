@@ -1,14 +1,14 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {CreateOrEditTransactionRequest} from '../../../proto/generated/household_service_pb';
-import {Period, TransactionMessage} from '../../../proto/generated/transaction_message_pb';
 import {TransactionType} from '../../../model/transaction-type.enum';
 import * as _moment from 'moment';
 import {DateAdapter} from '@angular/material/core';
 import {grpc} from '@improbable-eng/grpc-web';
-import {HouseholdService} from '../../../proto/generated/household_service_pb_service';
 import {SnackbarService} from '../../../services/snackbar.service';
+import {Period, TransactionMessage} from "../../../proto/generated/transaction_message_pb";
+import {CreateOrEditTransactionRequest} from "../../../proto/generated/household_service_pb";
+import {HouseholdService} from "../../../proto/generated/household_service_pb_service";
 
 @Component({
   selector: 'app-create-transaction',
