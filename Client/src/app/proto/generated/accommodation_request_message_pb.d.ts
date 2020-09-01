@@ -19,9 +19,6 @@ export class AccommodationRequestMessage extends jspb.Message {
   getStatus(): AccommodationRequestMessage.StatusMap[keyof AccommodationRequestMessage.StatusMap];
   setStatus(value: AccommodationRequestMessage.StatusMap[keyof AccommodationRequestMessage.StatusMap]): void;
 
-  getRating(): number;
-  setRating(value: number): void;
-
   getAccommodation(): number;
   setAccommodation(value: number): void;
 
@@ -42,7 +39,6 @@ export namespace AccommodationRequestMessage {
     filedOn: number,
     requestedFor: number,
     status: AccommodationRequestMessage.StatusMap[keyof AccommodationRequestMessage.StatusMap],
-    rating: number,
     accommodation: number,
   }
 

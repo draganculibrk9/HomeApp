@@ -18,7 +18,6 @@ public class AccommodationMapper implements IMapper<Accommodation, Accommodation
         accommodation.setId(dto.getId());
         accommodation.setName(dto.getName());
         accommodation.setPrice(dto.getPrice());
-        accommodation.setRating(dto.getRating());
         accommodation.setType(accommodationTypeMapper.toEntity(dto.getType()));
 
         return accommodation;
@@ -31,7 +30,6 @@ public class AccommodationMapper implements IMapper<Accommodation, Accommodation
                 .setId(accommodation.getId())
                 .setName(accommodation.getName())
                 .setPrice(accommodation.getPrice())
-                .setRating(accommodation.getRating())
                 .setType(accommodationTypeMapper.toDTO(accommodation.getType()))
                 .build();
     }

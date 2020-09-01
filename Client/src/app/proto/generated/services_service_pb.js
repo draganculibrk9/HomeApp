@@ -16,8 +16,6 @@ var accommodation_message_pb = require('./accommodation_message_pb.js');
 goog.object.extend(proto, accommodation_message_pb);
 var accommodation_request_message_pb = require('./accommodation_request_message_pb.js');
 goog.object.extend(proto, accommodation_request_message_pb);
-var comment_message_pb = require('./comment_message_pb.js');
-goog.object.extend(proto, comment_message_pb);
 var contact_message_pb = require('./contact_message_pb.js');
 goog.object.extend(proto, contact_message_pb);
 var service_message_pb = require('./service_message_pb.js');

@@ -72,7 +72,6 @@ proto.home.app.grpc.AccommodationRequestMessage.toObject = function(includeInsta
     filedOn: jspb.Message.getFieldWithDefault(msg, 3, 0),
     requestedFor: jspb.Message.getFieldWithDefault(msg, 4, 0),
     status: jspb.Message.getFieldWithDefault(msg, 5, 0),
-    rating: jspb.Message.getFieldWithDefault(msg, 6, 0),
     accommodation: jspb.Message.getFieldWithDefault(msg, 7, 0)
   };
 
@@ -129,10 +128,6 @@ proto.home.app.grpc.AccommodationRequestMessage.deserializeBinaryFromReader = fu
     case 5:
       var value = /** @type {!proto.home.app.grpc.AccommodationRequestMessage.Status} */ (reader.readEnum());
       msg.setStatus(value);
-      break;
-    case 6:
-      var value = /** @type {number} */ (reader.readUint32());
-      msg.setRating(value);
       break;
     case 7:
       var value = /** @type {number} */ (reader.readInt64());
@@ -199,13 +194,6 @@ proto.home.app.grpc.AccommodationRequestMessage.serializeBinaryToWriter = functi
   if (f !== 0.0) {
     writer.writeEnum(
       5,
-      f
-    );
-  }
-  f = message.getRating();
-  if (f !== 0) {
-    writer.writeUint32(
-      6,
       f
     );
   }
@@ -316,24 +304,6 @@ proto.home.app.grpc.AccommodationRequestMessage.prototype.getStatus = function()
  */
 proto.home.app.grpc.AccommodationRequestMessage.prototype.setStatus = function(value) {
   return jspb.Message.setProto3EnumField(this, 5, value);
-};
-
-
-/**
- * optional uint32 rating = 6;
- * @return {number}
- */
-proto.home.app.grpc.AccommodationRequestMessage.prototype.getRating = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 6, 0));
-};
-
-
-/**
- * @param {number} value
- * @return {!proto.home.app.grpc.AccommodationRequestMessage} returns this
- */
-proto.home.app.grpc.AccommodationRequestMessage.prototype.setRating = function(value) {
-  return jspb.Message.setProto3IntField(this, 6, value);
 };
 
 

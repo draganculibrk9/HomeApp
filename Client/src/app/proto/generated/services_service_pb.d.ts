@@ -4,7 +4,6 @@
 import * as jspb from "google-protobuf";
 import * as accommodation_message_pb from "./accommodation_message_pb";
 import * as accommodation_request_message_pb from "./accommodation_request_message_pb";
-import * as comment_message_pb from "./comment_message_pb";
 import * as contact_message_pb from "./contact_message_pb";
 import * as service_message_pb from "./service_message_pb";
 import * as registration_message_pb from "./registration_message_pb";

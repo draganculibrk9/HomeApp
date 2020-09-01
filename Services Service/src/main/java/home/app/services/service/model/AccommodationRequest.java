@@ -25,14 +25,9 @@ public class AccommodationRequest {
     @Enumerated(value = EnumType.STRING)
     private Status status;
 
-    @Column
-    private Integer rating;
-
     @OneToOne(fetch = FetchType.EAGER)
     private Accommodation accommodation;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    private Comment comment;
 
     public AccommodationRequest() {
     }
@@ -77,27 +72,11 @@ public class AccommodationRequest {
         this.status = status;
     }
 
-    public Integer getRating() {
-        return rating;
-    }
-
-    public void setRating(Integer rating) {
-        this.rating = rating;
-    }
-
     public Accommodation getAccommodation() {
         return accommodation;
     }
 
     public void setAccommodation(Accommodation accommodation) {
         this.accommodation = accommodation;
-    }
-
-    public Comment getComment() {
-        return comment;
-    }
-
-    public void setComment(Comment comment) {
-        this.comment = comment;
     }
 }

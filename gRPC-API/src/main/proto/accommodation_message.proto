@@ -16,5 +16,4 @@ message AccommodationMessage {
   AccommodationType type = 3;
   double price = 4;
   bool available = 5;
-  double rating = 6;
 }

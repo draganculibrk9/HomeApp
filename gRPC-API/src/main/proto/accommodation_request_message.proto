@@ -16,6 +16,5 @@ message AccommodationRequestMessage {
     PENDING = 3;
   }
   Status status = 5;
-  uint32 rating = 6;
   int64 accommodation = 7;
 }

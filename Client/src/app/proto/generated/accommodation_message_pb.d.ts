@@ -19,9 +19,6 @@ export class AccommodationMessage extends jspb.Message {
   getAvailable(): boolean;
   setAvailable(value: boolean): void;
 
-  getRating(): number;
-  setRating(value: number): void;
-
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AccommodationMessage.AsObject;
   static toObject(includeInstance: boolean, msg: AccommodationMessage): AccommodationMessage.AsObject;
@@ -39,7 +36,6 @@ export namespace AccommodationMessage {
     type: AccommodationMessage.AccommodationTypeMap[keyof AccommodationMessage.AccommodationTypeMap],
     price: number,
     available: boolean,
-    rating: number,
   }
 
   export interface AccommodationTypeMap {

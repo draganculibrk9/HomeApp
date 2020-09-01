@@ -22,9 +22,6 @@ public class Accommodation {
     @Column(nullable = false)
     private Boolean available;
 
-    @Column
-    private Double rating;
-
     public Accommodation() {
     }
 
@@ -66,13 +63,5 @@ public class Accommodation {
 
     public void setAvailable(Boolean available) {
         this.available = available;
-    }
-
-    public Double getRating() {
-        return rating;
-    }
-
-    public void setRating(Double rating) {
-        this.rating = rating;
     }
 }

@@ -71,8 +71,7 @@ proto.home.app.grpc.AccommodationMessage.toObject = function(includeInstance, ms
     name: jspb.Message.getFieldWithDefault(msg, 2, ""),
     type: jspb.Message.getFieldWithDefault(msg, 3, 0),
     price: jspb.Message.getFloatingPointFieldWithDefault(msg, 4, 0.0),
-    available: jspb.Message.getBooleanFieldWithDefault(msg, 5, false),
-    rating: jspb.Message.getFloatingPointFieldWithDefault(msg, 6, 0.0)
+    available: jspb.Message.getBooleanFieldWithDefault(msg, 5, false)
   };
 
   if (includeInstance) {
@@ -128,10 +127,6 @@ proto.home.app.grpc.AccommodationMessage.deserializeBinaryFromReader = function(
     case 5:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setAvailable(value);
-      break;
-    case 6:
-      var value = /** @type {number} */ (reader.readDouble());
-      msg.setRating(value);
       break;
     default:
       reader.skipField();
@@ -194,13 +189,6 @@ proto.home.app.grpc.AccommodationMessage.serializeBinaryToWriter = function(mess
   if (f) {
     writer.writeBool(
       5,
-      f
-    );
-  }
-  f = message.getRating();
-  if (f !== 0.0) {
-    writer.writeDouble(
-      6,
       f
     );
   }
@@ -304,24 +292,6 @@ proto.home.app.grpc.AccommodationMessage.prototype.getAvailable = function() {
  */
 proto.home.app.grpc.AccommodationMessage.prototype.setAvailable = function(value) {
   return jspb.Message.setProto3BooleanField(this, 5, value);
-};
-
-
-/**
- * optional double rating = 6;
- * @return {number}
- */
-proto.home.app.grpc.AccommodationMessage.prototype.getRating = function() {
-  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 6, 0.0));
-};
-
-
-/**
- * @param {number} value
- * @return {!proto.home.app.grpc.AccommodationMessage} returns this
- */
-proto.home.app.grpc.AccommodationMessage.prototype.setRating = function(value) {
-  return jspb.Message.setProto3FloatField(this, 6, value);
 };
 
 
