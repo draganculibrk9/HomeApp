@@ -8,10 +8,8 @@ import {AppRoutingModule} from './routing/app-routing.module';
 import {ServicesModule} from './services/services.module';
 import {DashboardModule} from './dashboard/dashboard.module';
 import {PipeModule} from './pipe/pipe.module';
-import {DisableFormControlDirective} from './directives/disable-form-control.directive';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
 import {
-  MAT_MOMENT_DATE_ADAPTER_OPTIONS,
   MAT_MOMENT_DATE_FORMATS,
   MomentDateAdapter
 } from '@angular/material-moment-adapter';

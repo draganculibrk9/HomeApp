@@ -4,6 +4,7 @@ import {RegistrationComponent} from '../auth/registration/registration.component
 import {DashboardComponent} from '../dashboard/dashboard.component';
 import {HouseholdComponent} from '../dashboard/household/household.component';
 import {ServiceComponent} from '../dashboard/service/service.component';
+import {UserComponent} from "../dashboard/user/user.component";
 
 
 export const routes: Routes = [
@@ -35,6 +36,11 @@ export const routes: Routes = [
         path: 'service',
         pathMatch: 'full',
         component: ServiceComponent
+      },
+      {
+        path: 'user',
+        pathMatch: 'full',
+        component: UserComponent
       }
     ]
   },

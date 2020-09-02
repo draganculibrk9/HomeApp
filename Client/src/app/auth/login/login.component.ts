@@ -46,7 +46,17 @@ export class LoginComponent {
           if (res.status === grpc.Code.OK) {
             const token = res.message.toObject()['token'];
             this.tokenService.localLogin(token);
-            this.router.navigateByUrl('/dashboard').then();
+            switch (this.tokenService.role) {
+              case "USER":
+                this.router.navigateByUrl('/dashboard').then();
+                break;
+              case "SERVICE_ADMINISTRATOR":
+                this.router.navigateByUrl('/dashboard/service').then();
+                break;
+              default:
+                this.router.navigateByUrl('/dashboard/user').then();
+            }
+
           } else {
             this.snackbarService.displayMessage('Bad email or password');
           }

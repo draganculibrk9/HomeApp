@@ -6,6 +6,7 @@ import home.app.auth.service.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +16,9 @@ public class StartupService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @EventListener(ApplicationReadyEvent.class)
     public void createSystemAdmin() {
         if (userRepository.findByRole(UserRole.SYSTEM_ADMINISTRATOR) == null) {
@@ -23,7 +27,7 @@ public class StartupService {
             sysAdmin.setFirstName("");
             sysAdmin.setLastName("");
             sysAdmin.setAddress(null);
-            sysAdmin.setPassword("@dm1n");
+            sysAdmin.setPassword(passwordEncoder.encode("@dm1n"));
             sysAdmin.setPhone("");
             sysAdmin.setRole(UserRole.SYSTEM_ADMINISTRATOR);
             sysAdmin.setId(null);

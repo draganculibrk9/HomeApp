@@ -13,7 +13,11 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "allowedCommonJsDependencies": ["jwt-decode", "lodash"],
+            "allowedCommonJsDependencies": [
+              "jwt-decode",
+              "lodash",
+              "google-protobuf/google/protobuf/empty_pb.js"
+            ],
             "outputPath": "dist/Client",
             "index": "src/index.html",
             "main": "src/main.ts",

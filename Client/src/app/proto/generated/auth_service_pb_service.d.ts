@@ -2,6 +2,7 @@
 // file: auth_service.proto
 
 import * as auth_service_pb from "./auth_service_pb";
+import * as household_service_pb from "./household_service_pb";
 import {grpc} from "@improbable-eng/grpc-web";
 
 type AuthServiceRegister = {
@@ -22,10 +23,30 @@ type AuthServiceLogin = {
   readonly responseType: typeof auth_service_pb.LoginResponse;
 };
 
+type AuthServiceGetUsers = {
+  readonly methodName: string;
+  readonly service: typeof AuthService;
+  readonly requestStream: false;
+  readonly responseStream: true;
+  readonly requestType: typeof auth_service_pb.GetUsersRequest;
+  readonly responseType: typeof auth_service_pb.UserResponse;
+};
+
+type AuthServiceToggleBlockOnUser = {
+  readonly methodName: string;
+  readonly service: typeof AuthService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof auth_service_pb.ToggleBlockRequest;
+  readonly responseType: typeof household_service_pb.SuccessResponse;
+};
+
 export class AuthService {
   static readonly serviceName: string;
   static readonly Register: AuthServiceRegister;
   static readonly Login: AuthServiceLogin;
+  static readonly GetUsers: AuthServiceGetUsers;
+  static readonly ToggleBlockOnUser: AuthServiceToggleBlockOnUser;
 }
 
 export type ServiceError = { message: string, code: number; metadata: grpc.Metadata }
@@ -77,6 +98,16 @@ export class AuthServiceClient {
   login(
     requestMessage: auth_service_pb.LoginRequest,
     callback: (error: ServiceError|null, responseMessage: auth_service_pb.LoginResponse|null) => void
+  ): UnaryResponse;
+  getUsers(requestMessage: auth_service_pb.GetUsersRequest, metadata?: grpc.Metadata): ResponseStream<auth_service_pb.UserResponse>;
+  toggleBlockOnUser(
+    requestMessage: auth_service_pb.ToggleBlockRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: household_service_pb.SuccessResponse|null) => void
+  ): UnaryResponse;
+  toggleBlockOnUser(
+    requestMessage: auth_service_pb.ToggleBlockRequest,
+    callback: (error: ServiceError|null, responseMessage: household_service_pb.SuccessResponse|null) => void
   ): UnaryResponse;
 }
 
