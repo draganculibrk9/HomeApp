@@ -28,11 +28,11 @@ ServicesService.GetService = {
   responseType: services_service_pb.ServiceResponse
 };
 
-ServicesService.GetServiceByAdministrator = {
-  methodName: "GetServiceByAdministrator",
+ServicesService.GetServicesByAdministrator = {
+  methodName: "GetServicesByAdministrator",
   service: ServicesService,
   requestStream: false,
-  responseStream: false,
+  responseStream: true,
   requestType: services_service_pb.ServiceByAdministratorRequest,
   responseType: services_service_pb.ServiceResponse
 };
@@ -123,32 +123,40 @@ ServicesServiceClient.prototype.getService = function getService(requestMessage,
   };
 };
 
-ServicesServiceClient.prototype.getServiceByAdministrator = function getServiceByAdministrator(requestMessage, metadata, callback) {
-  if (arguments.length === 2) {
-    callback = arguments[1];
-  }
-  var client = grpc.unary(ServicesService.GetServiceByAdministrator, {
+ServicesServiceClient.prototype.getServicesByAdministrator = function getServicesByAdministrator(requestMessage, metadata) {
+  var listeners = {
+    data: [],
+    end: [],
+    status: []
+  };
+  var client = grpc.invoke(ServicesService.GetServicesByAdministrator, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,
     transport: this.options.transport,
     debug: this.options.debug,
-    onEnd: function (response) {
-      if (callback) {
-        if (response.status !== grpc.Code.OK) {
-          var err = new Error(response.statusMessage);
-          err.code = response.status;
-          err.metadata = response.trailers;
-          callback(err, null);
-        } else {
-          callback(null, response.message);
-        }
-      }
+    onMessage: function (responseMessage) {
+      listeners.data.forEach(function (handler) {
+        handler(responseMessage);
+      });
+    },
+    onEnd: function (status, statusMessage, trailers) {
+      listeners.status.forEach(function (handler) {
+        handler({ code: status, details: statusMessage, metadata: trailers });
+      });
+      listeners.end.forEach(function (handler) {
+        handler({ code: status, details: statusMessage, metadata: trailers });
+      });
+      listeners = null;
     }
   });
   return {
+    on: function (type, handler) {
+      listeners[type].push(handler);
+      return this;
+    },
     cancel: function () {
-      callback = null;
+      listeners = null;
       client.close();
     }
   };

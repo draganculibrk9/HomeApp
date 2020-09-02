@@ -3,9 +3,10 @@
   <a mat-button>Home App</a>
   <button *ngIf="tokenService.role === 'USER'" routerLink="household" mat-button>Household</button>
   <button *ngIf="tokenService.role !== 'SYSTEM_ADMINISTRATOR'" routerLink="service" mat-button>Services</button>
+    <button *ngIf="tokenService.role === 'SERVICE_ADMINISTRATOR'" routerLink="accommodation-request" mat-button>Accommodation Requests</button>
     <button *ngIf="tokenService.role === 'SYSTEM_ADMINISTRATOR'" routerLink="user" mat-button>Users</button>
   </span>
   <span fxLayoutAlign="right">
       <button *ngIf="tokenService.authenticated" (click)="tokenService.logout()" mat-button>Logout</button>
-    </span>
+  </span>
 </mat-toolbar>

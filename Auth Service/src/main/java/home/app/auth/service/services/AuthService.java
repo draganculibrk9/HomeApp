@@ -53,7 +53,7 @@ public class AuthService extends AuthServiceGrpc.AuthServiceImplBase {
         try {
             User newUser = userRepository.save(userMapper.toEntity(user));
 
-            if (!householdServiceStub.createHousehold(HouseholdRequest.newBuilder().setOwner(newUser.getEmail()).build()).getSuccess()) {
+            if (newUser.getRole().equals(UserRole.USER) && !householdServiceStub.createHousehold(HouseholdRequest.newBuilder().setOwner(newUser.getEmail()).build()).getSuccess()) {
                 responseObserver.onError(
                         Status.INTERNAL
                                 .withDescription("Failed to create household for new user")

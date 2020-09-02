@@ -30,6 +30,7 @@ import { EditTransactionComponent } from './household/edit-transaction/edit-tran
 import {MatTableModule} from "@angular/material/table";
 import {MatSortModule} from "@angular/material/sort";
 import { UserComponent } from './user/user.component';
+import { AccommodationRequestComponent } from './accommodation-request/accommodation-request.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -37,7 +38,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 
 
 @NgModule({
-  declarations: [DashboardComponent, ToolbarComponent, HouseholdComponent, ServiceComponent, TransactionComponent, CreateTransactionComponent, EditTransactionComponent, UserComponent],
+  declarations: [DashboardComponent, ToolbarComponent, HouseholdComponent, ServiceComponent, TransactionComponent, CreateTransactionComponent, EditTransactionComponent, UserComponent, AccommodationRequestComponent],
   imports: [
     CommonModule,
     MatToolbarModule,

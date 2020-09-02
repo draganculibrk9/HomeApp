@@ -13,7 +13,7 @@ import java.util.List;
 public interface ServiceRepository extends JpaRepository<Service, Long> {
     Service getById(Long id);
 
-    Service getByAdministrator(String administrator);
+    List<Service> getAllByAdministrator(String administrator);
 
     @Query(value = "select s from Service s where lower(s.name) like lower(concat('%', :name, '%'))" +
             " and lower(s.contact.address.city) like lower(concat('%', :city, '%'))" +

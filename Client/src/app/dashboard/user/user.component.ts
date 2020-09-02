@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ViewChild} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
@@ -15,7 +15,7 @@ import {UserRow} from "../../model/user-row";
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.css']
 })
-export class UserComponent implements OnInit, AfterViewInit {
+export class UserComponent implements AfterViewInit {
   usersData: MatTableDataSource<UserRow>;
   displayedColumns: string[] = ['id', 'email', 'first_name', 'last_name', 'blocked'];
 
@@ -23,10 +23,6 @@ export class UserComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
   constructor(private snackbarService: SnackbarService) {
-  }
-
-  ngOnInit() {
-
   }
 
   ngAfterViewInit() {

@@ -22,11 +22,11 @@ type ServicesServiceGetService = {
   readonly responseType: typeof services_service_pb.ServiceResponse;
 };
 
-type ServicesServiceGetServiceByAdministrator = {
+type ServicesServiceGetServicesByAdministrator = {
   readonly methodName: string;
   readonly service: typeof ServicesService;
   readonly requestStream: false;
-  readonly responseStream: false;
+  readonly responseStream: true;
   readonly requestType: typeof services_service_pb.ServiceByAdministratorRequest;
   readonly responseType: typeof services_service_pb.ServiceResponse;
 };
@@ -44,7 +44,7 @@ export class ServicesService {
   static readonly serviceName: string;
   static readonly SearchServices: ServicesServiceSearchServices;
   static readonly GetService: ServicesServiceGetService;
-  static readonly GetServiceByAdministrator: ServicesServiceGetServiceByAdministrator;
+  static readonly GetServicesByAdministrator: ServicesServiceGetServicesByAdministrator;
   static readonly GetAccommodations: ServicesServiceGetAccommodations;
 }
 
@@ -90,15 +90,7 @@ export class ServicesServiceClient {
     requestMessage: services_service_pb.ServiceRequest,
     callback: (error: ServiceError|null, responseMessage: services_service_pb.ServiceResponse|null) => void
   ): UnaryResponse;
-  getServiceByAdministrator(
-    requestMessage: services_service_pb.ServiceByAdministratorRequest,
-    metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: services_service_pb.ServiceResponse|null) => void
-  ): UnaryResponse;
-  getServiceByAdministrator(
-    requestMessage: services_service_pb.ServiceByAdministratorRequest,
-    callback: (error: ServiceError|null, responseMessage: services_service_pb.ServiceResponse|null) => void
-  ): UnaryResponse;
+  getServicesByAdministrator(requestMessage: services_service_pb.ServiceByAdministratorRequest, metadata?: grpc.Metadata): ResponseStream<services_service_pb.ServiceResponse>;
   getAccommodations(requestMessage: services_service_pb.ServiceRequest, metadata?: grpc.Metadata): ResponseStream<services_service_pb.AccommodationResponse>;
 }
 

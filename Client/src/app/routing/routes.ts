@@ -5,6 +5,7 @@ import {DashboardComponent} from '../dashboard/dashboard.component';
 import {HouseholdComponent} from '../dashboard/household/household.component';
 import {ServiceComponent} from '../dashboard/service/service.component';
 import {UserComponent} from "../dashboard/user/user.component";
+import {AccommodationRequestComponent} from "../dashboard/accommodation-request/accommodation-request.component";
 
 
 export const routes: Routes = [
@@ -41,6 +42,11 @@ export const routes: Routes = [
         path: 'user',
         pathMatch: 'full',
         component: UserComponent
+      },
+      {
+        path: 'accommodation-request',
+        pathMatch: 'full',
+        component: AccommodationRequestComponent
       }
     ]
   },

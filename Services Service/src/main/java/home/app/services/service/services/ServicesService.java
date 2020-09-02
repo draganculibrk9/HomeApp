@@ -13,6 +13,8 @@ import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @GrpcService
 @Transactional
 public class ServicesService extends ServicesServiceGrpc.ServicesServiceImplBase {
@@ -74,23 +76,17 @@ public class ServicesService extends ServicesServiceGrpc.ServicesServiceImplBase
     }
 
     @Override
-    public void getServiceByAdministrator(ServiceByAdministratorRequest request, StreamObserver<ServiceResponse> responseObserver) {
-        Service service = serviceRepository.getByAdministrator(request.getAdministrator());
+    public void getServicesByAdministrator(ServiceByAdministratorRequest request, StreamObserver<ServiceResponse> responseObserver) {
+        List<Service> service = serviceRepository.getAllByAdministrator(request.getAdministrator());
 
-        if (service == null) {
-            responseObserver.onError(
-                    Status.NOT_FOUND
-                            .withDescription(String.format("Service with administrator '%s' not found", request.getAdministrator()))
-                            .asRuntimeException()
-            );
-            return;
-        }
+        service.forEach(s -> {
+            ServiceResponse response = ServiceResponse.newBuilder()
+                    .setService(serviceMapper.toDTO(s))
+                    .build();
 
-        ServiceResponse response = ServiceResponse.newBuilder()
-                .setService(serviceMapper.toDTO(service))
-                .build();
+            responseObserver.onNext(response);
+        });
 
-        responseObserver.onNext(response);
         responseObserver.onCompleted();
     }
 
@@ -116,5 +112,50 @@ public class ServicesService extends ServicesServiceGrpc.ServicesServiceImplBase
         });
 
         responseObserver.onCompleted();
+    }
+
+    @Override
+    public void createService(CreateOrEditServiceRequest request, StreamObserver<SuccessResponse> responseObserver) {
+        super.createService(request, responseObserver);
+    }
+
+    @Override
+    public void editService(CreateOrEditServiceRequest request, StreamObserver<SuccessResponse> responseObserver) {
+        super.editService(request, responseObserver);
+    }
+
+    @Override
+    public void deleteService(ServiceRequest request, StreamObserver<SuccessResponse> responseObserver) {
+        super.deleteService(request, responseObserver);
+    }
+
+    @Override
+    public void createAccommodation(CreateOrEditAccommodationRequest request, StreamObserver<SuccessResponse> responseObserver) {
+        super.createAccommodation(request, responseObserver);
+    }
+
+    @Override
+    public void editAccommodation(CreateOrEditAccommodationRequest request, StreamObserver<SuccessResponse> responseObserver) {
+        super.editAccommodation(request, responseObserver);
+    }
+
+    @Override
+    public void deleteAccommodation(DeleteAccommodationRequest request, StreamObserver<SuccessResponse> responseObserver) {
+        super.deleteAccommodation(request, responseObserver);
+    }
+
+    @Override
+    public void getAccommodationRequestsForAdministrator(ServiceByAdministratorRequest request, StreamObserver<AccommodationRequestResponse> responseObserver) {
+        super.getAccommodationRequestsForAdministrator(request, responseObserver);
+    }
+
+    @Override
+    public void getAccommodationRequests(AccommodationRequestRequest request, StreamObserver<AccommodationRequestResponse> responseObserver) {
+        super.getAccommodationRequests(request, responseObserver);
+    }
+
+    @Override
+    public void decideAccommodationRequest(DecideAccommodationRequestRequest request, StreamObserver<SuccessResponse> responseObserver) {
+        super.decideAccommodationRequest(request, responseObserver);
     }
 }
