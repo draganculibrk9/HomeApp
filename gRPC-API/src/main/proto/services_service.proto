@@ -66,12 +66,12 @@ service ServicesService {
   rpc GetService(ServiceRequest) returns (ServiceResponse) {};
   rpc GetServicesByAdministrator(ServiceByAdministratorRequest) returns (stream ServiceResponse) {};
 
-  rpc CreateService(CreateOrEditServiceRequest) returns (SuccessResponse) {};
+  rpc CreateService(CreateOrEditServiceRequest) returns (ServiceResponse) {};
   rpc EditService(CreateOrEditServiceRequest) returns (SuccessResponse) {};
   rpc DeleteService(ServiceRequest) returns (SuccessResponse) {};
 
   rpc GetAccommodations(ServiceRequest) returns (stream AccommodationResponse) {};
-  rpc CreateAccommodation(CreateOrEditAccommodationRequest) returns (SuccessResponse) {};
+  rpc CreateAccommodation(CreateOrEditAccommodationRequest) returns (AccommodationResponse) {};
   rpc EditAccommodation(CreateOrEditAccommodationRequest) returns (SuccessResponse) {};
   rpc DeleteAccommodation(DeleteAccommodationRequest) returns (SuccessResponse) {};
 

@@ -10,6 +10,6 @@ import java.util.List;
 public interface AccommodationRequestRepository extends JpaRepository<AccommodationRequest, Long> {
     List<AccommodationRequest> getAllByHousehold(Long household);
 
-    @Query(value = "select ar from AccommodationRequest ar where :administartor = (select s.administrator from Service s where ar.accommodation member of s.accommodations)")
+    @Query(value = "select ar from AccommodationRequest ar where :administrator = (select s.administrator from Service s where ar.accommodation member of s.accommodations)")
     List<AccommodationRequest> getAllByAdministrator(@Param("administrator") String administrator);
 }

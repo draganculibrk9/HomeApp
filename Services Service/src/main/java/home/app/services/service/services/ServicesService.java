@@ -2,13 +2,8 @@ package home.app.services.service.services;
 
 import home.app.grpc.*;
 import home.app.services.service.mappers.*;
-import home.app.services.service.model.Accommodation;
-import home.app.services.service.model.AccommodationRequest;
-import home.app.services.service.model.AccommodationType;
-import home.app.services.service.model.Service;
-import home.app.services.service.repositories.AccommodationRepository;
-import home.app.services.service.repositories.AccommodationRequestRepository;
-import home.app.services.service.repositories.ServiceRepository;
+import home.app.services.service.model.*;
+import home.app.services.service.repositories.*;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
@@ -44,6 +39,7 @@ public class ServicesService extends ServicesServiceGrpc.ServicesServiceImplBase
 
     @Autowired
     private StatusMapper statusMapper;
+
 
     @Override
     public void searchServices(SearchServiceRequest request, StreamObserver<ServiceResponse> responseObserver) {
@@ -130,12 +126,14 @@ public class ServicesService extends ServicesServiceGrpc.ServicesServiceImplBase
     }
 
     @Override
-    public void createService(CreateOrEditServiceRequest request, StreamObserver<SuccessResponse> responseObserver) {
+    public void createService(CreateOrEditServiceRequest request, StreamObserver<ServiceResponse> responseObserver) {
         Service service = serviceMapper.toEntity(request.getService());
         service.setId(null);
+        service.getContact().setId(null);
+        service.getContact().getAddress().setId(null);
 
         try {
-            serviceRepository.save(service);
+            service = serviceRepository.save(service);
         } catch (Exception e) {
             responseObserver.onError(
                     Status.INTERNAL
@@ -145,8 +143,8 @@ public class ServicesService extends ServicesServiceGrpc.ServicesServiceImplBase
             return;
         }
         responseObserver.onNext(
-                SuccessResponse.newBuilder()
-                        .setSuccess(true)
+                ServiceResponse.newBuilder()
+                        .setService(serviceMapper.toDTO(service))
                         .build()
         );
         responseObserver.onCompleted();
@@ -215,7 +213,7 @@ public class ServicesService extends ServicesServiceGrpc.ServicesServiceImplBase
     }
 
     @Override
-    public void createAccommodation(CreateOrEditAccommodationRequest request, StreamObserver<SuccessResponse> responseObserver) {
+    public void createAccommodation(CreateOrEditAccommodationRequest request, StreamObserver<AccommodationResponse> responseObserver) {
         Optional<Service> s = serviceRepository.findById(request.getServiceId());
 
         if (!s.isPresent()) {
@@ -234,6 +232,7 @@ public class ServicesService extends ServicesServiceGrpc.ServicesServiceImplBase
         service.getAccommodations().add(accommodation);
 
         try {
+            accommodation = accommodationRepository.save(accommodation);
             serviceRepository.save(service);
         } catch (Exception e) {
             responseObserver.onError(
@@ -244,8 +243,8 @@ public class ServicesService extends ServicesServiceGrpc.ServicesServiceImplBase
             return;
         }
         responseObserver.onNext(
-                SuccessResponse.newBuilder()
-                        .setSuccess(true)
+                AccommodationResponse.newBuilder()
+                        .setAccommodation(accommodationMapper.toDTO(accommodation))
                         .build()
         );
         responseObserver.onCompleted();

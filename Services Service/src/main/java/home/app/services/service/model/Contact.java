@@ -27,6 +27,6 @@ public class Contact {
     @Column(nullable = false)
     private String website;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Address address;
 }

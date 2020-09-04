@@ -9,10 +9,16 @@ import {ServiceRow} from "../../model/service-row";
 import {TokenService} from "../../services/token.service";
 import {
   SearchServiceRequest,
-  ServiceByAdministratorRequest,
+  ServiceByAdministratorRequest, ServiceRequest,
   ServiceResponse
 } from "../../proto/generated/services_service_pb";
 import {ServicesService} from "../../proto/generated/services_service_pb_service";
+import {MatDialog} from "@angular/material/dialog";
+import {ServiceDetailsComponent} from "./service-details/service-details.component";
+import {CreateServiceComponent} from "./create-service/create-service.component";
+import {environment} from "../../../environments/environment";
+import {SuccessResponse} from "../../proto/generated/household_service_pb";
+import UnaryOutput = grpc.UnaryOutput;
 
 @Component({
   selector: 'app-service',
@@ -22,7 +28,7 @@ import {ServicesService} from "../../proto/generated/services_service_pb_service
 export class ServiceComponent implements OnInit, AfterViewInit {
   dataSource: MatTableDataSource<ServiceRow>;
 
-  displayedColumns: string[] = ['name', 'address', 'phone', 'email', 'website', 'service-view'];
+  displayedColumns: string[];
 
   searchForm = new FormGroup({
     name: new FormControl(''),
@@ -35,12 +41,15 @@ export class ServiceComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
-  constructor(private snackbarService: SnackbarService, public tokenService: TokenService) {
+  constructor(private snackbarService: SnackbarService, public tokenService: TokenService,
+              private dialog: MatDialog) {
   }
 
   ngOnInit(): void {
     if (this.tokenService.role === 'SERVICE_ADMINISTRATOR') {
-      this.displayedColumns.push('delete');
+      this.displayedColumns = ['id', 'name', 'address', 'phone', 'email', 'website', 'service-view', 'delete'];
+    } else {
+      this.displayedColumns = ['name', 'address', 'phone', 'email', 'website', 'service-view'];
     }
   }
 
@@ -125,10 +134,45 @@ export class ServiceComponent implements OnInit, AfterViewInit {
   }
 
   openDetailedView(id: number) {
-    console.log('details ' + id);
+    const dialogRef = this.dialog.open(ServiceDetailsComponent, {
+      width: '500px',
+      data: id
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+
+    });
   }
 
   delete(id: number) {
+    const request = new ServiceRequest();
+    request.setId(id);
 
+    grpc.unary(ServicesService.DeleteService, {
+      request: request,
+      host: environment.servicesServiceHost,
+      onEnd: (output: UnaryOutput<SuccessResponse>) => {
+        if (output.status === grpc.Code.OK) {
+          if (output.message.getSuccess()) {
+            this.snackbarService.displayMessage('Service deleted successfully');
+            this.getServicesByAdministrator();
+          }
+        } else {
+          this.snackbarService.displayMessage(output.statusMessage);
+        }
+      },
+    })
+  }
+
+  createService() {
+    const dialogRef = this.dialog.open(CreateServiceComponent, {
+      width: '700px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.getServicesByAdministrator();
+      }
+    });
   }
 }

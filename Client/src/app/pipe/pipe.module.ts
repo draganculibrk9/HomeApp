@@ -1,16 +1,21 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PeriodPipe } from './period.pipe';
+import { AccommodationTypePipe } from './accommodation-type.pipe';
 
 
 
 @NgModule({
-  declarations: [PeriodPipe],
+  declarations: [PeriodPipe, AccommodationTypePipe],
   exports: [
-    PeriodPipe
+    PeriodPipe,
+    AccommodationTypePipe
   ],
   imports: [
     CommonModule
+  ],
+  providers: [
+    AccommodationTypePipe
   ]
 })
 export class PipeModule { }
