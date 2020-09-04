@@ -53,7 +53,7 @@ ServicesService.EditService = {
   requestStream: false,
   responseStream: false,
   requestType: services_service_pb.CreateOrEditServiceRequest,
-  responseType: household_service_pb.SuccessResponse
+  responseType: services_service_pb.ServiceResponse
 };
 
 ServicesService.DeleteService = {

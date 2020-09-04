@@ -47,7 +47,7 @@ type ServicesServiceEditService = {
   readonly requestStream: false;
   readonly responseStream: false;
   readonly requestType: typeof services_service_pb.CreateOrEditServiceRequest;
-  readonly responseType: typeof household_service_pb.SuccessResponse;
+  readonly responseType: typeof services_service_pb.ServiceResponse;
 };
 
 type ServicesServiceDeleteService = {
@@ -194,11 +194,11 @@ export class ServicesServiceClient {
   editService(
     requestMessage: services_service_pb.CreateOrEditServiceRequest,
     metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: household_service_pb.SuccessResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: services_service_pb.ServiceResponse|null) => void
   ): UnaryResponse;
   editService(
     requestMessage: services_service_pb.CreateOrEditServiceRequest,
-    callback: (error: ServiceError|null, responseMessage: household_service_pb.SuccessResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: services_service_pb.ServiceResponse|null) => void
   ): UnaryResponse;
   deleteService(
     requestMessage: services_service_pb.ServiceRequest,

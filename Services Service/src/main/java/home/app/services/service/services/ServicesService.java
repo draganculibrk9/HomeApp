@@ -151,7 +151,7 @@ public class ServicesService extends ServicesServiceGrpc.ServicesServiceImplBase
     }
 
     @Override
-    public void editService(CreateOrEditServiceRequest request, StreamObserver<SuccessResponse> responseObserver) {
+    public void editService(CreateOrEditServiceRequest request, StreamObserver<ServiceResponse> responseObserver) {
         Service service = serviceMapper.toEntity(request.getService());
 
         if (!serviceRepository.findById(service.getId()).isPresent()) {
@@ -164,7 +164,7 @@ public class ServicesService extends ServicesServiceGrpc.ServicesServiceImplBase
         }
 
         try {
-            serviceRepository.save(service);
+            service = serviceRepository.save(service);
         } catch (Exception e) {
             responseObserver.onError(
                     Status.INTERNAL
@@ -174,8 +174,8 @@ public class ServicesService extends ServicesServiceGrpc.ServicesServiceImplBase
             return;
         }
         responseObserver.onNext(
-                SuccessResponse.newBuilder()
-                        .setSuccess(true)
+                ServiceResponse.newBuilder()
+                        .setService(serviceMapper.toDTO(service))
                         .build()
         );
         responseObserver.onCompleted();

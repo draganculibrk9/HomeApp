@@ -1,59 +1,75 @@
-<h1 mat-dialog-title></h1>
-<div mat-dialog-content>
-  <form [formGroup]="serviceForm">
-    <mat-form-field>
-      <input type="text" matInput placeholder="Name" formControlName="name"
-             (click)="serviceForm.controls.name.markAsTouched()">
-      <mat-error *ngIf="serviceForm.controls.name.invalid">Name must be specified</mat-error>
-    </mat-form-field>
+<div *ngIf="this.service">
+  <h1 mat-dialog-title>{{this.service.getName()}}</h1>
+  <div mat-dialog-content>
+    <form [formGroup]="serviceForm">
+      <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="2%">
+        <div fxLayout="column">
+          <mat-form-field>
+            <input [readonly]="this.tokenService.role === 'USER'" type="text" matInput placeholder="Name"
+                   formControlName="name"
+                   (click)="serviceForm.controls.name.markAsTouched()">
+            <mat-error *ngIf="serviceForm.controls.name.invalid">Name must be specified</mat-error>
+          </mat-form-field>
 
-    <mat-form-field>
-      <input type="text" matInput placeholder="Email" formControlName="email"
-             (click)="serviceForm.controls.email.markAsTouched()">
-      <mat-error *ngIf="serviceForm.controls.email.invalid">Email must be specified</mat-error>
-    </mat-form-field>
+          <mat-form-field>
+            <input [readonly]="this.tokenService.role === 'USER'" type="text" matInput placeholder="Email"
+                   formControlName="email"
+                   (click)="serviceForm.controls.email.markAsTouched()">
+            <mat-error *ngIf="serviceForm.controls.email.invalid">Email must be specified</mat-error>
+          </mat-form-field>
 
-    <mat-form-field>
-      <input type="text" matInput placeholder="Phone" formControlName="phone"
-             (click)="serviceForm.controls.phone.markAsTouched()">
-      <mat-error *ngIf="serviceForm.controls.phone.invalid">Phone must be specified</mat-error>
-    </mat-form-field>
+          <mat-form-field>
+            <input [readonly]="this.tokenService.role === 'USER'" type="text" matInput placeholder="Phone"
+                   formControlName="phone"
+                   (click)="serviceForm.controls.phone.markAsTouched()">
+            <mat-error *ngIf="serviceForm.controls.phone.invalid">Phone must be specified</mat-error>
+          </mat-form-field>
 
-    <mat-form-field>
-      <input type="url" matInput placeholder="Website" formControlName="website"
-             (click)="serviceForm.controls.website.markAsTouched()">
-      <mat-error *ngIf="serviceForm.controls.website.invalid">Website must be specified</mat-error>
-    </mat-form-field>
+          <mat-form-field>
+            <input [readonly]="this.tokenService.role === 'USER'" type="url" matInput placeholder="Website"
+                   formControlName="website"
+                   (click)="serviceForm.controls.website.markAsTouched()">
+            <mat-error *ngIf="serviceForm.controls.website.invalid">Website must be specified</mat-error>
+          </mat-form-field>
+        </div>
 
-    <mat-form-field>
-      <input type="text" matInput placeholder="Country" formControlName="country"
-             (click)="serviceForm.controls.country.markAsTouched()">
-      <mat-error *ngIf="serviceForm.controls.country.invalid">Country must be specified</mat-error>
-    </mat-form-field>
+        <div fxLayout="column">
+          <mat-form-field>
+            <input [readonly]="this.tokenService.role === 'USER'" type="text" matInput placeholder="Country"
+                   formControlName="country"
+                   (click)="serviceForm.controls.country.markAsTouched()">
+            <mat-error *ngIf="serviceForm.controls.country.invalid">Country must be specified</mat-error>
+          </mat-form-field>
 
-    <mat-form-field>
-      <input type="text" matInput placeholder="City" formControlName="city"
-             (click)="serviceForm.controls.city.markAsTouched()">
-      <mat-error *ngIf="serviceForm.controls.city.invalid">City must be specified</mat-error>
-    </mat-form-field>
+          <mat-form-field>
+            <input [readonly]="this.tokenService.role === 'USER'" type="text" matInput placeholder="City"
+                   formControlName="city"
+                   (click)="serviceForm.controls.city.markAsTouched()">
+            <mat-error *ngIf="serviceForm.controls.city.invalid">City must be specified</mat-error>
+          </mat-form-field>
 
-    <mat-form-field>
-      <input type="text" matInput placeholder="Street" formControlName="street"
-             (click)="serviceForm.controls.street.markAsTouched()">
-      <mat-error *ngIf="serviceForm.controls.street.invalid">Street must be specified</mat-error>
-    </mat-form-field>
+          <mat-form-field>
+            <input [readonly]="this.tokenService.role === 'USER'" type="text" matInput placeholder="Street"
+                   formControlName="street"
+                   (click)="serviceForm.controls.street.markAsTouched()">
+            <mat-error *ngIf="serviceForm.controls.street.invalid">Street must be specified</mat-error>
+          </mat-form-field>
 
-    <mat-form-field>
-      <input type="text" matInput placeholder="Number" formControlName="number"
-             (click)="serviceForm.controls.number.markAsTouched()">
-      <mat-error *ngIf="serviceForm.controls.number.invalid">Number must be specified</mat-error>
-    </mat-form-field>
-  </form>
-</div>
-<div mat-dialog-actions>
-  <button *ngIf="tokenService.role === 'SERVICE_ADMINISTRATOR'" mat-raised-button color="primary"
-          (click)="this.saveService()">Save
-  </button>
-  <button mat-raised-button color="warn"
-          (click)="this.dialogRef.close()">{{tokenService.role === 'SERVICE_ADMINISTRATOR' ? 'Cancel' : 'Back'}}</button>
+          <mat-form-field>
+            <input [readonly]="this.tokenService.role === 'USER'" type="text" matInput placeholder="Number"
+                   formControlName="number"
+                   (click)="serviceForm.controls.number.markAsTouched()">
+            <mat-error *ngIf="serviceForm.controls.number.invalid">Number must be specified</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div mat-dialog-actions>
+    <button *ngIf="tokenService.role === 'SERVICE_ADMINISTRATOR'" mat-raised-button color="primary"
+            (click)="this.saveService()">Save
+    </button>
+    <button mat-raised-button color="warn"
+            (click)="closeDialog()">{{tokenService.role === 'SERVICE_ADMINISTRATOR' ? 'Cancel' : 'Back'}}</button>
+  </div>
 </div>

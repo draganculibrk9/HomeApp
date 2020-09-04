@@ -69,7 +69,7 @@ export class ServiceComponent implements OnInit, AfterViewInit {
 
     grpc.invoke(ServicesService.GetServicesByAdministrator, {
       request: request,
-      host: 'http://localhost:8078',
+      host: environment.servicesServiceHost,
       onMessage: (res: ServiceResponse) => {
         const service = res.getService();
         services.push({
@@ -109,7 +109,7 @@ export class ServiceComponent implements OnInit, AfterViewInit {
 
     grpc.invoke(ServicesService.SearchServices, {
       request: request,
-      host: 'http://localhost:8078',
+      host: environment.servicesServiceHost,
       onMessage: (res: ServiceResponse) => {
         const service = res.getService();
         services.push({
@@ -140,7 +140,9 @@ export class ServiceComponent implements OnInit, AfterViewInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-
+      if (result) {
+        this.getServicesByAdministrator();
+      }
     });
   }
 

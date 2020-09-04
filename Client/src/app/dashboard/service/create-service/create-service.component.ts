@@ -215,7 +215,6 @@ export class CreateServiceComponent implements OnInit {
           this.snackbarService.displayMessage(message);
         }
       }
-    })
-
+    });
   }
 }

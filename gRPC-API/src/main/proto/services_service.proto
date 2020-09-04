@@ -67,7 +67,7 @@ service ServicesService {
   rpc GetServicesByAdministrator(ServiceByAdministratorRequest) returns (stream ServiceResponse) {};
 
   rpc CreateService(CreateOrEditServiceRequest) returns (ServiceResponse) {};
-  rpc EditService(CreateOrEditServiceRequest) returns (SuccessResponse) {};
+  rpc EditService(CreateOrEditServiceRequest) returns (ServiceResponse) {};
   rpc DeleteService(ServiceRequest) returns (SuccessResponse) {};
 
   rpc GetAccommodations(ServiceRequest) returns (stream AccommodationResponse) {};
