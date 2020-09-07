@@ -1,6 +1,6 @@
 <div fxLayout="column" fxLayoutAlign="center" id="parent" fxLayoutGap="1%">
-  <button *ngIf="tokenService.role === 'SERVICE_ADMINISTRATOR'" mat-raised-button color="primary" id="create-service"
-          (click)="createService()">
+  <button *ngIf="tokenService.role === 'SERVICE_ADMINISTRATOR'" mat-raised-button color="primary"
+          class="create-button" (click)="createService()">
     Create service
   </button>
 
@@ -85,7 +85,7 @@
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="getAccommodations(row.id)"></tr>
 
     <tr class="mat-row" *matNoDataRow>
       <td class="mat-cell" [colSpan]="displayedColumns.length">No data</td>
@@ -93,14 +93,19 @@
   </table>
   <mat-paginator [pageSizeOptions]="[5, 10]"></mat-paginator>
 
-  <table mat-table matSort class="mat-elevation-z8" [dataSource]="accommodationsSource">
+  <button *ngIf="tokenService.role === 'SERVICE_ADMINISTRATOR' && accommodationsSource !== undefined"
+          mat-raised-button color="primary" class="create-button" (click)="createAccommodation()">
+    Create accommodation
+  </button>
+  <table [hidden]="accommodationsSource === undefined" mat-table matSort class="mat-elevation-z8"
+         [dataSource]="accommodationsSource">
     <ng-container *ngIf="tokenService.role === 'SERVICE_ADMINISTRATOR'" matColumnDef="id">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
       <td mat-cell *matCellDef="let row">{{row.id}}</td>
     </ng-container>
 
     <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Accommodation</th>
       <td mat-cell *matCellDef="let row">{{row.name}}</td>
     </ng-container>
 
@@ -119,6 +124,22 @@
       <td mat-cell *matCellDef="let row">{{row.available}}</td>
     </ng-container>
 
+    <ng-container *ngIf="tokenService.role === 'SERVICE_ADMINISTRATOR'" matColumnDef="edit">
+      <th mat-header-cell *matHeaderCellDef>Edit</th>
+      <td mat-cell *matCellDef="let row">
+        <button mat-button color="primary"
+                (click)="openEditAccommodation(row.id)">Edit
+        </button>
+      </td>
+    </ng-container>
+
+    <ng-container *ngIf="tokenService.role === 'SERVICE_ADMINISTRATOR'" matColumnDef="delete">
+      <th mat-header-cell *matHeaderCellDef>Delete</th>
+      <td mat-cell *matCellDef="let row">
+        <button mat-button color="warn" (click)="deleteAccommodation(row.id)">Delete</button>
+      </td>
+    </ng-container>
+
     <tr mat-header-row *matHeaderRowDef="accommodationColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: accommodationColumns;"></tr>
 
@@ -126,5 +147,5 @@
       <td class="mat-cell" [colSpan]="this.accommodationColumns.length">No data</td>
     </tr>
   </table>
-  <mat-paginator [pageSizeOptions]="[3]"></mat-paginator>
+  <mat-paginator *ngIf="accommodationsSource !== undefined" [pageSizeOptions]="[3]"></mat-paginator>
 </div>

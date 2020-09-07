@@ -8,6 +8,7 @@ import {SnackbarService} from "../../services/snackbar.service";
 import {ServiceRow} from "../../model/service-row";
 import {TokenService} from "../../services/token.service";
 import {
+  AccommodationResponse, DeleteAccommodationRequest,
   SearchServiceRequest,
   ServiceByAdministratorRequest, ServiceRequest,
   ServiceResponse
@@ -49,7 +50,7 @@ export class ServiceComponent implements OnInit, AfterViewInit {
         case LabelType.High:
           return '<b>Max price:</b> RSD: ' + value;
         default:
-          return '$' + value;
+          return 'RSD: ' + value;
       }
     }
   }
@@ -62,6 +63,10 @@ export class ServiceComponent implements OnInit, AfterViewInit {
     city: new FormControl(''),
     type: new FormControl(null)
   });
+
+  private selectedService: number;
+
+  accommodationForm = new FormGroup({});
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
@@ -76,7 +81,7 @@ export class ServiceComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     if (this.tokenService.role === 'SERVICE_ADMINISTRATOR') {
       this.displayedColumns = ['id', 'name', 'address', 'phone', 'email', 'website', 'service-view', 'delete'];
-      this.accommodationColumns = ['id', 'name', 'type', 'price', 'available'];
+      this.accommodationColumns = ['id', 'name', 'type', 'price', 'available', 'edit', 'delete'];
     } else {
       this.displayedColumns = ['name', 'address', 'phone', 'email', 'website', 'service-view'];
       this.accommodationColumns = ['name', 'type', 'price', 'available'];
@@ -230,5 +235,65 @@ export class ServiceComponent implements OnInit, AfterViewInit {
       default:
         return null;
     }
+  }
+
+  getAccommodations(id: number) {
+    const request = new ServiceRequest();
+    request.setId(id);
+
+    const accommodations: AccommodationRow[] = [];
+
+    grpc.invoke(ServicesService.GetAccommodations, {
+      request: request,
+      host: environment.servicesServiceHost,
+      onMessage: (res: AccommodationResponse) => {
+        const accommodation = res.getAccommodation();
+
+        accommodations.push({
+          available: accommodation.getAvailable(),
+          id: accommodation.getId(),
+          name: accommodation.getName(),
+          price: accommodation.getPrice(),
+          type: this.accommodationTypePipe.transform(accommodation.getType())
+        });
+      },
+      onEnd: (code: grpc.Code, message: string) => {
+        if (code === grpc.Code.OK) {
+          this.accommodationsSource = new MatTableDataSource(accommodations);
+          this.accommodationsSource.paginator = this.accommodationPaginator;
+          this.accommodationsSource.sort = this.accommodationSort;
+          this.selectedService = id;
+        } else {
+          this.snackbarService.displayMessage(message);
+        }
+      }
+    });
+  }
+
+  openEditAccommodation(id: number) {
+
+  }
+
+  deleteAccommodation(id: number) {
+    const request = new DeleteAccommodationRequest();
+    request.setAccommodationId(id);
+    request.setServiceId(this.selectedService);
+
+    grpc.unary(ServicesService.DeleteAccommodation, {
+      request: request,
+      host: environment.servicesServiceHost,
+      onEnd: (output: UnaryOutput<SuccessResponse>) => {
+        if (output.status === grpc.Code.OK && output.message.getSuccess()) {
+          this.snackbarService.displayMessage('Accommodation deleted successfully');
+          this.getAccommodations(this.selectedService);
+        } else {
+          this.snackbarService.displayMessage(output.statusMessage);
+        }
+      }
+    });
+  }
+
+  createAccommodation() {
+
   }
 }

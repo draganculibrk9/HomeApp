@@ -286,20 +286,30 @@ public class ServicesService extends ServicesServiceGrpc.ServicesServiceImplBase
 
     @Override
     public void deleteAccommodation(DeleteAccommodationRequest request, StreamObserver<SuccessResponse> responseObserver) {
-        Optional<Accommodation> a = accommodationRepository.findById(request.getAccommodationId());
+        Optional<Service> s = serviceRepository.findById(request.getServiceId());
 
-        if (!a.isPresent()) {
+        if (!s.isPresent()) {
             responseObserver.onError(
                     Status.NOT_FOUND
-                            .withDescription(String.format("Accommodation with id '%d' not found", request.getAccommodationId()))
+                            .withDescription(String.format("Service with id '%d' not found", request.getServiceId()))
                             .asRuntimeException()
             );
             return;
         }
 
+        Service service = s.get();
         try {
-            accommodationRepository.delete(a.get());
+            if (!service.getAccommodations().removeIf(a -> a.getId() == request.getAccommodationId())) {
+                responseObserver.onError(
+                        Status.NOT_FOUND
+                                .withDescription(String.format("Accommodation with id '%d' not found", request.getAccommodationId()))
+                                .asRuntimeException()
+                );
+                return;
+            }
+            serviceRepository.save(service);
         } catch (Exception e) {
+            e.printStackTrace();
             responseObserver.onError(
                     Status.INTERNAL
                             .withDescription(e.getMessage())
