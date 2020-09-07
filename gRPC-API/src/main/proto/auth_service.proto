@@ -36,9 +36,9 @@ message GetUsersRequest {
 }
 
 service AuthService {
-  rpc Register(RegistrationRequest) returns (RegistrationResponse) {};
-  rpc Login(LoginRequest) returns (LoginResponse) {};
+  rpc Register(RegistrationRequest) returns (RegistrationResponse);
+  rpc Login(LoginRequest) returns (LoginResponse);
 
-  rpc GetUsers(GetUsersRequest) returns (stream UserResponse) {};
-  rpc ToggleBlockOnUser(ToggleBlockRequest) returns (SuccessResponse) {};
+  rpc GetUsers(GetUsersRequest) returns (stream UserResponse);
+  rpc ToggleBlockOnUser(ToggleBlockRequest) returns (SuccessResponse);
 }

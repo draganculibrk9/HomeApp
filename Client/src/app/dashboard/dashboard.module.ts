@@ -24,22 +24,16 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {MatSelectModule} from '@angular/material/select';
 import {DirectiveModule} from '../directives/directive.module';
 import {MatGridListModule} from '@angular/material/grid-list';
-import {PERFECT_SCROLLBAR_CONFIG, PerfectScrollbarConfigInterface, PerfectScrollbarModule} from 'ngx-perfect-scrollbar';
 import {MatPaginatorModule} from '@angular/material/paginator';
-import { EditTransactionComponent } from './household/edit-transaction/edit-transaction.component';
+import {EditTransactionComponent} from './household/edit-transaction/edit-transaction.component';
 import {MatTableModule} from "@angular/material/table";
 import {MatSortModule} from "@angular/material/sort";
-import { UserComponent } from './user/user.component';
-import { AccommodationRequestComponent } from './accommodation-request/accommodation-request.component';
-import { ServiceDetailsComponent } from './service/service-details/service-details.component';
-import { CreateServiceComponent } from './service/create-service/create-service.component';
+import {UserComponent} from './user/user.component';
+import {AccommodationRequestComponent} from './accommodation-request/accommodation-request.component';
+import {ServiceDetailsComponent} from './service/service-details/service-details.component';
+import {CreateServiceComponent} from './service/create-service/create-service.component';
 import {MatStepperModule} from "@angular/material/stepper";
 import {MatCheckboxModule} from "@angular/material/checkbox";
-
-const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
-  suppressScrollX: true
-};
-
 
 @NgModule({
   declarations: [DashboardComponent, ToolbarComponent, HouseholdComponent, ServiceComponent, TransactionComponent, CreateTransactionComponent, EditTransactionComponent, UserComponent, AccommodationRequestComponent, ServiceDetailsComponent, CreateServiceComponent],
@@ -63,7 +57,6 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     MatSelectModule,
     DirectiveModule,
     MatGridListModule,
-    PerfectScrollbarModule,
     MatPaginatorModule,
     MatTableModule,
     MatSortModule,

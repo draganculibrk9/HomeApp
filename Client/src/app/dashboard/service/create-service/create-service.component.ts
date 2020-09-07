@@ -208,7 +208,6 @@ export class CreateServiceComponent implements OnInit {
       onEnd: (code: grpc.Code, message: string) => {
         if (code === grpc.Code.OK) {
           this.dataSource = new MatTableDataSource<AccommodationRow>(accommodations);
-          //
           this.dataSource.sort = this.sort;
           this.dataSource.paginator = this.paginator;
         } else {

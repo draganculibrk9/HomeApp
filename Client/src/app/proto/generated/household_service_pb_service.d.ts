@@ -13,6 +13,15 @@ type HouseholdServiceGetHousehold = {
   readonly responseType: typeof household_service_pb.HouseholdResponse;
 };
 
+type HouseholdServiceGetHouseholdById = {
+  readonly methodName: string;
+  readonly service: typeof HouseholdService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof household_service_pb.HouseholdByIdRequest;
+  readonly responseType: typeof household_service_pb.HouseholdResponse;
+};
+
 type HouseholdServiceCreateHousehold = {
   readonly methodName: string;
   readonly service: typeof HouseholdService;
@@ -79,6 +88,7 @@ type HouseholdServiceDeleteTransaction = {
 export class HouseholdService {
   static readonly serviceName: string;
   static readonly GetHousehold: HouseholdServiceGetHousehold;
+  static readonly GetHouseholdById: HouseholdServiceGetHouseholdById;
   static readonly CreateHousehold: HouseholdServiceCreateHousehold;
   static readonly EditHousehold: HouseholdServiceEditHousehold;
   static readonly GetTransactions: HouseholdServiceGetTransactions;
@@ -127,6 +137,15 @@ export class HouseholdServiceClient {
   ): UnaryResponse;
   getHousehold(
     requestMessage: household_service_pb.HouseholdRequest,
+    callback: (error: ServiceError|null, responseMessage: household_service_pb.HouseholdResponse|null) => void
+  ): UnaryResponse;
+  getHouseholdById(
+    requestMessage: household_service_pb.HouseholdByIdRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: household_service_pb.HouseholdResponse|null) => void
+  ): UnaryResponse;
+  getHouseholdById(
+    requestMessage: household_service_pb.HouseholdByIdRequest,
     callback: (error: ServiceError|null, responseMessage: household_service_pb.HouseholdResponse|null) => void
   ): UnaryResponse;
   createHousehold(

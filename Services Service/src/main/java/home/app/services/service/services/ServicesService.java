@@ -6,6 +6,7 @@ import home.app.services.service.model.*;
 import home.app.services.service.repositories.*;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
+import net.devh.boot.grpc.client.inject.GrpcClient;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +41,8 @@ public class ServicesService extends ServicesServiceGrpc.ServicesServiceImplBase
     @Autowired
     private StatusMapper statusMapper;
 
+    @GrpcClient("householdService")
+    private HouseholdServiceGrpc.HouseholdServiceBlockingStub householdServiceStub;
 
     @Override
     public void searchServices(SearchServiceRequest request, StreamObserver<ServiceResponse> responseObserver) {
@@ -314,9 +317,18 @@ public class ServicesService extends ServicesServiceGrpc.ServicesServiceImplBase
 
     @Override
     public void getAccommodationRequestsForAdministrator(ServiceByAdministratorRequest request, StreamObserver<AccommodationRequestResponse> responseObserver) {
-        accommodationRequestRepository.getAllByAdministrator(request.getAdministrator()).forEach(ar -> {
+        accommodationRequestRepository.getAllByAdministrator(request.getAdministrator(), home.app.services.service.model.Status.PENDING).forEach(ar -> {
+            HouseholdByIdRequest householdRequest = HouseholdByIdRequest.newBuilder()
+                    .setId(ar.getHousehold())
+                    .build();
+
+            HouseholdMessage householdMessage = householdServiceStub.getHouseholdById(householdRequest)
+                    .getHousehold();
+
             AccommodationRequestResponse response = AccommodationRequestResponse.newBuilder()
                     .setAccommodationRequest(accommodationRequestMapper.toDTO(ar))
+                    .setAccommodationName(ar.getAccommodation().getName())
+                    .setHouseholdOwner(householdMessage.getOwner())
                     .build();
             responseObserver.onNext(response);
         });
@@ -328,6 +340,7 @@ public class ServicesService extends ServicesServiceGrpc.ServicesServiceImplBase
         accommodationRequestRepository.getAllByHousehold(request.getHouseholdId()).forEach(ar -> {
             AccommodationRequestResponse response = AccommodationRequestResponse.newBuilder()
                     .setAccommodationRequest(accommodationRequestMapper.toDTO(ar))
+                    .setAccommodationName(ar.getAccommodation().getName())
                     .build();
             responseObserver.onNext(response);
         });

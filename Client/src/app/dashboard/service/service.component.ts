@@ -19,6 +19,7 @@ import {CreateServiceComponent} from "./create-service/create-service.component"
 import {environment} from "../../../environments/environment";
 import {SuccessResponse} from "../../proto/generated/household_service_pb";
 import UnaryOutput = grpc.UnaryOutput;
+import {AccommodationRow} from "../../model/accommodation-row";
 
 @Component({
   selector: 'app-service',
@@ -27,8 +28,10 @@ import UnaryOutput = grpc.UnaryOutput;
 })
 export class ServiceComponent implements OnInit, AfterViewInit {
   dataSource: MatTableDataSource<ServiceRow>;
+  accommodationsSource: MatTableDataSource<AccommodationRow>;
 
   displayedColumns: string[];
+  accommodationColumns: string[];
 
   searchForm = new FormGroup({
     name: new FormControl(''),
@@ -41,6 +44,9 @@ export class ServiceComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
+  @ViewChild(MatPaginator, {static: true}) accommodationPaginator: MatPaginator;
+  @ViewChild(MatSort, {static: true}) accommodationSort: MatSort;
+
   constructor(private snackbarService: SnackbarService, public tokenService: TokenService,
               private dialog: MatDialog) {
   }
@@ -48,8 +54,10 @@ export class ServiceComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     if (this.tokenService.role === 'SERVICE_ADMINISTRATOR') {
       this.displayedColumns = ['id', 'name', 'address', 'phone', 'email', 'website', 'service-view', 'delete'];
+      this.accommodationColumns = ['id', 'name', 'type', 'price', 'available'];
     } else {
       this.displayedColumns = ['name', 'address', 'phone', 'email', 'website', 'service-view'];
+      this.accommodationColumns = ['name', 'type', 'price', 'available'];
     }
   }
 

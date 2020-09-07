@@ -25,6 +25,26 @@ export namespace HouseholdRequest {
   }
 }
 
+export class HouseholdByIdRequest extends jspb.Message {
+  getId(): number;
+  setId(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): HouseholdByIdRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: HouseholdByIdRequest): HouseholdByIdRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: HouseholdByIdRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): HouseholdByIdRequest;
+  static deserializeBinaryFromReader(message: HouseholdByIdRequest, reader: jspb.BinaryReader): HouseholdByIdRequest;
+}
+
+export namespace HouseholdByIdRequest {
+  export type AsObject = {
+    id: number,
+  }
+}
+
 export class EditHouseholdRequest extends jspb.Message {
   getId(): number;
   setId(value: number): void;

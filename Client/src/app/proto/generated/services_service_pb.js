@@ -1598,7 +1598,9 @@ proto.home.app.grpc.AccommodationRequestResponse.prototype.toObject = function(o
  */
 proto.home.app.grpc.AccommodationRequestResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
-    accommodationRequest: (f = msg.getAccommodationRequest()) && accommodation_request_message_pb.AccommodationRequestMessage.toObject(includeInstance, f)
+    accommodationRequest: (f = msg.getAccommodationRequest()) && accommodation_request_message_pb.AccommodationRequestMessage.toObject(includeInstance, f),
+    accommodationName: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    householdOwner: jspb.Message.getFieldWithDefault(msg, 3, "")
   };
 
   if (includeInstance) {
@@ -1640,6 +1642,14 @@ proto.home.app.grpc.AccommodationRequestResponse.deserializeBinaryFromReader = f
       reader.readMessage(value,accommodation_request_message_pb.AccommodationRequestMessage.deserializeBinaryFromReader);
       msg.setAccommodationRequest(value);
       break;
+    case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setAccommodationName(value);
+      break;
+    case 3:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setHouseholdOwner(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -1675,6 +1685,20 @@ proto.home.app.grpc.AccommodationRequestResponse.serializeBinaryToWriter = funct
       1,
       f,
       accommodation_request_message_pb.AccommodationRequestMessage.serializeBinaryToWriter
+    );
+  }
+  f = message.getAccommodationName();
+  if (f.length > 0) {
+    writer.writeString(
+      2,
+      f
+    );
+  }
+  f = message.getHouseholdOwner();
+  if (f.length > 0) {
+    writer.writeString(
+      3,
+      f
     );
   }
 };
@@ -1714,6 +1738,42 @@ proto.home.app.grpc.AccommodationRequestResponse.prototype.clearAccommodationReq
  */
 proto.home.app.grpc.AccommodationRequestResponse.prototype.hasAccommodationRequest = function() {
   return jspb.Message.getField(this, 1) != null;
+};
+
+
+/**
+ * optional string accommodation_name = 2;
+ * @return {string}
+ */
+proto.home.app.grpc.AccommodationRequestResponse.prototype.getAccommodationName = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.home.app.grpc.AccommodationRequestResponse} returns this
+ */
+proto.home.app.grpc.AccommodationRequestResponse.prototype.setAccommodationName = function(value) {
+  return jspb.Message.setProto3StringField(this, 2, value);
+};
+
+
+/**
+ * optional string household_owner = 3;
+ * @return {string}
+ */
+proto.home.app.grpc.AccommodationRequestResponse.prototype.getHouseholdOwner = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.home.app.grpc.AccommodationRequestResponse} returns this
+ */
+proto.home.app.grpc.AccommodationRequestResponse.prototype.setHouseholdOwner = function(value) {
+  return jspb.Message.setProto3StringField(this, 3, value);
 };
 
 

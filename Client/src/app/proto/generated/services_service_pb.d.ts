@@ -205,6 +205,12 @@ export class AccommodationRequestResponse extends jspb.Message {
   getAccommodationRequest(): accommodation_request_message_pb.AccommodationRequestMessage | undefined;
   setAccommodationRequest(value?: accommodation_request_message_pb.AccommodationRequestMessage): void;
 
+  getAccommodationName(): string;
+  setAccommodationName(value: string): void;
+
+  getHouseholdOwner(): string;
+  setHouseholdOwner(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AccommodationRequestResponse.AsObject;
   static toObject(includeInstance: boolean, msg: AccommodationRequestResponse): AccommodationRequestResponse.AsObject;
@@ -218,6 +224,8 @@ export class AccommodationRequestResponse extends jspb.Message {
 export namespace AccommodationRequestResponse {
   export type AsObject = {
     accommodationRequest?: accommodation_request_message_pb.AccommodationRequestMessage.AsObject,
+    accommodationName: string,
+    householdOwner: string,
   }
 }
 

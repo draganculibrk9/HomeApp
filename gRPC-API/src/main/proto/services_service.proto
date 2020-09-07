@@ -49,6 +49,8 @@ message DeleteAccommodationRequest {
 
 message AccommodationRequestResponse {
   AccommodationRequestMessage accommodation_request = 1;
+  string accommodation_name = 2;
+  string household_owner = 3;
 }
 
 message DecideAccommodationRequestRequest {
@@ -63,19 +65,19 @@ message AccommodationRequestRequest {
 service ServicesService {
   rpc SearchServices(SearchServiceRequest) returns (stream ServiceResponse) {};
 
-  rpc GetService(ServiceRequest) returns (ServiceResponse) {};
-  rpc GetServicesByAdministrator(ServiceByAdministratorRequest) returns (stream ServiceResponse) {};
+  rpc GetService(ServiceRequest) returns (ServiceResponse);
+  rpc GetServicesByAdministrator(ServiceByAdministratorRequest) returns (stream ServiceResponse);
 
-  rpc CreateService(CreateOrEditServiceRequest) returns (ServiceResponse) {};
-  rpc EditService(CreateOrEditServiceRequest) returns (ServiceResponse) {};
-  rpc DeleteService(ServiceRequest) returns (SuccessResponse) {};
+  rpc CreateService(CreateOrEditServiceRequest) returns (ServiceResponse);
+  rpc EditService(CreateOrEditServiceRequest) returns (ServiceResponse);
+  rpc DeleteService(ServiceRequest) returns (SuccessResponse);
 
-  rpc GetAccommodations(ServiceRequest) returns (stream AccommodationResponse) {};
-  rpc CreateAccommodation(CreateOrEditAccommodationRequest) returns (AccommodationResponse) {};
-  rpc EditAccommodation(CreateOrEditAccommodationRequest) returns (SuccessResponse) {};
-  rpc DeleteAccommodation(DeleteAccommodationRequest) returns (SuccessResponse) {};
+  rpc GetAccommodations(ServiceRequest) returns (stream AccommodationResponse);
+  rpc CreateAccommodation(CreateOrEditAccommodationRequest) returns (AccommodationResponse);
+  rpc EditAccommodation(CreateOrEditAccommodationRequest) returns (SuccessResponse);
+  rpc DeleteAccommodation(DeleteAccommodationRequest) returns (SuccessResponse);
 
-  rpc GetAccommodationRequestsForAdministrator(ServiceByAdministratorRequest) returns (stream AccommodationRequestResponse) {};
-  rpc GetAccommodationRequests(AccommodationRequestRequest) returns (stream AccommodationRequestResponse) {};
-  rpc DecideAccommodationRequest(DecideAccommodationRequestRequest) returns (SuccessResponse) {};
+  rpc GetAccommodationRequestsForAdministrator(ServiceByAdministratorRequest) returns (stream AccommodationRequestResponse);
+  rpc GetAccommodationRequests(AccommodationRequestRequest) returns (stream AccommodationRequestResponse);
+  rpc DecideAccommodationRequest(DecideAccommodationRequestRequest) returns (SuccessResponse);
 }
