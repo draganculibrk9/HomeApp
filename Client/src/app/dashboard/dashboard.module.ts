@@ -34,6 +34,8 @@ import {ServiceDetailsComponent} from './service/service-details/service-details
 import {CreateServiceComponent} from './service/create-service/create-service.component';
 import {MatStepperModule} from "@angular/material/stepper";
 import {MatCheckboxModule} from "@angular/material/checkbox";
+import {MatSliderModule} from "@angular/material/slider";
+import {Ng5SliderModule} from "ng5-slider";
 
 @NgModule({
   declarations: [DashboardComponent, ToolbarComponent, HouseholdComponent, ServiceComponent, TransactionComponent, CreateTransactionComponent, EditTransactionComponent, UserComponent, AccommodationRequestComponent, ServiceDetailsComponent, CreateServiceComponent],
@@ -61,7 +63,9 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
     MatTableModule,
     MatSortModule,
     MatStepperModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatSliderModule,
+    Ng5SliderModule,
   ],
   providers: [
     DatePipe

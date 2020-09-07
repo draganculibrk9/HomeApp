@@ -48,7 +48,7 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 
     <tr class="mat-row" *matNoDataRow>
-      <td class="mat-cell" [colSpan]="tokenService.role === 'USER' ? 4 : 7">No data</td>
+      <td class="mat-cell" [colSpan]="displayedColumns.length">No data</td>
     </tr>
   </table>
   <mat-paginator [pageSizeOptions]="[5, 10]"></mat-paginator>

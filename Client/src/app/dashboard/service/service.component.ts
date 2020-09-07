@@ -20,6 +20,10 @@ import {environment} from "../../../environments/environment";
 import {SuccessResponse} from "../../proto/generated/household_service_pb";
 import UnaryOutput = grpc.UnaryOutput;
 import {AccommodationRow} from "../../model/accommodation-row";
+import {AccommodationType} from "../../model/accommodation-type.enum";
+import {LabelType, Options} from "ng5-slider";
+import {AccommodationTypePipe} from "../../pipe/accommodation-type.pipe";
+import {AccommodationMessage} from "../../proto/generated/accommodation_message_pb";
 
 @Component({
   selector: 'app-service',
@@ -33,11 +37,29 @@ export class ServiceComponent implements OnInit, AfterViewInit {
   displayedColumns: string[];
   accommodationColumns: string[];
 
+  type = AccommodationType;
+  _ = Object;
+  options: Options = {
+    floor: 0,
+    ceil: 100000,
+    translate: (value: number, label: LabelType): string => {
+      switch (label) {
+        case LabelType.Low:
+          return '<b>Min price:</b> RSD: ' + value;
+        case LabelType.High:
+          return '<b>Max price:</b> RSD: ' + value;
+        default:
+          return '$' + value;
+      }
+    }
+  }
+
+  minValue = 0;
+  maxValue = 100000;
+
   searchForm = new FormGroup({
     name: new FormControl(''),
     city: new FormControl(''),
-    min_price: new FormControl(null),
-    max_price: new FormControl(null),
     type: new FormControl(null)
   });
 
@@ -48,7 +70,7 @@ export class ServiceComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort, {static: true}) accommodationSort: MatSort;
 
   constructor(private snackbarService: SnackbarService, public tokenService: TokenService,
-              private dialog: MatDialog) {
+              private dialog: MatDialog, private accommodationTypePipe: AccommodationTypePipe) {
   }
 
   ngOnInit(): void {
@@ -101,7 +123,7 @@ export class ServiceComponent implements OnInit, AfterViewInit {
     })
   }
 
-  private getServices() {
+  getServices() {
     const request = new SearchServiceRequest();
     request.setMinimumPrice(null);
     request.setMaximumPrice(null);
@@ -184,5 +206,29 @@ export class ServiceComponent implements OnInit, AfterViewInit {
         this.getServicesByAdministrator();
       }
     });
+  }
+
+  initializeSearch() {
+    const request = new SearchServiceRequest();
+    request.setMinimumPrice(this.minValue !== 0 || this.maxValue !== 100000 ? this.minValue : null);
+    request.setMaximumPrice(this.minValue !== 0 || this.maxValue !== 100000 ? this.maxValue : null);
+    request.setType(this.determineType());
+    request.setCity(this.searchForm.controls.city.value);
+    request.setName(this.searchForm.controls.name.value);
+
+    this.searchServices(request);
+  }
+
+  private determineType() {
+    switch (this.searchForm.controls.type.value) {
+      case AccommodationType.CATERING:
+        return AccommodationMessage.AccommodationType.CATERING;
+      case AccommodationType.HYGIENE:
+        return AccommodationMessage.AccommodationType.HYGIENE;
+      case AccommodationType.REPAIRS:
+        return AccommodationMessage.AccommodationType.REPAIRS;
+      default:
+        return null;
+    }
   }
 }
