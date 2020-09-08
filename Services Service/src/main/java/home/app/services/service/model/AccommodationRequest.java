@@ -21,11 +21,11 @@ public class AccommodationRequest {
     private Long household;
 
     @Column(nullable = false)
-    @Temporal(value = TemporalType.TIME)
+    @Temporal(value = TemporalType.DATE)
     private Date filedOn;
 
     @Column(nullable = false)
-    @Temporal(value = TemporalType.TIME)
+    @Temporal(value = TemporalType.DATE)
     private Date requestedFor;
 
     @Column(nullable = false)

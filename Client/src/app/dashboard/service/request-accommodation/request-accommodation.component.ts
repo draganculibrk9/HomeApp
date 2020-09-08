@@ -20,13 +20,12 @@ import {DateAdapter} from "@angular/material/core";
   styleUrls: ['./request-accommodation.component.css']
 })
 export class RequestAccommodationComponent implements OnInit {
-  accommodationRequestForm = new FormGroup({
-    accommodation: new FormControl(this.data.name),
-    requestedFor: new FormControl(moment(), [Validators.required])
-  });
-
   minDate = moment().add(1, "day");
   maxDate = moment(this.minDate).add(1, 'year');
+  accommodationRequestForm = new FormGroup({
+    accommodation: new FormControl(this.data.name),
+    requestedFor: new FormControl(this.minDate, [Validators.required])
+  });
 
   constructor(private snackbarService: SnackbarService, public tokenService: TokenService,
               @Inject(MAT_DIALOG_DATA) public data: AccommodationRow, private adapter: DateAdapter<any>,

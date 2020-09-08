@@ -14,7 +14,6 @@ import {HouseholdRequest, HouseholdResponse, SuccessResponse} from "../../proto/
 import {HouseholdService} from "../../proto/generated/household_service_pb_service";
 import {SnackbarService} from "../../services/snackbar.service";
 import {environment} from "../../../environments/environment";
-import {HouseholdMessage} from "../../proto/generated/household_message_pb";
 import * as moment from "moment";
 import {AccommodationRequestStatusPipe} from "../../pipe/accommodation-request-status.pipe";
 import {MatPaginator} from "@angular/material/paginator";
@@ -33,6 +32,7 @@ export class AccommodationRequestComponent implements OnInit, AfterViewInit {
   moment = moment;
   displayedColumns: string[];
   status = AccommodationRequestStatus;
+  private household: number;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
@@ -53,57 +53,55 @@ export class AccommodationRequestComponent implements OnInit, AfterViewInit {
     if (this.tokenService.role === 'SERVICE_ADMINISTRATOR') {
       this.getAccommodationRequestsForAdministrator();
     } else {
-      this.getAccommodationRequests();
+      this.getHousehold();
     }
   }
 
   private getAccommodationRequests() {
     const request = new AccommodationRequestRequest();
-    const household = this.getHousehold(this.tokenService.subject);
 
-    if (household) {
-      request.setHouseholdId(household.getId())
+    request.setHouseholdId(this.household)
 
-      const accommodation_requests: AccommodationRequestRow[] = [];
+    const accommodation_requests: AccommodationRequestRow[] = [];
 
-      grpc.invoke(ServicesService.GetAccommodationRequests, {
-        request: request,
-        host: environment.servicesServiceHost,
-        onMessage: (res: AccommodationRequestResponse) => {
-          const accommodation_request = res.getAccommodationRequest();
-          accommodation_request.getStatus();
+    grpc.invoke(ServicesService.GetAccommodationRequests, {
+      request: request,
+      host: environment.servicesServiceHost,
+      onMessage: (res: AccommodationRequestResponse) => {
+        const accommodation_request = res.getAccommodationRequest();
+        accommodation_request.getStatus();
 
-          accommodation_requests.push({
-            accommodation: res.getAccommodationName(),
-            filedOn: accommodation_request.getFiledOn(),
-            id: accommodation_request.getId(),
-            requestedFor: accommodation_request.getRequestedFor(),
-            status: this.accommodationRequestStatusPipe.transform(accommodation_request.getStatus())
-          });
-        },
-        onEnd: (code: grpc.Code, message: string) => {
-          if (code === grpc.Code.OK) {
-            this.dataSource = new MatTableDataSource(accommodation_requests);
-            this.dataSource.paginator = this.paginator;
-            this.dataSource.sort = this.sort;
-          } else {
-            this.snackbarService.displayMessage(message);
-          }
+        accommodation_requests.push({
+          accommodation: res.getAccommodationName(),
+          filedOn: accommodation_request.getFiledOn(),
+          id: accommodation_request.getId(),
+          requestedFor: accommodation_request.getRequestedFor(),
+          status: this.accommodationRequestStatusPipe.transform(accommodation_request.getStatus())
+        });
+      },
+      onEnd: (code: grpc.Code, message: string) => {
+        if (code === grpc.Code.OK) {
+          this.dataSource = new MatTableDataSource(accommodation_requests);
+          this.dataSource.paginator = this.paginator;
+          this.dataSource.sort = this.sort;
+        } else {
+          this.snackbarService.displayMessage(message);
         }
-      });
-    }
+      }
+    });
   }
 
-  private getHousehold(owner: string): HouseholdMessage | void {
+  private getHousehold() {
     const request = new HouseholdRequest();
-    request.setOwner(owner);
+    request.setOwner(this.tokenService.subject);
 
     grpc.unary(HouseholdService.GetHousehold, {
       request: request,
       host: environment.householdServiceHost,
       onEnd: (output: UnaryOutput<HouseholdResponse>) => {
         if (output.status === grpc.Code.OK) {
-          return output.message.getHousehold();
+          this.household = output.message.getHousehold().getId();
+          this.getAccommodationRequests();
         } else {
           this.snackbarService.displayMessage(output.statusMessage);
         }
