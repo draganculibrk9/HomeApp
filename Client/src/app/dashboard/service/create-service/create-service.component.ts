@@ -43,6 +43,7 @@ export class CreateServiceComponent implements OnInit {
 
   constructor(public dialogRef: MatDialogRef<CreateServiceComponent>, private snackbarService: SnackbarService,
               public tokenService: TokenService, private accommodationTypePipe: AccommodationTypePipe) {
+    this.dialogRef.disableClose = true;
   }
 
   ngOnInit(): void {

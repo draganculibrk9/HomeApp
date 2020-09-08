@@ -13,4 +13,7 @@ public interface AccommodationRequestRepository extends JpaRepository<Accommodat
 
     @Query(value = "select ar from AccommodationRequest ar where :administrator = (select s.administrator from Service s where ar.accommodation member of s.accommodations and ar.status = :status)")
     List<AccommodationRequest> getAllByAdministrator(@Param("administrator") String administrator, @Param("status") Status status);
+
+    @Query(value = "select ar from AccommodationRequest ar where ar.status = :status and ar.requestedFor < CURRENT_DATE")
+    List<AccommodationRequest> getAllUnresolvedAndExpired(@Param("status") Status status);
 }

@@ -1,0 +1,26 @@
+<h1 mat-dialog-title>Request accommodation</h1>
+<div mat-dialog-content>
+  <form [formGroup]="accommodationRequestForm" fxLayout="column">
+    <mat-form-field>
+      <input type="text" matInput placeholder="Accommodation" formControlName="accommodation"
+             readonly>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Date</mat-label>
+      <input matInput [min]="this.minDate" [max]="this.maxDate" [matDatepicker]="picker" formControlName="requestedFor"
+             (click)="accommodationRequestForm.controls.requestedFor.markAsTouched()">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+      <mat-error *ngIf="accommodationRequestForm.controls.requestedFor.invalid">Date must be specified</mat-error>
+    </mat-form-field>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button color="primary" (click)="this.createAccommodationRequest()">
+    Save
+  </button>
+  <button mat-raised-button color="warn"
+          (click)="dialogRef.close()">Cancel
+  </button>
+</div>

@@ -36,9 +36,11 @@ import {MatStepperModule} from "@angular/material/stepper";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {MatSliderModule} from "@angular/material/slider";
 import {Ng5SliderModule} from "ng5-slider";
+import { CreateOrEditAccommodationComponent } from './service/create-or-edit-accommodation/create-or-edit-accommodation.component';
+import { RequestAccommodationComponent } from './service/request-accommodation/request-accommodation.component';
 
 @NgModule({
-  declarations: [DashboardComponent, ToolbarComponent, HouseholdComponent, ServiceComponent, TransactionComponent, CreateTransactionComponent, EditTransactionComponent, UserComponent, AccommodationRequestComponent, ServiceDetailsComponent, CreateServiceComponent],
+  declarations: [DashboardComponent, ToolbarComponent, HouseholdComponent, ServiceComponent, TransactionComponent, CreateTransactionComponent, EditTransactionComponent, UserComponent, AccommodationRequestComponent, ServiceDetailsComponent, CreateServiceComponent, CreateOrEditAccommodationComponent, RequestAccommodationComponent],
   imports: [
     CommonModule,
     MatToolbarModule,

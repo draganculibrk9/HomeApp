@@ -62,6 +62,11 @@ message AccommodationRequestRequest {
   int64 household_id = 1;
 }
 
+message RequestAccommodationRequest {
+  AccommodationRequestMessage accommodation_request = 1;
+  string owner = 2;
+}
+
 service ServicesService {
   rpc SearchServices(SearchServiceRequest) returns (stream ServiceResponse) {};
 
@@ -74,10 +79,11 @@ service ServicesService {
 
   rpc GetAccommodations(ServiceRequest) returns (stream AccommodationResponse);
   rpc CreateAccommodation(CreateOrEditAccommodationRequest) returns (AccommodationResponse);
-  rpc EditAccommodation(CreateOrEditAccommodationRequest) returns (SuccessResponse);
+  rpc EditAccommodation(CreateOrEditAccommodationRequest) returns (AccommodationResponse);
   rpc DeleteAccommodation(DeleteAccommodationRequest) returns (SuccessResponse);
 
   rpc GetAccommodationRequestsForAdministrator(ServiceByAdministratorRequest) returns (stream AccommodationRequestResponse);
   rpc GetAccommodationRequests(AccommodationRequestRequest) returns (stream AccommodationRequestResponse);
   rpc DecideAccommodationRequest(DecideAccommodationRequestRequest) returns (SuccessResponse);
+  rpc RequestAccommodation(RequestAccommodationRequest) returns (SuccessResponse);
 }

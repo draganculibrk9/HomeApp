@@ -254,7 +254,7 @@ public class ServicesService extends ServicesServiceGrpc.ServicesServiceImplBase
     }
 
     @Override
-    public void editAccommodation(CreateOrEditAccommodationRequest request, StreamObserver<SuccessResponse> responseObserver) {
+    public void editAccommodation(CreateOrEditAccommodationRequest request, StreamObserver<AccommodationResponse> responseObserver) {
         Accommodation accommodation = accommodationMapper.toEntity(request.getAccommodation());
 
         if (!accommodationRepository.findById(accommodation.getId()).isPresent()) {
@@ -267,7 +267,7 @@ public class ServicesService extends ServicesServiceGrpc.ServicesServiceImplBase
         }
 
         try {
-            accommodationRepository.save(accommodation);
+            accommodation = accommodationRepository.save(accommodation);
         } catch (Exception e) {
             responseObserver.onError(
                     Status.INTERNAL
@@ -277,8 +277,8 @@ public class ServicesService extends ServicesServiceGrpc.ServicesServiceImplBase
             return;
         }
         responseObserver.onNext(
-                SuccessResponse.newBuilder()
-                        .setSuccess(true)
+                AccommodationResponse.newBuilder()
+                        .setAccommodation(accommodationMapper.toDTO(accommodation))
                         .build()
         );
         responseObserver.onCompleted();
@@ -389,6 +389,47 @@ public class ServicesService extends ServicesServiceGrpc.ServicesServiceImplBase
 
         accommodationRequest.setStatus(statusMapper.toEntity(request.getStatus()));
         accommodationRequestRepository.save(accommodationRequest);
+
+        responseObserver.onNext(
+                SuccessResponse.newBuilder()
+                        .setSuccess(true)
+                        .build()
+        );
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void requestAccommodation(RequestAccommodationRequest request, StreamObserver<SuccessResponse> responseObserver) {
+        HouseholdRequest householdRequest = HouseholdRequest.newBuilder()
+                .setOwner(request.getOwner())
+                .build();
+
+        HouseholdMessage household = householdServiceStub.getHousehold(householdRequest).getHousehold();
+
+        if (household == null) {
+            responseObserver.onError(
+                    Status.NOT_FOUND
+                            .withDescription(String.format("Household with owner '%s' not found", request.getOwner()))
+                            .asRuntimeException()
+            );
+            return;
+        }
+
+        AccommodationRequest accommodationRequest = accommodationRequestMapper.toEntity(request.getAccommodationRequest());
+        accommodationRequest.setStatus(home.app.services.service.model.Status.PENDING);
+        accommodationRequest.setId(null);
+        accommodationRequest.setHousehold(household.getId());
+
+        try {
+            accommodationRequestRepository.save(accommodationRequest);
+        } catch (Exception e) {
+            responseObserver.onError(
+                    Status.INTERNAL
+                            .withDescription(e.getMessage())
+                            .asRuntimeException()
+            );
+            return;
+        }
 
         responseObserver.onNext(
                 SuccessResponse.newBuilder()

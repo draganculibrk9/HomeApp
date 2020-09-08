@@ -273,3 +273,29 @@ export namespace AccommodationRequestRequest {
   }
 }
 
+export class RequestAccommodationRequest extends jspb.Message {
+  hasAccommodationRequest(): boolean;
+  clearAccommodationRequest(): void;
+  getAccommodationRequest(): accommodation_request_message_pb.AccommodationRequestMessage | undefined;
+  setAccommodationRequest(value?: accommodation_request_message_pb.AccommodationRequestMessage): void;
+
+  getOwner(): string;
+  setOwner(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): RequestAccommodationRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: RequestAccommodationRequest): RequestAccommodationRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: RequestAccommodationRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): RequestAccommodationRequest;
+  static deserializeBinaryFromReader(message: RequestAccommodationRequest, reader: jspb.BinaryReader): RequestAccommodationRequest;
+}
+
+export namespace RequestAccommodationRequest {
+  export type AsObject = {
+    accommodationRequest?: accommodation_request_message_pb.AccommodationRequestMessage.AsObject,
+    owner: string,
+  }
+}
+

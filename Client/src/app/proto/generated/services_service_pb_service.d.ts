@@ -83,7 +83,7 @@ type ServicesServiceEditAccommodation = {
   readonly requestStream: false;
   readonly responseStream: false;
   readonly requestType: typeof services_service_pb.CreateOrEditAccommodationRequest;
-  readonly responseType: typeof household_service_pb.SuccessResponse;
+  readonly responseType: typeof services_service_pb.AccommodationResponse;
 };
 
 type ServicesServiceDeleteAccommodation = {
@@ -122,6 +122,15 @@ type ServicesServiceDecideAccommodationRequest = {
   readonly responseType: typeof household_service_pb.SuccessResponse;
 };
 
+type ServicesServiceRequestAccommodation = {
+  readonly methodName: string;
+  readonly service: typeof ServicesService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof services_service_pb.RequestAccommodationRequest;
+  readonly responseType: typeof household_service_pb.SuccessResponse;
+};
+
 export class ServicesService {
   static readonly serviceName: string;
   static readonly SearchServices: ServicesServiceSearchServices;
@@ -137,6 +146,7 @@ export class ServicesService {
   static readonly GetAccommodationRequestsForAdministrator: ServicesServiceGetAccommodationRequestsForAdministrator;
   static readonly GetAccommodationRequests: ServicesServiceGetAccommodationRequests;
   static readonly DecideAccommodationRequest: ServicesServiceDecideAccommodationRequest;
+  static readonly RequestAccommodation: ServicesServiceRequestAccommodation;
 }
 
 export type ServiceError = { message: string, code: number; metadata: grpc.Metadata }
@@ -222,11 +232,11 @@ export class ServicesServiceClient {
   editAccommodation(
     requestMessage: services_service_pb.CreateOrEditAccommodationRequest,
     metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: household_service_pb.SuccessResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: services_service_pb.AccommodationResponse|null) => void
   ): UnaryResponse;
   editAccommodation(
     requestMessage: services_service_pb.CreateOrEditAccommodationRequest,
-    callback: (error: ServiceError|null, responseMessage: household_service_pb.SuccessResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: services_service_pb.AccommodationResponse|null) => void
   ): UnaryResponse;
   deleteAccommodation(
     requestMessage: services_service_pb.DeleteAccommodationRequest,
@@ -246,6 +256,15 @@ export class ServicesServiceClient {
   ): UnaryResponse;
   decideAccommodationRequest(
     requestMessage: services_service_pb.DecideAccommodationRequestRequest,
+    callback: (error: ServiceError|null, responseMessage: household_service_pb.SuccessResponse|null) => void
+  ): UnaryResponse;
+  requestAccommodation(
+    requestMessage: services_service_pb.RequestAccommodationRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: household_service_pb.SuccessResponse|null) => void
+  ): UnaryResponse;
+  requestAccommodation(
+    requestMessage: services_service_pb.RequestAccommodationRequest,
     callback: (error: ServiceError|null, responseMessage: household_service_pb.SuccessResponse|null) => void
   ): UnaryResponse;
 }

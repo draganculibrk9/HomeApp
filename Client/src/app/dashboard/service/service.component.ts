@@ -25,6 +25,8 @@ import {AccommodationType} from "../../model/accommodation-type.enum";
 import {LabelType, Options} from "ng5-slider";
 import {AccommodationTypePipe} from "../../pipe/accommodation-type.pipe";
 import {AccommodationMessage} from "../../proto/generated/accommodation_message_pb";
+import {CreateOrEditAccommodationComponent} from "./create-or-edit-accommodation/create-or-edit-accommodation.component";
+import {RequestAccommodationComponent} from "./request-accommodation/request-accommodation.component";
 
 @Component({
   selector: 'app-service',
@@ -66,8 +68,6 @@ export class ServiceComponent implements OnInit, AfterViewInit {
 
   private selectedService: number;
 
-  accommodationForm = new FormGroup({});
-
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
@@ -84,7 +84,7 @@ export class ServiceComponent implements OnInit, AfterViewInit {
       this.accommodationColumns = ['id', 'name', 'type', 'price', 'available', 'edit', 'delete'];
     } else {
       this.displayedColumns = ['name', 'address', 'phone', 'email', 'website', 'service-view'];
-      this.accommodationColumns = ['name', 'type', 'price', 'available'];
+      this.accommodationColumns = ['name', 'type', 'price', 'available', 'request'];
     }
   }
 
@@ -270,8 +270,20 @@ export class ServiceComponent implements OnInit, AfterViewInit {
     });
   }
 
-  openEditAccommodation(id: number) {
+  openEditAccommodation(row: AccommodationRow) {
+    const dialogRef = this.dialog.open(CreateOrEditAccommodationComponent, {
+      width: '300px',
+      data: {
+        service_id: this.selectedService,
+        accommodation: row
+      }
+    });
 
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.getAccommodations(this.selectedService);
+      }
+    });
   }
 
   deleteAccommodation(id: number) {
@@ -294,6 +306,25 @@ export class ServiceComponent implements OnInit, AfterViewInit {
   }
 
   createAccommodation() {
+    const dialogRef = this.dialog.open(CreateOrEditAccommodationComponent, {
+      width: '300px',
+      data: {
+        service_id: this.selectedService,
+        accommodation: null
+      }
+    });
 
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.getAccommodations(this.selectedService);
+      }
+    });
+  }
+
+  requestAccommodation(row: AccommodationRow) {
+    this.dialog.open(RequestAccommodationComponent, {
+      width: '300px',
+      data: row
+    });
   }
 }
