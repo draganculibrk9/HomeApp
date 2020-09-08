@@ -1,12 +1,12 @@
 import {Component} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {SnackbarService} from '../../services/snackbar.service';
-import {LoginRequest} from '../../proto/generated/auth_service_pb';
-import {LoginMessage} from '../../proto/generated/login_message_pb';
-import {AuthService} from '../../proto/generated/auth_service_pb_service';
 import {TokenService} from '../../services/token.service';
 import {Router} from '@angular/router';
 import {grpc} from '@improbable-eng/grpc-web';
+import {LoginRequest} from "../../proto/generated/auth_service_pb";
+import {LoginMessage} from "../../proto/generated/login_message_pb";
+import {AuthService} from "../../proto/generated/auth_service_pb_service";
 
 @Component({
   selector: 'app-login',
@@ -46,7 +46,17 @@ export class LoginComponent {
           if (res.status === grpc.Code.OK) {
             const token = res.message.toObject()['token'];
             this.tokenService.localLogin(token);
-            this.router.navigateByUrl('/dashboard').then();
+            switch (this.tokenService.role) {
+              case "USER":
+                this.router.navigateByUrl('/dashboard').then();
+                break;
+              case "SERVICE_ADMINISTRATOR":
+                this.router.navigateByUrl('/dashboard/service').then();
+                break;
+              default:
+                this.router.navigateByUrl('/dashboard/user').then();
+            }
+
           } else {
             this.snackbarService.displayMessage('Bad email or password');
           }

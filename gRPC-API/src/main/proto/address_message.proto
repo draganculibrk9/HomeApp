@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package home.app.grpc;
+
+option java_multiple_files = true;
+
+message AddressMessage {
+  int64 id = 1;
+  string country = 2;
+  string city = 3;
+  string street = 4;
+  uint32 number = 5;
+}

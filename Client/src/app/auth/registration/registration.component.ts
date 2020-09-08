@@ -1,11 +1,12 @@
 import {Component} from '@angular/core';
 import {SnackbarService} from '../../services/snackbar.service';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {RegistrationRequest} from '../../proto/generated/auth_service_pb';
-import {Address, RegistrationMessage} from '../../proto/generated/registration_message_pb';
-import {AuthService} from '../../proto/generated/auth_service_pb_service';
 import {Router} from '@angular/router';
 import {grpc} from '@improbable-eng/grpc-web';
+import {UserMessage} from "../../proto/generated/user_message_pb";
+import {RegistrationRequest} from "../../proto/generated/auth_service_pb";
+import {AddressMessage} from "../../proto/generated/address_message_pb";
+import {AuthService} from "../../proto/generated/auth_service_pb_service";
 
 @Component({
   selector: 'app-registration',
@@ -46,8 +47,8 @@ export class RegistrationComponent {
     }
 
     const registration_request = new RegistrationRequest();
-    const registration_message = new RegistrationMessage();
-    const address = new Address();
+    const registration_message = new UserMessage();
+    const address = new AddressMessage();
     address.setCity(this.registrationForm.controls.city.value);
     address.setCountry(this.registrationForm.controls.country.value);
     address.setNumber(this.registrationForm.controls.number.value);
@@ -59,11 +60,12 @@ export class RegistrationComponent {
     registration_message.setLastName(this.registrationForm.controls.lastName.value);
     registration_message.setPassword(this.registrationForm.controls.password.value);
     registration_message.setPhone(this.registrationForm.controls.phone.value);
+    registration_message.setBlocked(false);
 
     if (this.registrationForm.controls.isServiceAdmin.value) {
-      registration_message.setRole(RegistrationMessage.Role.SERVICE_ADMINISTRATOR);
+      registration_message.setRole(UserMessage.Role.SERVICE_ADMINISTRATOR);
     } else {
-      registration_message.setRole(RegistrationMessage.Role.USER);
+      registration_message.setRole(UserMessage.Role.USER);
     }
 
     registration_request.setRegistration(registration_message);

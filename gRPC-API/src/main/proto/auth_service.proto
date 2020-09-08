@@ -2,8 +2,9 @@ syntax = "proto3";
 
 package home.app.grpc;
 
-import "registration_message.proto";
+import "user_message.proto";
 import "login_message.proto";
+import "household_service.proto";
 
 option java_multiple_files = true;
 
@@ -16,14 +17,28 @@ message LoginResponse {
 }
 
 message RegistrationRequest {
-  RegistrationMessage registration = 1;
+  UserMessage registration = 1;
 }
 
 message RegistrationResponse {
   int64 user_id = 1;
 }
 
+message UserResponse {
+  UserMessage user = 1;
+}
+
+message ToggleBlockRequest {
+  int64 user_id = 1;
+}
+
+message GetUsersRequest {
+}
+
 service AuthService {
-  rpc Register(RegistrationRequest) returns (RegistrationResponse) {};
-  rpc Login(LoginRequest) returns (LoginResponse) {};
+  rpc Register(RegistrationRequest) returns (RegistrationResponse);
+  rpc Login(LoginRequest) returns (LoginResponse);
+
+  rpc GetUsers(GetUsersRequest) returns (stream UserResponse);
+  rpc ToggleBlockOnUser(ToggleBlockRequest) returns (SuccessResponse);
 }

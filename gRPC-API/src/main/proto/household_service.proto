@@ -11,6 +11,10 @@ message HouseholdRequest {
   string owner = 1;
 }
 
+message HouseholdByIdRequest {
+  int64 id = 1;
+}
+
 message EditHouseholdRequest {
   int64 id = 1;
   double balance = 2;
@@ -42,13 +46,14 @@ message SuccessResponse {
 }
 
 service HouseholdService {
-  rpc GetHousehold(HouseholdRequest) returns (HouseholdResponse) {};
-  rpc CreateHousehold(HouseholdRequest) returns (SuccessResponse) {};
-  rpc EditHousehold(EditHouseholdRequest) returns (SuccessResponse) {};
+  rpc GetHousehold(HouseholdRequest) returns (HouseholdResponse);
+  rpc GetHouseholdById(HouseholdByIdRequest) returns (HouseholdResponse);
+  rpc CreateHousehold(HouseholdRequest) returns (SuccessResponse);
+  rpc EditHousehold(EditHouseholdRequest) returns (SuccessResponse);
 
-  rpc GetTransactions(TransactionsRequest) returns (stream TransactionResponse) {};
-  rpc GetTransaction(GetOrDeleteTransactionRequest) returns (TransactionResponse) {};
-  rpc EditTransaction(CreateOrEditTransactionRequest) returns (SuccessResponse) {};
-  rpc CreateTransaction(CreateOrEditTransactionRequest) returns (SuccessResponse) {};
-  rpc DeleteTransaction(GetOrDeleteTransactionRequest) returns (SuccessResponse) {};
+  rpc GetTransactions(TransactionsRequest) returns (stream TransactionResponse);
+  rpc GetTransaction(GetOrDeleteTransactionRequest) returns (TransactionResponse);
+  rpc EditTransaction(CreateOrEditTransactionRequest) returns (SuccessResponse);
+  rpc CreateTransaction(CreateOrEditTransactionRequest) returns (SuccessResponse);
+  rpc DeleteTransaction(GetOrDeleteTransactionRequest) returns (SuccessResponse);
 }

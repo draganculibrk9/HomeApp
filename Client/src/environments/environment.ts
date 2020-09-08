@@ -4,6 +4,9 @@
 
 export const environment = {
   production: false,
+  servicesServiceHost: 'http://localhost:8078',
+  authServiceHost: 'http://localhost:8080',
+  householdServiceHost: 'http://localhost:8079'
 };
 
 /*

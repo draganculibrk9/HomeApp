@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package home.app.grpc;
+
+import "address_message.proto";
+
+option java_multiple_files = true;
+
+message UserMessage {
+  int64 id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string email = 4;
+  string password = 5;
+  string phone = 6;
+  Role role = 7;
+  enum Role {
+    UNKNOWN = 0;
+    USER = 1;
+    SERVICE_ADMINISTRATOR = 2;
+    SYSTEM_ADMINISTRATOR = 3;
+  }
+  bool blocked = 8;
+  AddressMessage address = 9;
+}

@@ -1,0 +1,14 @@
+#parent {
+  width: 70%;
+  display: block;
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: 2%;
+}
+
+.create-button {
+  width: 20%;
+  display: block;
+  margin-right: auto;
+  margin-left: auto;
+}

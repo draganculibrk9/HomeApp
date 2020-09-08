@@ -1,15 +1,15 @@
 import {Component, OnInit} from '@angular/core';
 import {TokenService} from '../../services/token.service';
-import {HouseholdRequest, TransactionResponse, TransactionsRequest} from '../../proto/generated/household_service_pb';
-import {HouseholdMessage} from '../../proto/generated/household_message_pb';
-import {HouseholdService} from '../../proto/generated/household_service_pb_service';
 import {SnackbarService} from '../../services/snackbar.service';
 import {grpc} from '@improbable-eng/grpc-web';
-import {TransactionMessage} from '../../proto/generated/transaction_message_pb';
 import * as _ from 'lodash';
 import {MatDialog} from '@angular/material/dialog';
 import {CreateTransactionComponent} from './create-transaction/create-transaction.component';
 import {PageEvent} from '@angular/material/paginator';
+import {HouseholdMessage} from "../../proto/generated/household_message_pb";
+import {TransactionMessage} from "../../proto/generated/transaction_message_pb";
+import {HouseholdRequest, TransactionResponse, TransactionsRequest} from "../../proto/generated/household_service_pb";
+import {HouseholdService} from "../../proto/generated/household_service_pb_service";
 
 @Component({
   selector: 'app-household',

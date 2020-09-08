@@ -1,6 +1,7 @@
 package home.app.household.service.mappers;
 
 import home.app.grpc.TransactionMessage;
+import home.app.grpc.api.model.IMapper;
 import home.app.household.service.model.TransactionType;
 import org.springframework.stereotype.Component;
 

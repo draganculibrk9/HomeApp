@@ -1,10 +1,12 @@
 <mat-toolbar color="primary" fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-between center">
   <span>
-  <a mat-button routerLink="household">Home App</a>
-  <button routerLink="household" mat-button>Household</button>
-  <button routerLink="service" mat-button>Services</button>
+  <a mat-button>Home App</a>
+  <button *ngIf="tokenService.role === 'USER'" routerLink="household" mat-button>Household</button>
+  <button *ngIf="tokenService.role !== 'SYSTEM_ADMINISTRATOR'" routerLink="service" mat-button>Services</button>
+    <button *ngIf="tokenService.role !== 'SYSTEM_ADMINISTRATOR'" routerLink="accommodation-request" mat-button>Accommodation Requests</button>
+    <button *ngIf="tokenService.role === 'SYSTEM_ADMINISTRATOR'" routerLink="user" mat-button>Users</button>
   </span>
   <span fxLayoutAlign="right">
-      <button (click)="tokenService.logout()" mat-button>Logout</button>
-    </span>
+      <button *ngIf="tokenService.authenticated" (click)="tokenService.logout()" mat-button>Logout</button>
+  </span>
 </mat-toolbar>

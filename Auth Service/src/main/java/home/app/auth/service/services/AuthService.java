@@ -2,6 +2,7 @@ package home.app.auth.service.services;
 
 import home.app.auth.service.mappers.UserMapper;
 import home.app.auth.service.model.User;
+import home.app.auth.service.model.UserRole;
 import home.app.auth.service.repositories.UserRepository;
 import home.app.auth.service.security.TokenService;
 import home.app.grpc.*;
@@ -15,6 +16,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @GrpcService
 @Transactional
@@ -36,21 +39,21 @@ public class AuthService extends AuthServiceGrpc.AuthServiceImplBase {
 
     @Override
     public void register(RegistrationRequest request, StreamObserver<RegistrationResponse> responseObserver) {
-        RegistrationMessage registrationMessage = request.getRegistration();
+        UserMessage user = request.getRegistration();
 
-        if (userRepository.findByEmail(registrationMessage.getEmail()) != null) {
+        if (userRepository.findByEmail(user.getEmail()) != null) {
             responseObserver.onError(
                     Status.ALREADY_EXISTS
-                            .withDescription("User with specified email already exists")
+                            .withDescription(String.format("User with email '%s' already exists", user.getEmail()))
                             .asRuntimeException()
             );
             return;
         }
 
         try {
-            User newUser = userRepository.save(userMapper.toEntity(registrationMessage));
+            User newUser = userRepository.save(userMapper.toEntity(user));
 
-            if (!householdServiceStub.createHousehold(HouseholdRequest.newBuilder().setOwner(newUser.getEmail()).build()).getSuccess()) {
+            if (newUser.getRole().equals(UserRole.USER) && !householdServiceStub.createHousehold(HouseholdRequest.newBuilder().setOwner(newUser.getEmail()).build()).getSuccess()) {
                 responseObserver.onError(
                         Status.INTERNAL
                                 .withDescription("Failed to create household for new user")
@@ -94,5 +97,52 @@ public class AuthService extends AuthServiceGrpc.AuthServiceImplBase {
                             .asRuntimeException()
             );
         }
+    }
+
+    @Override
+    public void getUsers(GetUsersRequest request, StreamObserver<UserResponse> responseObserver) {
+        userRepository.findAllByRoleNot(UserRole.SYSTEM_ADMINISTRATOR).forEach(u -> {
+            UserResponse response = UserResponse.newBuilder()
+                    .setUser(userMapper.toDTO(u))
+                    .build();
+
+            responseObserver.onNext(response);
+        });
+
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void toggleBlockOnUser(ToggleBlockRequest request, StreamObserver<SuccessResponse> responseObserver) {
+        Optional<User> u = userRepository.findById(request.getUserId());
+
+        if (!u.isPresent()) {
+            responseObserver.onError(
+                    Status.NOT_FOUND
+                            .withDescription(String.format("User with id '%d' not found", request.getUserId()))
+                            .asRuntimeException()
+            );
+            return;
+        }
+
+        User user = u.get();
+        user.setBlocked(!user.getBlocked());
+
+        try {
+            userRepository.save(user);
+        } catch (Exception e) {
+            responseObserver.onError(
+                    Status.INTERNAL
+                            .withDescription(e.getMessage())
+                            .asRuntimeException()
+            );
+            return;
+        }
+
+        SuccessResponse response = SuccessResponse.newBuilder()
+                .setSuccess(true)
+                .build();
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
     }
 }

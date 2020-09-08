@@ -1,6 +1,7 @@
 package home.app.household.service.mappers;
 
 import home.app.grpc.HouseholdMessage;
+import home.app.grpc.api.model.IMapper;
 import home.app.household.service.model.Household;
 import org.springframework.stereotype.Component;
 

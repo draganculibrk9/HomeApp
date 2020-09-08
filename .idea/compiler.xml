@@ -2,10 +2,12 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="services.service" />
         <module name="auth.service" />
         <module name="grpc.api" />
         <module name="household.service" />
@@ -20,6 +22,7 @@
       <module name="auth.service" options="-parameters" />
       <module name="grpc.api" options="-parameters" />
       <module name="household.service" options="-parameters" />
+      <module name="services.service" options="-parameters" />
     </option>
   </component>
 </project>

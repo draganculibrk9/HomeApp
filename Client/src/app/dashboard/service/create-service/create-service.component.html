@@ -1,0 +1,139 @@
+<mat-horizontal-stepper linear>
+  <mat-step [stepControl]="serviceForm">
+    <form [formGroup]="serviceForm" (submit)="createService()">
+      <ng-template matStepLabel>Fill out service info</ng-template>
+      <div fxLayout="row" fxLayoutAlign="space-around">
+        <div fxLayout="column">
+          <mat-form-field>
+            <input type="text" matInput placeholder="Name" formControlName="name"
+                   (click)="serviceForm.controls.name.markAsTouched()">
+            <mat-error *ngIf="serviceForm.controls.name.invalid">Name must be specified</mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+            <input type="text" matInput placeholder="Email" formControlName="email"
+                   (click)="serviceForm.controls.email.markAsTouched()">
+            <mat-error *ngIf="serviceForm.controls.email.invalid">Email must be specified</mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+            <input type="text" matInput placeholder="Phone" formControlName="phone"
+                   (click)="serviceForm.controls.phone.markAsTouched()">
+            <mat-error *ngIf="serviceForm.controls.phone.invalid">Phone must be specified</mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+            <input type="url" matInput placeholder="Website" formControlName="website"
+                   (click)="serviceForm.controls.website.markAsTouched()">
+            <mat-error *ngIf="serviceForm.controls.website.invalid">Website must be specified</mat-error>
+          </mat-form-field>
+        </div>
+        <div fxLayout="column">
+          <mat-form-field>
+            <input type="text" matInput placeholder="Country" formControlName="country"
+                   (click)="serviceForm.controls.country.markAsTouched()">
+            <mat-error *ngIf="serviceForm.controls.country.invalid">Country must be specified</mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+            <input type="text" matInput placeholder="City" formControlName="city"
+                   (click)="serviceForm.controls.city.markAsTouched()">
+            <mat-error *ngIf="serviceForm.controls.city.invalid">City must be specified</mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+            <input type="text" matInput placeholder="Street" formControlName="street"
+                   (click)="serviceForm.controls.street.markAsTouched()">
+            <mat-error *ngIf="serviceForm.controls.street.invalid">Street must be specified</mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+            <input type="text" matInput placeholder="Number" formControlName="number"
+                   (click)="serviceForm.controls.number.markAsTouched()">
+            <mat-error *ngIf="serviceForm.controls.number.invalid">Number must be specified</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div>
+        <button mat-button matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="accommodationForm">
+    <form [formGroup]="accommodationForm">
+      <ng-template matStepLabel>Add accommodations</ng-template>
+      <div fxLayout="column">
+        <div fxLayout="column" fxLayoutAlign="center" fxLayoutGap="1%">
+          <table mat-table matSort class="mat-elevation-z8" [dataSource]="dataSource">
+            <ng-container matColumnDef="id">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+              <td mat-cell *matCellDef="let row">{{row.id}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+              <td mat-cell *matCellDef="let row">{{row.name}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="type">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Type</th>
+              <td mat-cell *matCellDef="let row">{{row.type}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="price">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Price</th>
+              <td mat-cell *matCellDef="let row">{{row.price}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="available">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Available</th>
+              <td mat-cell *matCellDef="let row">{{row.available}}</td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+            <tr class="mat-row" *matNoDataRow>
+              <td class="mat-cell" [colSpan]="5">No data</td>
+            </tr>
+          </table>
+          <mat-paginator [pageSizeOptions]="[3]"></mat-paginator>
+        </div>
+
+        <div fxLayout="column">
+          <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="2%">
+            <div fxLayout="column">
+              <mat-form-field>
+                <input type="text" matInput placeholder="Name" formControlName="name"
+                       (click)="accommodationForm.controls.name.markAsTouched()">
+                <mat-error *ngIf="accommodationForm.controls.name.invalid">Name must be specified</mat-error>
+              </mat-form-field>
+
+              <mat-form-field>
+                <input type="number" matInput placeholder="Price" formControlName="price"
+                       (click)="accommodationForm.controls.price.markAsTouched()">
+                <mat-error *ngIf="accommodationForm.controls.price.invalid">Price must be greater than zero</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div fxLayout="column">
+              <mat-form-field appearance="fill">
+                <mat-label>Accommodation type</mat-label>
+                <mat-select formControlName="type">
+                  <mat-option *ngFor="let acctype of _.keys(type)"
+                              [value]="type[acctype]">{{type[acctype]}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-checkbox formControlName="available">Available</mat-checkbox>
+            </div>
+          </div>
+          <button mat-raised-button type="button" (click)="createAccommodation()" id="create-accommodation">Create accommodation</button>
+        </div>
+      </div>
+      <div>
+        <button mat-button matStepper (click)="closeModal()">Finish</button>
+      </div>
+    </form>
+  </mat-step>
+</mat-horizontal-stepper>

@@ -13,8 +13,6 @@ import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Transactional
 @GrpcService
 public class HouseholdService extends HouseholdServiceGrpc.HouseholdServiceImplBase {
@@ -30,6 +28,24 @@ public class HouseholdService extends HouseholdServiceGrpc.HouseholdServiceImplB
     @Autowired
     private TransactionRepository transactionRepository;
 
+    @Override
+    public void getHouseholdById(HouseholdByIdRequest request, StreamObserver<HouseholdResponse> responseObserver) {
+        Long id = request.getId();
+
+        Household household = householdRepository.getById(id);
+
+        if (household == null) {
+            responseObserver.onError(
+                    Status.NOT_FOUND
+                            .withDescription(String.format("Household with id '%d' not found", id))
+                            .asRuntimeException()
+            );
+            return;
+        }
+        HouseholdResponse response = HouseholdResponse.newBuilder().setHousehold(householdMapper.toDTO(household)).build();
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
+    }
 
     @Override
     public void getHousehold(HouseholdRequest request, StreamObserver<HouseholdResponse> responseObserver) {

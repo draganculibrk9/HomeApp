@@ -1,0 +1,34 @@
+<h1 mat-dialog-title>{{data.accommodation ? data.accommodation.name : 'Create accommodation'}}</h1>
+<div mat-dialog-content>
+  <form [formGroup]="accommodationForm" fxLayout="column">
+    <mat-form-field>
+      <input type="text" matInput placeholder="Name" formControlName="name"
+             (click)="accommodationForm.controls.name.markAsTouched()">
+      <mat-error *ngIf="accommodationForm.controls.name.invalid">Name must be specified</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input type="number" matInput placeholder="Price" formControlName="price"
+             (click)="accommodationForm.controls.price.markAsTouched()">
+      <mat-error *ngIf="accommodationForm.controls.price.invalid">Price must be greater than zero</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Accommodation type</mat-label>
+      <mat-select formControlName="type">
+        <mat-option *ngFor="let acctype of _.keys(type)"
+                    [value]="type[acctype]">{{type[acctype]}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-checkbox formControlName="available">Available</mat-checkbox>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button color="primary" (click)="this.createOrEditAccommodation()">
+    Save
+  </button>
+  <button mat-raised-button color="warn"
+          (click)="closeDialog()">Cancel
+  </button>
+</div>

@@ -3,11 +3,11 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {DateAdapter} from '@angular/material/core';
 import {SnackbarService} from '../../../services/snackbar.service';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {Period, TransactionMessage} from '../../../proto/generated/transaction_message_pb';
 import * as moment from 'moment';
-import {CreateOrEditTransactionRequest} from '../../../proto/generated/household_service_pb';
 import {grpc} from '@improbable-eng/grpc-web';
-import {HouseholdService} from '../../../proto/generated/household_service_pb_service';
+import {Period, TransactionMessage} from "../../../proto/generated/transaction_message_pb";
+import {CreateOrEditTransactionRequest} from "../../../proto/generated/household_service_pb";
+import {HouseholdService} from "../../../proto/generated/household_service_pb_service";
 
 @Component({
   selector: 'app-edit-transaction',
