@@ -18,7 +18,7 @@ public class TokenService {
     @Value("${jwt.secret}")
     private String secret;
 
-    private static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
+    private static final long JWT_TOKEN_VALIDITY = 30 * 60 * 60;
 
     public String getEmailFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
