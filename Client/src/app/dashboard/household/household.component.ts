@@ -38,6 +38,7 @@ export class HouseholdComponent implements OnInit {
     grpc.unary(HouseholdService.GetHousehold, {
       request: household_request,
       host: 'http://localhost:8079',
+      metadata: {Authorization: `Bearer ${this.tokenService.token}`},
       onEnd: res => {
         switch (res.status) {
           case grpc.Code.OK:
@@ -69,6 +70,7 @@ export class HouseholdComponent implements OnInit {
     grpc.invoke(HouseholdService.GetTransactions, {
       request: transaction_request,
       host: 'http://localhost:8079',
+      metadata: {Authorization: `Bearer ${this.tokenService.token}`},
       onMessage: (res: TransactionResponse) => {
         this.transactions.push(res.getTransaction());
       },

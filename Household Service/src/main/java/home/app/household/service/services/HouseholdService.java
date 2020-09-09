@@ -235,32 +235,4 @@ public class HouseholdService extends HouseholdServiceGrpc.HouseholdServiceImplB
             );
         }
     }
-
-    @Override
-    public void editHousehold(EditHouseholdRequest request, StreamObserver<SuccessResponse> responseObserver) {
-        Household household = householdRepository.getById(request.getId());
-
-        if (household == null) {
-            responseObserver.onError(
-                    Status.NOT_FOUND
-                            .withDescription(String.format("Household with id '%d' not found", request.getId()))
-                            .asRuntimeException()
-            );
-            return;
-        }
-
-        household.setBalance(request.getBalance());
-
-        try {
-            householdRepository.save(household);
-            responseObserver.onNext(SuccessResponse.newBuilder().setSuccess(true).build());
-            responseObserver.onCompleted();
-        } catch (Exception e) {
-            responseObserver.onError(
-                    Status.INTERNAL
-                            .withDescription(e.getMessage())
-                            .asRuntimeException()
-            );
-        }
-    }
 }

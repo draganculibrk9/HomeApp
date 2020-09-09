@@ -47,6 +47,15 @@ AuthService.ToggleBlockOnUser = {
   responseType: household_service_pb.SuccessResponse
 };
 
+AuthService.ValidateToken = {
+  methodName: "ValidateToken",
+  service: AuthService,
+  requestStream: false,
+  responseStream: false,
+  requestType: auth_service_pb.ValidateTokenRequest,
+  responseType: household_service_pb.SuccessResponse
+};
+
 exports.AuthService = AuthService;
 
 function AuthServiceClient(serviceHost, options) {
@@ -160,6 +169,37 @@ AuthServiceClient.prototype.toggleBlockOnUser = function toggleBlockOnUser(reque
     callback = arguments[1];
   }
   var client = grpc.unary(AuthService.ToggleBlockOnUser, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+AuthServiceClient.prototype.validateToken = function validateToken(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(AuthService.ValidateToken, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,

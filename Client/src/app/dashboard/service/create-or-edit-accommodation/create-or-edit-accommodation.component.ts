@@ -96,6 +96,7 @@ export class CreateOrEditAccommodationComponent implements OnInit {
     grpc.unary(ServicesService.CreateAccommodation, {
       request: request,
       host: environment.servicesServiceHost,
+      metadata: {Authorization: `Bearer ${this.tokenService.token}`},
       onEnd: (output: UnaryOutput<AccommodationResponse>) => {
         if (output.status === grpc.Code.OK) {
           this.snackbarService.displayMessage('Accommodation created successfully');
@@ -112,6 +113,7 @@ export class CreateOrEditAccommodationComponent implements OnInit {
     grpc.unary(ServicesService.EditAccommodation, {
       request: request,
       host: environment.servicesServiceHost,
+      metadata: {Authorization: `Bearer ${this.tokenService.token}`},
       onEnd: (output: UnaryOutput<AccommodationResponse>) => {
         if (output.status === grpc.Code.OK) {
           this.snackbarService.displayMessage('Accommodation edited successfully');

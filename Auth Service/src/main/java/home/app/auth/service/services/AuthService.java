@@ -34,6 +34,9 @@ public class AuthService extends AuthServiceGrpc.AuthServiceImplBase {
     @Autowired
     private TokenService tokenService;
 
+    @Autowired
+    private UserDetailsServiceImpl userDetailsService;
+
     @GrpcClient("householdService")
     private HouseholdServiceGrpc.HouseholdServiceBlockingStub householdServiceStub;
 
@@ -144,5 +147,31 @@ public class AuthService extends AuthServiceGrpc.AuthServiceImplBase {
                 .build();
         responseObserver.onNext(response);
         responseObserver.onCompleted();
+    }
+
+    @Override
+    public void validateToken(ValidateTokenRequest request, StreamObserver<SuccessResponse> responseObserver) {
+        String token = request.getToken();
+
+        try {
+            boolean result = validateToken(token);
+
+            responseObserver.onNext(
+                    SuccessResponse.newBuilder()
+                            .setSuccess(result)
+                            .build()
+            );
+            responseObserver.onCompleted();
+        } catch (Exception e) {
+            responseObserver.onNext(
+                    SuccessResponse.newBuilder()
+                            .setSuccess(false)
+                            .build()
+            );
+        }
+    }
+
+    public boolean validateToken(String token) {
+        return tokenService.validateToken(token, userDetailsService.loadUserByUsername(tokenService.getEmailFromToken(token)));
     }
 }

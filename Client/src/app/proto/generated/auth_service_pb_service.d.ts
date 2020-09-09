@@ -41,12 +41,22 @@ type AuthServiceToggleBlockOnUser = {
   readonly responseType: typeof household_service_pb.SuccessResponse;
 };
 
+type AuthServiceValidateToken = {
+  readonly methodName: string;
+  readonly service: typeof AuthService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof auth_service_pb.ValidateTokenRequest;
+  readonly responseType: typeof household_service_pb.SuccessResponse;
+};
+
 export class AuthService {
   static readonly serviceName: string;
   static readonly Register: AuthServiceRegister;
   static readonly Login: AuthServiceLogin;
   static readonly GetUsers: AuthServiceGetUsers;
   static readonly ToggleBlockOnUser: AuthServiceToggleBlockOnUser;
+  static readonly ValidateToken: AuthServiceValidateToken;
 }
 
 export type ServiceError = { message: string, code: number; metadata: grpc.Metadata }
@@ -107,6 +117,15 @@ export class AuthServiceClient {
   ): UnaryResponse;
   toggleBlockOnUser(
     requestMessage: auth_service_pb.ToggleBlockRequest,
+    callback: (error: ServiceError|null, responseMessage: household_service_pb.SuccessResponse|null) => void
+  ): UnaryResponse;
+  validateToken(
+    requestMessage: auth_service_pb.ValidateTokenRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: household_service_pb.SuccessResponse|null) => void
+  ): UnaryResponse;
+  validateToken(
+    requestMessage: auth_service_pb.ValidateTokenRequest,
     callback: (error: ServiceError|null, responseMessage: household_service_pb.SuccessResponse|null) => void
   ): UnaryResponse;
 }

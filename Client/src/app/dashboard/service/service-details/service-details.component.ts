@@ -88,6 +88,7 @@ export class ServiceDetailsComponent implements OnInit {
     grpc.unary(ServicesService.GetService, {
       request: request,
       host: environment.servicesServiceHost,
+      metadata: {Authorization: `Bearer ${this.tokenService.token}`},
       onEnd: (output: UnaryOutput<ServiceResponse>) => {
         if (output.status === grpc.Code.OK) {
           this.service = output.message.getService();
@@ -132,6 +133,7 @@ export class ServiceDetailsComponent implements OnInit {
     grpc.unary(ServicesService.EditService, {
       request: request,
       host: environment.servicesServiceHost,
+      metadata: {Authorization: `Bearer ${this.tokenService.token}`},
       onEnd: (output: UnaryOutput<ServiceResponse>) => {
         if (output.status === grpc.Code.OK) {
           this.service = output.message.getService();

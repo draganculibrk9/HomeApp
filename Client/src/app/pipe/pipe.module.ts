@@ -1,9 +1,8 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { PeriodPipe } from './period.pipe';
-import { AccommodationTypePipe } from './accommodation-type.pipe';
-import { AccommodationRequestStatusPipe } from './accommodation-request-status.pipe';
-
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {PeriodPipe} from './period.pipe';
+import {AccommodationTypePipe} from './accommodation-type.pipe';
+import {AccommodationRequestStatusPipe} from './accommodation-request-status.pipe';
 
 
 @NgModule({
@@ -18,7 +17,9 @@ import { AccommodationRequestStatusPipe } from './accommodation-request-status.p
   ],
   providers: [
     AccommodationTypePipe,
-    AccommodationRequestStatusPipe
+    AccommodationRequestStatusPipe,
+    PeriodPipe
   ]
 })
-export class PipeModule { }
+export class PipeModule {
+}

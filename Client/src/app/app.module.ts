@@ -14,6 +14,7 @@ import {
   MomentDateAdapter
 } from '@angular/material-moment-adapter';
 import {GuardsModule} from "./guards/guards.module";
+import {DirectiveModule} from "./directives/directive.module";
 
 
 @NgModule({
@@ -28,7 +29,8 @@ import {GuardsModule} from "./guards/guards.module";
     ServicesModule,
     DashboardModule,
     PipeModule,
-    GuardsModule
+    GuardsModule,
+    DirectiveModule
   ],
   providers: [
     {

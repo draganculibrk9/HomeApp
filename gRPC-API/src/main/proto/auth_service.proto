@@ -35,10 +35,16 @@ message ToggleBlockRequest {
 message GetUsersRequest {
 }
 
+message ValidateTokenRequest {
+  string token = 1;
+}
+
 service AuthService {
   rpc Register(RegistrationRequest) returns (RegistrationResponse);
   rpc Login(LoginRequest) returns (LoginResponse);
 
   rpc GetUsers(GetUsersRequest) returns (stream UserResponse);
   rpc ToggleBlockOnUser(ToggleBlockRequest) returns (SuccessResponse);
+
+  rpc ValidateToken(ValidateTokenRequest) returns (SuccessResponse);
 }

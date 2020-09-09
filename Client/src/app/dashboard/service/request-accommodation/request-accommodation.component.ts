@@ -56,6 +56,7 @@ export class RequestAccommodationComponent implements OnInit {
     grpc.unary(ServicesService.RequestAccommodation, {
       request: request,
       host: environment.servicesServiceHost,
+      metadata: {Authorization: `Bearer ${this.tokenService.token}`},
       onEnd: (output: UnaryOutput<SuccessResponse>) => {
         if (output.status === grpc.Code.OK) {
           this.snackbarService.displayMessage('Accommodation requested successfully');

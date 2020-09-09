@@ -37,15 +37,6 @@ HouseholdService.CreateHousehold = {
   responseType: household_service_pb.SuccessResponse
 };
 
-HouseholdService.EditHousehold = {
-  methodName: "EditHousehold",
-  service: HouseholdService,
-  requestStream: false,
-  responseStream: false,
-  requestType: household_service_pb.EditHouseholdRequest,
-  responseType: household_service_pb.SuccessResponse
-};
-
 HouseholdService.GetTransactions = {
   methodName: "GetTransactions",
   service: HouseholdService,
@@ -165,37 +156,6 @@ HouseholdServiceClient.prototype.createHousehold = function createHousehold(requ
     callback = arguments[1];
   }
   var client = grpc.unary(HouseholdService.CreateHousehold, {
-    request: requestMessage,
-    host: this.serviceHost,
-    metadata: metadata,
-    transport: this.options.transport,
-    debug: this.options.debug,
-    onEnd: function (response) {
-      if (callback) {
-        if (response.status !== grpc.Code.OK) {
-          var err = new Error(response.statusMessage);
-          err.code = response.status;
-          err.metadata = response.trailers;
-          callback(err, null);
-        } else {
-          callback(null, response.message);
-        }
-      }
-    }
-  });
-  return {
-    cancel: function () {
-      callback = null;
-      client.close();
-    }
-  };
-};
-
-HouseholdServiceClient.prototype.editHousehold = function editHousehold(requestMessage, metadata, callback) {
-  if (arguments.length === 2) {
-    callback = arguments[1];
-  }
-  var client = grpc.unary(HouseholdService.EditHousehold, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,
