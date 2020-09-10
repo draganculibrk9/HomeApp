@@ -1,16 +1,11 @@
-package home.app.auth.service.security;
+package home.app.grpc.api.security;
 
-import home.app.auth.service.services.UserDetailsServiceImpl;
-import home.app.grpc.AuthServiceGrpc;
+import home.app.grpc.api.services.UserDetailsServiceImpl;
 import net.devh.boot.grpc.server.security.authentication.BasicGrpcAuthenticationReader;
 import net.devh.boot.grpc.server.security.authentication.GrpcAuthenticationReader;
-import net.devh.boot.grpc.server.security.check.AccessPredicate;
 import net.devh.boot.grpc.server.security.check.AccessPredicateVoter;
-import net.devh.boot.grpc.server.security.check.GrpcSecurityMetadataSource;
-import net.devh.boot.grpc.server.security.check.ManualGrpcSecurityMetadataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.vote.UnanimousBased;
@@ -25,9 +20,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-@Configuration
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class BaseSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     public UserDetailsServiceImpl userDetailsService() {
         return new UserDetailsServiceImpl();
@@ -55,22 +49,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public GrpcAuthenticationReader grpcAuthenticationReader() {
         return new BasicGrpcAuthenticationReader();
-    }
-
-
-    @Bean
-    public GrpcSecurityMetadataSource grpcSecurityMetadataSource() {
-        final ManualGrpcSecurityMetadataSource source = new ManualGrpcSecurityMetadataSource();
-
-        source.set(AuthServiceGrpc.METHOD_LOGIN, AccessPredicate.permitAll());
-        source.set(AuthServiceGrpc.METHOD_REGISTER, AccessPredicate.permitAll());
-        source.set(AuthServiceGrpc.METHOD_GET_USERS, AccessPredicate.hasRole("SYSTEM_ADMINISTRATOR"));
-        source.set(AuthServiceGrpc.METHOD_TOGGLE_BLOCK_ON_USER, AccessPredicate.hasRole("SYSTEM_ADMINISTRATOR"));
-        source.set(AuthServiceGrpc.METHOD_VALIDATE_TOKEN, AccessPredicate.authenticated());
-
-        source.setDefault(AccessPredicate.denyAll());
-
-        return source;
     }
 
     @Bean

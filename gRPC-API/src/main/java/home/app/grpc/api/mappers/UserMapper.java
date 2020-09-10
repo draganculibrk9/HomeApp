@@ -1,8 +1,8 @@
-package home.app.auth.service.mappers;
+package home.app.grpc.api.mappers;
 
-import home.app.auth.service.model.User;
 import home.app.grpc.UserMessage;
 import home.app.grpc.api.model.IMapper;
+import home.app.grpc.api.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;

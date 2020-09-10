@@ -1,20 +1,19 @@
-package home.app.services.service.mappers;
+package home.app.grpc.api.mappers;
 
 import home.app.grpc.AddressMessage;
+import home.app.grpc.api.model.Address;
 import home.app.grpc.api.model.IMapper;
-import home.app.services.service.model.Address;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AddressMapper implements IMapper<Address, AddressMessage> {
-
     @Override
     public Address toEntity(AddressMessage dto) {
         Address address = new Address();
 
+        address.setId(dto.getId());
         address.setCity(dto.getCity());
         address.setCountry(dto.getCountry());
-        address.setId(dto.getId());
         address.setNumber(dto.getNumber());
         address.setStreet(dto.getStreet());
 

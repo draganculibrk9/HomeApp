@@ -1,6 +1,7 @@
 package home.app.services.service.mappers;
 
 import home.app.grpc.ContactMessage;
+import home.app.grpc.api.mappers.AddressMapper;
 import home.app.grpc.api.model.IMapper;
 import home.app.services.service.model.Contact;
 import org.springframework.beans.factory.annotation.Autowired;

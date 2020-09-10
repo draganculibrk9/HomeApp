@@ -1,11 +1,12 @@
 package home.app.auth.service.services;
 
-import home.app.auth.service.mappers.UserMapper;
-import home.app.auth.service.model.User;
-import home.app.auth.service.model.UserRole;
-import home.app.auth.service.repositories.UserRepository;
 import home.app.auth.service.security.TokenService;
 import home.app.grpc.*;
+import home.app.grpc.api.mappers.UserMapper;
+import home.app.grpc.api.model.User;
+import home.app.grpc.api.model.UserRole;
+import home.app.grpc.api.repositories.UserRepository;
+import home.app.grpc.api.services.UserDetailsServiceImpl;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.client.inject.GrpcClient;

@@ -1,4 +1,4 @@
-package home.app.auth.service.model;
+package home.app.grpc.api.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

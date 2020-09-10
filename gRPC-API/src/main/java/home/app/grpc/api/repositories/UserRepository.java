@@ -1,9 +1,8 @@
-package home.app.auth.service.repositories;
+package home.app.grpc.api.repositories;
 
-import home.app.auth.service.model.User;
-import home.app.auth.service.model.UserRole;
+import home.app.grpc.api.model.User;
+import home.app.grpc.api.model.UserRole;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 

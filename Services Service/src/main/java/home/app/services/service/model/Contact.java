@@ -1,5 +1,6 @@
 package home.app.services.service.model;
 
+import home.app.grpc.api.model.Address;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
