@@ -1,52 +1,47 @@
 import {Injectable} from '@angular/core';
-import {BehaviorSubject} from 'rxjs';
 import * as jwt_decode from 'jwt-decode';
+import {Router} from "@angular/router";
+import {HttpClient} from "@angular/common/http";
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class TokenService {
-  _token = new BehaviorSubject<string>(null);
-  _role = new BehaviorSubject<string>(null);
-  _subject = new BehaviorSubject<string>(null);
 
-  // renew authentication later...
-  // private authFlag = 'isLoggedIn';
-
-  constructor() {
+  constructor(private router: Router, private http: HttpClient) {
   }
 
   localLogin(token) {
-    this._token.next(token);
-    this._role.next(jwt_decode(this._token.getValue()).role[0]);
-    this._subject.next(jwt_decode(this._token.getValue()).sub);
+    localStorage.setItem('token', token);
+    localStorage.setItem('role', jwt_decode(token).role[0]);
+    localStorage.setItem('subject', jwt_decode(token).sub);
   }
 
   get subject() {
-    return this._subject.getValue();
+    return localStorage.getItem('subject');
   }
 
   get authenticated() {
-    return this._token !== null;
+    return localStorage.getItem('token') !== null;
   }
 
   get token() {
-    return this._token.getValue();
+    return localStorage.getItem('token');
   }
 
   get role() {
-    return this._role.getValue();
+    return localStorage.getItem('role');
   }
 
   logout() {
-    this.localLogout();
+    localStorage.clear();
+    this.serviceLogout();
 
-    // handle service logout later;
+    this.router.navigateByUrl('/login').then();
   }
 
-  private localLogout() {
-    this._token.next(null);
-    this._role.next(null);
-    this._subject.next(null);
+  private serviceLogout() {
+    this.http.get(environment.logoutURL);
   }
 }

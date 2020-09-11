@@ -45,30 +45,6 @@ export namespace HouseholdByIdRequest {
   }
 }
 
-export class EditHouseholdRequest extends jspb.Message {
-  getId(): number;
-  setId(value: number): void;
-
-  getBalance(): number;
-  setBalance(value: number): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): EditHouseholdRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: EditHouseholdRequest): EditHouseholdRequest.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: EditHouseholdRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): EditHouseholdRequest;
-  static deserializeBinaryFromReader(message: EditHouseholdRequest, reader: jspb.BinaryReader): EditHouseholdRequest;
-}
-
-export namespace EditHouseholdRequest {
-  export type AsObject = {
-    id: number,
-    balance: number,
-  }
-}
-
 export class HouseholdResponse extends jspb.Message {
   hasHousehold(): boolean;
   clearHousehold(): void;

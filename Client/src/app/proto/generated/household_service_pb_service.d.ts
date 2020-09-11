@@ -31,15 +31,6 @@ type HouseholdServiceCreateHousehold = {
   readonly responseType: typeof household_service_pb.SuccessResponse;
 };
 
-type HouseholdServiceEditHousehold = {
-  readonly methodName: string;
-  readonly service: typeof HouseholdService;
-  readonly requestStream: false;
-  readonly responseStream: false;
-  readonly requestType: typeof household_service_pb.EditHouseholdRequest;
-  readonly responseType: typeof household_service_pb.SuccessResponse;
-};
-
 type HouseholdServiceGetTransactions = {
   readonly methodName: string;
   readonly service: typeof HouseholdService;
@@ -90,7 +81,6 @@ export class HouseholdService {
   static readonly GetHousehold: HouseholdServiceGetHousehold;
   static readonly GetHouseholdById: HouseholdServiceGetHouseholdById;
   static readonly CreateHousehold: HouseholdServiceCreateHousehold;
-  static readonly EditHousehold: HouseholdServiceEditHousehold;
   static readonly GetTransactions: HouseholdServiceGetTransactions;
   static readonly GetTransaction: HouseholdServiceGetTransaction;
   static readonly EditTransaction: HouseholdServiceEditTransaction;
@@ -155,15 +145,6 @@ export class HouseholdServiceClient {
   ): UnaryResponse;
   createHousehold(
     requestMessage: household_service_pb.HouseholdRequest,
-    callback: (error: ServiceError|null, responseMessage: household_service_pb.SuccessResponse|null) => void
-  ): UnaryResponse;
-  editHousehold(
-    requestMessage: household_service_pb.EditHouseholdRequest,
-    metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: household_service_pb.SuccessResponse|null) => void
-  ): UnaryResponse;
-  editHousehold(
-    requestMessage: household_service_pb.EditHouseholdRequest,
     callback: (error: ServiceError|null, responseMessage: household_service_pb.SuccessResponse|null) => void
   ): UnaryResponse;
   getTransactions(requestMessage: household_service_pb.TransactionsRequest, metadata?: grpc.Metadata): ResponseStream<household_service_pb.TransactionResponse>;

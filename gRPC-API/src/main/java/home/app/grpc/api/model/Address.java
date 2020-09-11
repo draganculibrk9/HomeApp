@@ -1,4 +1,4 @@
-package home.app.services.service.model;
+package home.app.grpc.api.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +13,6 @@ import javax.persistence.*;
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(unique = true, nullable = false)
     private Long id;
 
     @Column(nullable = false)
@@ -28,4 +27,3 @@ public class Address {
     @Column(nullable = false)
     private Integer number;
 }
-

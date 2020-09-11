@@ -1,7 +1,8 @@
-package home.app.auth.service.services;
+package home.app.grpc.api.services;
 
-import home.app.auth.service.model.User;
-import home.app.auth.service.repositories.UserRepository;
+
+import home.app.grpc.api.model.User;
+import home.app.grpc.api.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

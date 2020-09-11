@@ -1,4 +1,4 @@
-package home.app.auth.service.model;
+package home.app.grpc.api.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +18,6 @@ import java.util.Collections;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(unique = true, nullable = false)
     private Long id;
 
     @Column(nullable = false)

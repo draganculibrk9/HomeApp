@@ -130,6 +130,7 @@ export class CreateServiceComponent implements OnInit {
     grpc.unary(ServicesService.CreateAccommodation, {
       request: request,
       host: environment.servicesServiceHost,
+      metadata: {Authorization: `Bearer ${this.tokenService.token}`},
       onEnd: (output: UnaryOutput<AccommodationResponse>) => {
         if (output.status === grpc.Code.OK) {
           this.snackbarService.displayMessage('Accommodation created successfully');
@@ -172,6 +173,7 @@ export class CreateServiceComponent implements OnInit {
     grpc.unary(ServicesService.CreateService, {
       request: request,
       host: environment.servicesServiceHost,
+      metadata: {Authorization: `Bearer ${this.tokenService.token}`},
       onEnd: (output: UnaryOutput<ServiceResponse>) => {
         if (output.status === grpc.Code.OK) {
           this.service = output.message.getService();
@@ -196,6 +198,7 @@ export class CreateServiceComponent implements OnInit {
     grpc.invoke(ServicesService.GetAccommodations, {
       request: request,
       host: environment.servicesServiceHost,
+      metadata: {Authorization: `Bearer ${this.tokenService.token}`},
       onMessage: (res: AccommodationResponse) => {
         const accommodation = res.getAccommodation();
         accommodations.push({

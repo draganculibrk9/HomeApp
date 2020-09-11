@@ -105,6 +105,7 @@ export class ServiceComponent implements OnInit, AfterViewInit {
     grpc.invoke(ServicesService.GetServicesByAdministrator, {
       request: request,
       host: environment.servicesServiceHost,
+      metadata: {Authorization: `Bearer ${this.tokenService.token}`},
       onMessage: (res: ServiceResponse) => {
         const service = res.getService();
         services.push({
@@ -145,6 +146,7 @@ export class ServiceComponent implements OnInit, AfterViewInit {
     grpc.invoke(ServicesService.SearchServices, {
       request: request,
       host: environment.servicesServiceHost,
+      metadata: {Authorization: `Bearer ${this.tokenService.token}`},
       onMessage: (res: ServiceResponse) => {
         const service = res.getService();
         services.push({
@@ -188,6 +190,7 @@ export class ServiceComponent implements OnInit, AfterViewInit {
     grpc.unary(ServicesService.DeleteService, {
       request: request,
       host: environment.servicesServiceHost,
+      metadata: {Authorization: `Bearer ${this.tokenService.token}`},
       onEnd: (output: UnaryOutput<SuccessResponse>) => {
         if (output.status === grpc.Code.OK) {
           if (output.message.getSuccess()) {
@@ -246,6 +249,7 @@ export class ServiceComponent implements OnInit, AfterViewInit {
     grpc.invoke(ServicesService.GetAccommodations, {
       request: request,
       host: environment.servicesServiceHost,
+      metadata: {Authorization: `Bearer ${this.tokenService.token}`},
       onMessage: (res: AccommodationResponse) => {
         const accommodation = res.getAccommodation();
 
@@ -294,6 +298,7 @@ export class ServiceComponent implements OnInit, AfterViewInit {
     grpc.unary(ServicesService.DeleteAccommodation, {
       request: request,
       host: environment.servicesServiceHost,
+      metadata: {Authorization: `Bearer ${this.tokenService.token}`},
       onEnd: (output: UnaryOutput<SuccessResponse>) => {
         if (output.status === grpc.Code.OK && output.message.getSuccess()) {
           this.snackbarService.displayMessage('Accommodation deleted successfully');

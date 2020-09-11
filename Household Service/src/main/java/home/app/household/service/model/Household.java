@@ -16,7 +16,6 @@ import java.util.Set;
 public class Household {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(unique = true, nullable = false)
     private Long id;
 
     @Column(nullable = false)

@@ -8,6 +8,8 @@ import {grpc} from '@improbable-eng/grpc-web';
 import {Period, TransactionMessage} from "../../../proto/generated/transaction_message_pb";
 import {CreateOrEditTransactionRequest} from "../../../proto/generated/household_service_pb";
 import {HouseholdService} from "../../../proto/generated/household_service_pb_service";
+import {TokenService} from "../../../services/token.service";
+import {environment} from "../../../../environments/environment";
 
 @Component({
   selector: 'app-edit-transaction',
@@ -21,7 +23,8 @@ export class EditTransactionComponent implements OnInit {
   period = Period;
 
   constructor(public dialogRef: MatDialogRef<EditTransactionComponent>, private adapter: DateAdapter<any>,
-              private snackbarService: SnackbarService, @Inject(MAT_DIALOG_DATA) public data: any) {
+              private snackbarService: SnackbarService, @Inject(MAT_DIALOG_DATA) public data: any,
+              private tokenService: TokenService) {
   }
 
   ngOnInit(): void {
@@ -70,7 +73,8 @@ export class EditTransactionComponent implements OnInit {
 
     grpc.unary(HouseholdService.EditTransaction, {
       request,
-      host: 'http://localhost:8079',
+      host: environment.householdServiceHost,
+      metadata: {Authorization: `Bearer ${this.tokenService.token}`},
       onEnd: res => {
         if (res.status === grpc.Code.OK) {
           this.snackbarService.displayMessage('Transaction edited successfully');

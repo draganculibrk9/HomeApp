@@ -2,14 +2,12 @@ package home.app.services.service.mappers;
 
 import home.app.grpc.AccommodationRequestMessage;
 import home.app.grpc.api.model.IMapper;
-import home.app.services.service.model.Accommodation;
 import home.app.services.service.model.AccommodationRequest;
 import home.app.services.service.repositories.AccommodationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
-import java.util.Optional;
 
 @Component
 public class AccommodationRequestMapper implements IMapper<AccommodationRequest, AccommodationRequestMessage> {

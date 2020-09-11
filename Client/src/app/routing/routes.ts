@@ -6,6 +6,7 @@ import {HouseholdComponent} from '../dashboard/household/household.component';
 import {ServiceComponent} from '../dashboard/service/service.component';
 import {UserComponent} from "../dashboard/user/user.component";
 import {AccommodationRequestComponent} from "../dashboard/accommodation-request/accommodation-request.component";
+import {AuthGuard} from "../guards/auth.guard";
 
 
 export const routes: Routes = [
@@ -22,6 +23,7 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     component: DashboardComponent,
+    canActivateChild: [AuthGuard],
     children: [
       {
         path: '',
@@ -31,22 +33,44 @@ export const routes: Routes = [
       {
         path: 'household',
         pathMatch: 'full',
-        component: HouseholdComponent
+        component: HouseholdComponent,
+        data: {
+          roles: [
+            'USER'
+          ]
+        }
       },
       {
         path: 'service',
         pathMatch: 'full',
-        component: ServiceComponent
+        component: ServiceComponent,
+        data: {
+          roles: [
+            'USER',
+            'SERVICE_ADMINISTRATOR'
+          ]
+        }
       },
       {
         path: 'user',
         pathMatch: 'full',
-        component: UserComponent
+        component: UserComponent,
+        data: {
+          roles: [
+            'SYSTEM_ADMINISTRATOR'
+          ]
+        }
       },
       {
         path: 'accommodation-request',
         pathMatch: 'full',
-        component: AccommodationRequestComponent
+        component: AccommodationRequestComponent,
+        data: {
+          roles: [
+            'USER',
+            'SERVICE_ADMINISTRATOR'
+          ]
+        }
       }
     ]
   },

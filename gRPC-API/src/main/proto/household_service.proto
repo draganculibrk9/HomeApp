@@ -15,11 +15,6 @@ message HouseholdByIdRequest {
   int64 id = 1;
 }
 
-message EditHouseholdRequest {
-  int64 id = 1;
-  double balance = 2;
-}
-
 message HouseholdResponse {
   HouseholdMessage household = 1;
 }
@@ -49,7 +44,6 @@ service HouseholdService {
   rpc GetHousehold(HouseholdRequest) returns (HouseholdResponse);
   rpc GetHouseholdById(HouseholdByIdRequest) returns (HouseholdResponse);
   rpc CreateHousehold(HouseholdRequest) returns (SuccessResponse);
-  rpc EditHousehold(EditHouseholdRequest) returns (SuccessResponse);
 
   rpc GetTransactions(TransactionsRequest) returns (stream TransactionResponse);
   rpc GetTransaction(GetOrDeleteTransactionRequest) returns (TransactionResponse);

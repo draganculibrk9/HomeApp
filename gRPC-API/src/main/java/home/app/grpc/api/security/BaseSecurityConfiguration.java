@@ -1,11 +1,14 @@
-package home.app.auth.service.security;
+package home.app.grpc.api.security;
 
-import home.app.auth.service.services.UserDetailsServiceImpl;
+import home.app.grpc.api.services.UserDetailsServiceImpl;
 import net.devh.boot.grpc.server.security.authentication.BasicGrpcAuthenticationReader;
 import net.devh.boot.grpc.server.security.authentication.GrpcAuthenticationReader;
+import net.devh.boot.grpc.server.security.check.AccessPredicateVoter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.AccessDecisionManager;
+import org.springframework.security.access.AccessDecisionVoter;
+import org.springframework.security.access.vote.UnanimousBased;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,9 +17,27 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-@Configuration
+import java.util.ArrayList;
+import java.util.List;
+
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class BaseSecurityConfiguration extends WebSecurityConfigurerAdapter {
+    @Bean
+    public UserDetailsServiceImpl userDetailsService() {
+        return new UserDetailsServiceImpl();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+
     @Autowired
     public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder)
             throws Exception {
@@ -31,19 +52,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    public AccessDecisionManager accessDecisionManager() {
+        final List<AccessDecisionVoter<?>> voters = new ArrayList<>();
+        voters.add(new AccessPredicateVoter());
 
-    @Bean
-    public UserDetailsServiceImpl userDetailsService() {
-        return new UserDetailsServiceImpl();
-    }
-
-    @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
+        return new UnanimousBased(voters);
     }
 
     @Override

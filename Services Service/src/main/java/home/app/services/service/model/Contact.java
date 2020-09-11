@@ -1,5 +1,6 @@
 package home.app.services.service.model;
 
+import home.app.grpc.api.model.Address;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,7 +15,6 @@ import javax.validation.constraints.Pattern;
 public class Contact {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(unique = true, nullable = false)
     private Long id;
 
     @Column(unique = true, nullable = false)

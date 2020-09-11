@@ -66,6 +66,7 @@ export class AccommodationRequestComponent implements OnInit, AfterViewInit {
 
     grpc.invoke(ServicesService.GetAccommodationRequests, {
       request: request,
+      metadata: {Authorization: `Bearer ${this.tokenService.token}`},
       host: environment.servicesServiceHost,
       onMessage: (res: AccommodationRequestResponse) => {
         const accommodation_request = res.getAccommodationRequest();
@@ -98,6 +99,7 @@ export class AccommodationRequestComponent implements OnInit, AfterViewInit {
     grpc.unary(HouseholdService.GetHousehold, {
       request: request,
       host: environment.householdServiceHost,
+      metadata: {Authorization: `Bearer ${this.tokenService.token}`},
       onEnd: (output: UnaryOutput<HouseholdResponse>) => {
         if (output.status === grpc.Code.OK) {
           this.household = output.message.getHousehold().getId();
@@ -118,6 +120,7 @@ export class AccommodationRequestComponent implements OnInit, AfterViewInit {
     grpc.invoke(ServicesService.GetAccommodationRequestsForAdministrator, {
       request: request,
       host: environment.servicesServiceHost,
+      metadata: {Authorization: `Bearer ${this.tokenService.token}`},
       onMessage: (res: AccommodationRequestResponse) => {
         const accommodation_request = res.getAccommodationRequest();
 
@@ -151,6 +154,7 @@ export class AccommodationRequestComponent implements OnInit, AfterViewInit {
     grpc.unary(ServicesService.DecideAccommodationRequest, {
       request: request,
       host: environment.servicesServiceHost,
+      metadata: {Authorization: `Bearer ${this.tokenService.token}`},
       onEnd: (output: UnaryOutput<SuccessResponse>) => {
         if (output.status === grpc.Code.OK) {
           this.getAccommodationRequestsForAdministrator();

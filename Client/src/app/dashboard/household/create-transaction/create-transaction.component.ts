@@ -9,6 +9,7 @@ import {SnackbarService} from '../../../services/snackbar.service';
 import {Period, TransactionMessage} from "../../../proto/generated/transaction_message_pb";
 import {CreateOrEditTransactionRequest} from "../../../proto/generated/household_service_pb";
 import {HouseholdService} from "../../../proto/generated/household_service_pb_service";
+import {TokenService} from "../../../services/token.service";
 
 @Component({
   selector: 'app-create-transaction',
@@ -49,7 +50,8 @@ export class CreateTransactionComponent implements OnInit {
   );
 
   constructor(public dialogRef: MatDialogRef<CreateTransactionComponent>, private adapter: DateAdapter<any>,
-              private snackbarService: SnackbarService, @Inject(MAT_DIALOG_DATA) public data: any) {
+              private snackbarService: SnackbarService, @Inject(MAT_DIALOG_DATA) public data: any,
+              private tokenService: TokenService) {
   }
 
   ngOnInit(): void {
@@ -88,6 +90,7 @@ export class CreateTransactionComponent implements OnInit {
     grpc.unary(HouseholdService.CreateTransaction, {
       request,
       host: 'http://localhost:8079',
+      metadata: {Authorization: `Bearer ${this.tokenService.token}`},
       onEnd: res => {
         if (res.status === grpc.Code.OK) {
           this.dialogRef.close(true);

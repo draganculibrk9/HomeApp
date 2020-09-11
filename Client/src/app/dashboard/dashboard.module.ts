@@ -22,7 +22,6 @@ import {CreateTransactionComponent} from './household/create-transaction/create-
 import {MatDialogModule} from '@angular/material/dialog';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatSelectModule} from '@angular/material/select';
-import {DirectiveModule} from '../directives/directive.module';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {EditTransactionComponent} from './household/edit-transaction/edit-transaction.component';
@@ -36,8 +35,9 @@ import {MatStepperModule} from "@angular/material/stepper";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {MatSliderModule} from "@angular/material/slider";
 import {Ng5SliderModule} from "ng5-slider";
-import { CreateOrEditAccommodationComponent } from './service/create-or-edit-accommodation/create-or-edit-accommodation.component';
-import { RequestAccommodationComponent } from './service/request-accommodation/request-accommodation.component';
+import {CreateOrEditAccommodationComponent} from './service/create-or-edit-accommodation/create-or-edit-accommodation.component';
+import {RequestAccommodationComponent} from './service/request-accommodation/request-accommodation.component';
+import {DirectiveModule} from "../directives/directive.module";
 
 @NgModule({
   declarations: [DashboardComponent, ToolbarComponent, HouseholdComponent, ServiceComponent, TransactionComponent, CreateTransactionComponent, EditTransactionComponent, UserComponent, AccommodationRequestComponent, ServiceDetailsComponent, CreateServiceComponent, CreateOrEditAccommodationComponent, RequestAccommodationComponent],
@@ -59,7 +59,6 @@ import { RequestAccommodationComponent } from './service/request-accommodation/r
     MatDialogModule,
     ReactiveFormsModule,
     MatSelectModule,
-    DirectiveModule,
     MatGridListModule,
     MatPaginatorModule,
     MatTableModule,
@@ -68,6 +67,7 @@ import { RequestAccommodationComponent } from './service/request-accommodation/r
     MatCheckboxModule,
     MatSliderModule,
     Ng5SliderModule,
+    DirectiveModule
   ],
   providers: [
     DatePipe

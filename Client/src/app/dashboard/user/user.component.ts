@@ -9,6 +9,8 @@ import {SnackbarService} from "../../services/snackbar.service";
 import {SuccessResponse} from "../../proto/generated/household_service_pb";
 import UnaryOutput = grpc.UnaryOutput;
 import {UserRow} from "../../model/user-row";
+import {TokenService} from "../../services/token.service";
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: 'app-user',
@@ -22,7 +24,7 @@ export class UserComponent implements AfterViewInit {
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
-  constructor(private snackbarService: SnackbarService) {
+  constructor(private snackbarService: SnackbarService, private tokenService: TokenService) {
   }
 
   ngAfterViewInit() {
@@ -35,7 +37,8 @@ export class UserComponent implements AfterViewInit {
 
     grpc.invoke(AuthService.GetUsers, {
       request: request,
-      host: 'http://localhost:8080',
+      host: environment.authServiceHost,
+      metadata: {Authorization: `Bearer ${this.tokenService.token}`},
       onMessage: (res: UserResponse) => {
         users.push({
           id: res.getUser().getId(),
@@ -63,9 +66,10 @@ export class UserComponent implements AfterViewInit {
 
     grpc.unary(AuthService.ToggleBlockOnUser, {
       request: request,
-      host: 'http://localhost:8080',
+      host: environment.authServiceHost,
+      metadata: {Authorization: `Bearer ${this.tokenService.token}`},
       onEnd: (output: UnaryOutput<SuccessResponse>) => {
-        if (output.message.getSuccess()) {
+        if (output.status === grpc.Code.OK && output.message.getSuccess()) {
           this.snackbarService.displayMessage("User block status toggled successfully");
           this.getUsers();
         } else {
