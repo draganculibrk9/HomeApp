@@ -1,21 +1,21 @@
 package home.app.auth.service.services;
 
-import home.app.auth.service.security.TokenService;
 import home.app.grpc.*;
 import home.app.grpc.api.mappers.UserMapper;
 import home.app.grpc.api.model.User;
 import home.app.grpc.api.model.UserRole;
 import home.app.grpc.api.repositories.UserRepository;
+import home.app.grpc.api.security.TokenBasedAuthentication;
+import home.app.grpc.api.security.TokenService;
 import home.app.grpc.api.services.UserDetailsServiceImpl;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
@@ -30,9 +30,6 @@ public class AuthService extends AuthServiceGrpc.AuthServiceImplBase {
     private UserMapper userMapper;
 
     @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
     private TokenService tokenService;
 
     @Autowired
@@ -40,6 +37,12 @@ public class AuthService extends AuthServiceGrpc.AuthServiceImplBase {
 
     @GrpcClient("householdService")
     private HouseholdServiceGrpc.HouseholdServiceBlockingStub householdServiceStub;
+
+    @GrpcClient("householdService")
+    private AuthServiceGrpc.AuthServiceBlockingStub householdServiceAuth;
+
+    @GrpcClient("servicesService")
+    private AuthServiceGrpc.AuthServiceBlockingStub servicesServiceAuth;
 
     @Override
     public void register(RegistrationRequest request, StreamObserver<RegistrationResponse> responseObserver) {
@@ -65,6 +68,8 @@ public class AuthService extends AuthServiceGrpc.AuthServiceImplBase {
                 );
                 return;
             }
+            householdServiceAuth.register(request);
+            servicesServiceAuth.register(request);
 
             RegistrationResponse response = RegistrationResponse.newBuilder().setUserId(newUser.getId()).build();
             responseObserver.onNext(response);
@@ -82,14 +87,11 @@ public class AuthService extends AuthServiceGrpc.AuthServiceImplBase {
     @Override
     public void login(LoginRequest request, StreamObserver<LoginResponse> responseObserver) {
         LoginMessage loginMessage = request.getLogin();
-        Authentication authentication;
         try {
-            authentication =
-                    authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginMessage.getEmail(),
-                            loginMessage.getPassword()));
+            UserDetails userDetails = userDetailsService.loadUserByUsername(loginMessage.getEmail());
+            String token = tokenService.generateToken(userDetails);
+            Authentication authentication = new TokenBasedAuthentication(userDetails, token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            String token = tokenService.generateToken((User) authentication.getPrincipal());
 
             LoginResponse response = LoginResponse.newBuilder().setToken(token).build();
             responseObserver.onNext(response);
@@ -148,31 +150,5 @@ public class AuthService extends AuthServiceGrpc.AuthServiceImplBase {
                 .build();
         responseObserver.onNext(response);
         responseObserver.onCompleted();
-    }
-
-    @Override
-    public void validateToken(ValidateTokenRequest request, StreamObserver<SuccessResponse> responseObserver) {
-        String token = request.getToken();
-
-        try {
-            boolean result = validateToken(token);
-
-            responseObserver.onNext(
-                    SuccessResponse.newBuilder()
-                            .setSuccess(result)
-                            .build()
-            );
-            responseObserver.onCompleted();
-        } catch (Exception e) {
-            responseObserver.onNext(
-                    SuccessResponse.newBuilder()
-                            .setSuccess(false)
-                            .build()
-            );
-        }
-    }
-
-    public boolean validateToken(String token) {
-        return tokenService.validateToken(token, userDetailsService.loadUserByUsername(tokenService.getEmailFromToken(token)));
     }
 }

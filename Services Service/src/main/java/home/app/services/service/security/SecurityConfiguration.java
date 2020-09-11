@@ -1,5 +1,6 @@
 package home.app.services.service.security;
 
+import home.app.grpc.AuthServiceGrpc;
 import home.app.grpc.ServicesServiceGrpc;
 import home.app.grpc.api.security.BaseSecurityConfiguration;
 import net.devh.boot.grpc.server.security.check.AccessPredicate;
@@ -31,6 +32,7 @@ public class SecurityConfiguration {
         source.set(ServicesServiceGrpc.METHOD_GET_ACCOMMODATION_REQUESTS, AccessPredicate.hasRole("USER"));
         source.set(ServicesServiceGrpc.METHOD_DECIDE_ACCOMMODATION_REQUEST, AccessPredicate.hasRole("SERVICE_ADMINISTRATOR"));
         source.set(ServicesServiceGrpc.METHOD_REQUEST_ACCOMMODATION, AccessPredicate.hasRole("USER"));
+        source.set(AuthServiceGrpc.METHOD_REGISTER, AccessPredicate.permitAll());
 
         source.setDefault(AccessPredicate.denyAll());
 

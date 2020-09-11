@@ -20,7 +20,6 @@ public class SecurityConfiguration {
         source.set(AuthServiceGrpc.METHOD_REGISTER, AccessPredicate.permitAll());
         source.set(AuthServiceGrpc.METHOD_GET_USERS, AccessPredicate.hasRole("SYSTEM_ADMINISTRATOR"));
         source.set(AuthServiceGrpc.METHOD_TOGGLE_BLOCK_ON_USER, AccessPredicate.hasRole("SYSTEM_ADMINISTRATOR"));
-        source.set(AuthServiceGrpc.METHOD_VALIDATE_TOKEN, AccessPredicate.authenticated());
 
         source.setDefault(AccessPredicate.denyAll());
 

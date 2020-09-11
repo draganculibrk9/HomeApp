@@ -1,5 +1,6 @@
 package home.app.household.service.security;
 
+import home.app.grpc.AuthServiceGrpc;
 import home.app.grpc.HouseholdServiceGrpc;
 import home.app.grpc.api.security.BaseSecurityConfiguration;
 import net.devh.boot.grpc.server.security.check.AccessPredicate;
@@ -24,6 +25,7 @@ public class SecurityConfiguration {
         source.set(HouseholdServiceGrpc.METHOD_EDIT_TRANSACTION, AccessPredicate.hasRole("USER"));
         source.set(HouseholdServiceGrpc.METHOD_CREATE_TRANSACTION, AccessPredicate.hasRole("USER"));
         source.set(HouseholdServiceGrpc.METHOD_DELETE_TRANSACTION, AccessPredicate.hasRole("USER"));
+        source.set(AuthServiceGrpc.METHOD_REGISTER, AccessPredicate.permitAll());
 
         source.setDefault(AccessPredicate.denyAll());
 

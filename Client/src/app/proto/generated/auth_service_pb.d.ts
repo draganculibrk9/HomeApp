@@ -148,23 +148,3 @@ export namespace GetUsersRequest {
   }
 }
 
-export class ValidateTokenRequest extends jspb.Message {
-  getToken(): string;
-  setToken(value: string): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): ValidateTokenRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: ValidateTokenRequest): ValidateTokenRequest.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: ValidateTokenRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): ValidateTokenRequest;
-  static deserializeBinaryFromReader(message: ValidateTokenRequest, reader: jspb.BinaryReader): ValidateTokenRequest;
-}
-
-export namespace ValidateTokenRequest {
-  export type AsObject = {
-    token: string,
-  }
-}
-
