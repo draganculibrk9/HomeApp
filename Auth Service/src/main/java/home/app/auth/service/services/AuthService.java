@@ -5,7 +5,6 @@ import home.app.grpc.api.mappers.UserMapper;
 import home.app.grpc.api.model.User;
 import home.app.grpc.api.model.UserRole;
 import home.app.grpc.api.repositories.UserRepository;
-import home.app.grpc.api.security.TokenBasedAuthentication;
 import home.app.grpc.api.security.TokenService;
 import home.app.grpc.api.services.UserDetailsServiceImpl;
 import io.grpc.Status;
@@ -13,6 +12,8 @@ import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -43,6 +44,9 @@ public class AuthService extends AuthServiceGrpc.AuthServiceImplBase {
 
     @GrpcClient("servicesService")
     private AuthServiceGrpc.AuthServiceBlockingStub servicesServiceAuth;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     @Override
     public void register(RegistrationRequest request, StreamObserver<RegistrationResponse> responseObserver) {
@@ -88,10 +92,11 @@ public class AuthService extends AuthServiceGrpc.AuthServiceImplBase {
     public void login(LoginRequest request, StreamObserver<LoginResponse> responseObserver) {
         LoginMessage loginMessage = request.getLogin();
         try {
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginMessage.getEmail(), loginMessage.getPassword()));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
             UserDetails userDetails = userDetailsService.loadUserByUsername(loginMessage.getEmail());
             String token = tokenService.generateToken(userDetails);
-            Authentication authentication = new TokenBasedAuthentication(userDetails, token);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
 
             LoginResponse response = LoginResponse.newBuilder().setToken(token).build();
             responseObserver.onNext(response);
