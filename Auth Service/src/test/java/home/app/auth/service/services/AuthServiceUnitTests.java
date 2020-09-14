@@ -1,6 +1,6 @@
 package home.app.auth.service.services;
 
-import home.app.auth.service.configs.AuthServiceTestConfig;
+import home.app.auth.service.configurations.AuthServiceTestConfiguration;
 import home.app.grpc.*;
 import home.app.grpc.api.mappers.UserMapper;
 import home.app.grpc.api.mappers.UserRoleMapper;
@@ -13,48 +13,45 @@ import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.internal.testing.StreamRecorder;
 import net.devh.boot.grpc.client.inject.GrpcClient;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.*;
-import static org.mockito.BDDMockito.given;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.util.AssertionErrors.fail;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE,
-        properties = {
-                "grpc.server.inProcessName=test", // Enable inProcess server
-                "grpc.server.port=-1", // Disable external server
-                "grpc.client.householdService.address=in-process:test", // Configure the client to connect to the inProcess server
-                "grpc.client.servicesService.address=in-process:test"
-        })
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringJUnitConfig(AuthServiceTestConfig.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
+@ContextConfiguration(classes = {UserDetailsServiceImpl.class, AuthService.class,
+        BCryptPasswordEncoder.class, UserRoleMapper.class})
 @DirtiesContext
+@SpringJUnitConfig(AuthServiceTestConfiguration.class)
 public class AuthServiceUnitTests {
-    @Autowired
+    @GrpcClient("test")
     private HouseholdServiceGrpc.HouseholdServiceBlockingStub householdServiceStubMocked;
 
-    @GrpcClient("householdService")
+    @GrpcClient("test")
     private AuthServiceGrpc.AuthServiceBlockingStub householdServiceAuthMocked;
 
-    @GrpcClient("servicesService")
+    @GrpcClient("test")
     private AuthServiceGrpc.AuthServiceBlockingStub servicesServiceAuthMocked;
 
     @Autowired
@@ -82,7 +79,6 @@ public class AuthServiceUnitTests {
     private AuthenticationManager authenticationManager;
 
     @Test
-    @DirtiesContext
     public void register_emailExists_AlreadyExistsStatus() throws Exception {
         AddressMessage addressMessage = AddressMessage.newBuilder()
                 .setStreet("street")
@@ -125,8 +121,7 @@ public class AuthServiceUnitTests {
         assertEquals(expected.getMessage(), responseObserver.getError().getMessage());
     }
 
-    @Test
-    @DirtiesContext // :TODO mock
+    @Test // :TODO mock
     public void register_ok_RegistrationResponseReturned() throws Exception {
         AddressMessage addressMessage = AddressMessage.newBuilder()
                 .setStreet("street")
@@ -176,10 +171,10 @@ public class AuthServiceUnitTests {
         when(userRepositoryMocked.findByEmail(email)).thenReturn(null);
         when(userMapperMocked.toEntity(userMessage)).thenReturn(beforeSave);
         when(userRepositoryMocked.save(beforeSave)).thenReturn(afterSave);
-        given(householdServiceStubMocked.createHousehold(HouseholdRequest.newBuilder().setOwner(afterSave.getEmail()).build()))
-                .willReturn(SuccessResponse.newBuilder().setSuccess(true).build());
-        given(householdServiceAuthMocked.register(request)).willReturn(RegistrationResponse.newBuilder().setUserId(id).build());
-        given(servicesServiceAuthMocked.register(request)).willReturn(RegistrationResponse.newBuilder().setUserId(id).build());
+        when(householdServiceStubMocked.createHousehold(HouseholdRequest.newBuilder().setOwner(afterSave.getEmail()).build()))
+                .thenReturn(SuccessResponse.newBuilder().setSuccess(true).build());
+        when(householdServiceAuthMocked.register(request)).thenReturn(RegistrationResponse.newBuilder().setUserId(id).build());
+        when(servicesServiceAuthMocked.register(request)).thenReturn(RegistrationResponse.newBuilder().setUserId(id).build());
 
         StreamRecorder<RegistrationResponse> responseObserver = StreamRecorder.create();
 
@@ -200,7 +195,6 @@ public class AuthServiceUnitTests {
     }
 
     @Test
-    @DirtiesContext
     public void login_badCredentials_InvalidArgumentStatus() throws Exception {
         String email = "user@user.com";
         String password = "password";
@@ -235,7 +229,6 @@ public class AuthServiceUnitTests {
     }
 
     @Test
-    @DirtiesContext
     public void login_okCredentials_LoginResponseReturned() throws Exception {
         String email = "user@user.com";
         String password = "password";
@@ -281,7 +274,6 @@ public class AuthServiceUnitTests {
     }
 
     @Test
-    @DirtiesContext
     public void toggleBlockOnUser_userNotFound_NotFoundStatusReturned() throws Exception {
         long id = 0L;
 
@@ -310,7 +302,6 @@ public class AuthServiceUnitTests {
     }
 
     @Test
-    @DirtiesContext
     public void toggleBlockOnUser_userFound_SuccessResponseReturned() throws Exception {
         long id = 0L;
 
