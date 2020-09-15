@@ -1,9 +1,7 @@
 package home.app.services.service.model;
 
 import home.app.grpc.api.model.Address;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
@@ -12,6 +10,8 @@ import javax.validation.constraints.Pattern;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder(toBuilder = true)
 public class Contact {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
