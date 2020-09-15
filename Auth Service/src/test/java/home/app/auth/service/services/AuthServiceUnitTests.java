@@ -1,6 +1,6 @@
 package home.app.auth.service.services;
 
-import home.app.auth.service.configurations.AuthServiceTestConfiguration;
+import home.app.auth.configurations.AuthServiceUnitTestsConfiguration;
 import home.app.grpc.*;
 import home.app.grpc.api.mappers.UserMapper;
 import home.app.grpc.api.mappers.UserRoleMapper;
@@ -9,51 +9,51 @@ import home.app.grpc.api.model.User;
 import home.app.grpc.api.repositories.UserRepository;
 import home.app.grpc.api.security.TokenService;
 import home.app.grpc.api.services.UserDetailsServiceImpl;
+import io.grpc.Server;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
+import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.internal.testing.StreamRecorder;
-import net.devh.boot.grpc.client.inject.GrpcClient;
+import io.grpc.stub.StreamObserver;
+import io.grpc.testing.GrpcCleanupRule;
+import net.devh.boot.grpc.client.config.GrpcChannelsProperties;
+import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.AdditionalAnswers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.util.AssertionErrors.fail;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, classes = AuthServiceUnitTestsConfiguration.class)
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
-@ContextConfiguration(classes = {UserDetailsServiceImpl.class, AuthService.class,
-        BCryptPasswordEncoder.class, UserRoleMapper.class})
 @DirtiesContext
-@SpringJUnitConfig(AuthServiceTestConfiguration.class)
 public class AuthServiceUnitTests {
-    @GrpcClient("test")
-    private HouseholdServiceGrpc.HouseholdServiceBlockingStub householdServiceStubMocked;
-
-    @GrpcClient("test")
-    private AuthServiceGrpc.AuthServiceBlockingStub householdServiceAuthMocked;
-
-    @GrpcClient("test")
-    private AuthServiceGrpc.AuthServiceBlockingStub servicesServiceAuthMocked;
-
     @Autowired
     private AuthService authService;
 
@@ -73,10 +73,13 @@ public class AuthServiceUnitTests {
     private TokenService tokenServiceMocked;
 
     @MockBean
-    private UserDetailsServiceImpl userDetailsServiceMocked;
-
-    @MockBean
     private AuthenticationManager authenticationManager;
+
+    @Rule
+    private final GrpcCleanupRule grpcCleanup = new GrpcCleanupRule();
+
+    @Autowired
+    private GrpcChannelsProperties grpcChannelsProperties;
 
     @Test
     public void register_emailExists_AlreadyExistsStatus() throws Exception {
@@ -121,8 +124,36 @@ public class AuthServiceUnitTests {
         assertEquals(expected.getMessage(), responseObserver.getError().getMessage());
     }
 
-    @Test // :TODO mock
-    public void register_ok_RegistrationResponseReturned() throws Exception {
+    @Test
+    public void register_everythingOk_RegistrationResponseReturned() throws Exception {
+        HouseholdServiceGrpc.HouseholdServiceImplBase householdServiceImplBase = mock(HouseholdServiceGrpc.HouseholdServiceImplBase.class,
+                AdditionalAnswers.delegatesTo(new HouseholdServiceGrpc.HouseholdServiceImplBase() {
+                    @Override
+                    public void createHousehold(HouseholdRequest request, StreamObserver<SuccessResponse> responseObserver) {
+                        responseObserver.onNext(SuccessResponse.newBuilder().setSuccess(true).build());
+                        responseObserver.onCompleted();
+                    }
+                }));
+
+        AuthServiceGrpc.AuthServiceImplBase authServiceImplBase = mock(AuthServiceGrpc.AuthServiceImplBase.class,
+                AdditionalAnswers.delegatesTo(new AuthServiceGrpc.AuthServiceImplBase() {
+                    @Override
+                    public void register(RegistrationRequest request, StreamObserver<RegistrationResponse> responseObserver) {
+                        responseObserver.onNext(RegistrationResponse.newBuilder().setUserId(0L).build());
+                        responseObserver.onCompleted();
+                    }
+                }));
+
+        Server server = grpcCleanup.register(
+                InProcessServerBuilder
+                        .forName(grpcChannelsProperties.getGlobalChannel().getAddress().getSchemeSpecificPart())
+                        .directExecutor()
+                        .addService(householdServiceImplBase)
+                        .addService(authServiceImplBase)
+                        .build()
+                        .start()
+        );
+
         AddressMessage addressMessage = AddressMessage.newBuilder()
                 .setStreet("street")
                 .setNumber(1)
@@ -171,10 +202,6 @@ public class AuthServiceUnitTests {
         when(userRepositoryMocked.findByEmail(email)).thenReturn(null);
         when(userMapperMocked.toEntity(userMessage)).thenReturn(beforeSave);
         when(userRepositoryMocked.save(beforeSave)).thenReturn(afterSave);
-        when(householdServiceStubMocked.createHousehold(HouseholdRequest.newBuilder().setOwner(afterSave.getEmail()).build()))
-                .thenReturn(SuccessResponse.newBuilder().setSuccess(true).build());
-        when(householdServiceAuthMocked.register(request)).thenReturn(RegistrationResponse.newBuilder().setUserId(id).build());
-        when(servicesServiceAuthMocked.register(request)).thenReturn(RegistrationResponse.newBuilder().setUserId(id).build());
 
         StreamRecorder<RegistrationResponse> responseObserver = StreamRecorder.create();
 
@@ -192,6 +219,8 @@ public class AuthServiceUnitTests {
 
         RegistrationResponse response = results.get(0);
         assertEquals(id, response.getUserId());
+
+        server.shutdown().awaitTermination();
     }
 
     @Test
@@ -229,6 +258,7 @@ public class AuthServiceUnitTests {
     }
 
     @Test
+    @WithUserDetails(value = "user@user.com")
     public void login_okCredentials_LoginResponseReturned() throws Exception {
         String email = "user@user.com";
         String password = "password";
@@ -249,8 +279,6 @@ public class AuthServiceUnitTests {
                 .email(email)
                 .password(password)
                 .build();
-
-        when(userDetailsServiceMocked.loadUserByUsername(email)).thenReturn(user);
 
         String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
         when(tokenServiceMocked.generateToken(user)).thenReturn(token);
