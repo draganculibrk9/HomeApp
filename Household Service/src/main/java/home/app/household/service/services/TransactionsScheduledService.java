@@ -19,12 +19,16 @@ public class TransactionsScheduledService {
 
     @Scheduled(cron = "0 0 0 * * *")
     public void calculateBalances() {
-        householdRepository.findAll().forEach(this::calculateBalanceForHousehold);
+        householdRepository.findAll().forEach(h -> {
+            h.setBalance(calculateBalanceForHousehold(h));
+            householdRepository.save(h);
+        });
     }
 
-    private void calculateBalanceForHousehold(Household household) {
+    private Double calculateBalanceForHousehold(Household household) {
         Date today = new Date();
-        Double balance = household.getTransactions().stream()
+
+        return household.getTransactions().stream()
                 .filter(t -> isSameDay(today, t.getDate()))
                 .reduce(household.getBalance(), (subtotal, transaction) -> {
                     if (transaction.getType().equals(TransactionType.INCOME)) {
@@ -33,10 +37,6 @@ public class TransactionsScheduledService {
                         return subtotal - transaction.getAmount();
                     }
                 }, Double::sum);
-
-        household.setBalance(balance);
-
-        householdRepository.save(household);
     }
 
     private boolean isSameDay(Date date1, Date date2) {

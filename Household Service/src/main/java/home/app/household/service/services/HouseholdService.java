@@ -116,15 +116,6 @@ public class HouseholdService extends HouseholdServiceGrpc.HouseholdServiceImplB
 
     @Override
     public void editTransaction(CreateOrEditTransactionRequest request, StreamObserver<SuccessResponse> responseObserver) {
-        if (!request.getTransaction().hasField(request.getTransaction().getDescriptorForType().findFieldByName("id"))) {
-            responseObserver.onError(
-                    Status.INVALID_ARGUMENT
-                            .withDescription("Transaction id must be provided")
-                            .asRuntimeException()
-            );
-            return;
-        }
-
         Transaction transaction = transactionMapper.toEntity(request.getTransaction());
 
         if (!transactionRepository.findById(transaction.getId()).isPresent()) {
@@ -172,15 +163,6 @@ public class HouseholdService extends HouseholdServiceGrpc.HouseholdServiceImplB
 
     @Override
     public void deleteTransaction(GetOrDeleteTransactionRequest request, StreamObserver<SuccessResponse> responseObserver) {
-        if (!request.hasField(request.getDescriptorForType().findFieldByName("transaction_id"))) {
-            responseObserver.onError(
-                    Status.INVALID_ARGUMENT
-                            .withDescription("Transaction id must be provided")
-                            .asRuntimeException()
-            );
-            return;
-        }
-
         Household household = householdRepository.getByTransactionId(request.getTransactionId());
 
         if (household == null) {
