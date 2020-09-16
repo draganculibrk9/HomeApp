@@ -26,17 +26,19 @@ VALUES (7, FALSE, 'user1@user.com', 'User1', 'User1', '$2a$10$f8ZpJpFXq8j.Jygg/s
 
 INSERT INTO HOUSEHOLD
 VALUES (13, 0.0, 'user1@user.com'),
-       (14, 100000.0, 'user1@user.com'),
-       (15, -50000.0, 'user1@user.com');
+       (14, 100000.0, 'user2@user.com'),
+       (15, -50000.0, 'user3@user.com');
 
 INSERT INTO TRANSACTION
 VALUES ('Transaction', 16, 30000.0, DATE '2020-09-16', 'Bonus', 'INCOME', NULL, NULL),
-       ('Transaction', 16, 30000.0, DATE '2020-09-16', 'Bonus', 'INCOME', NULL, NULL),
-       ('Transaction', 16, 30000.0, DATE '2020-09-16', 'Bonus', 'INCOME', NULL, NULL),
-       ('Transaction', 16, 30000.0, DATE '2020-09-16', 'Bonus', 'INCOME', NULL, NULL),
-       ('Transaction', 16, 30000.0, DATE '2020-09-16', 'Bonus', 'INCOME', NULL, NULL),
-       ('Transaction', 16, 30000.0, DATE '2020-09-16', 'Bonus', 'INCOME', NULL, NULL),
-       ('Transaction', 16, 30000.0, DATE '2020-09-16', 'Bonus', 'INCOME', NULL, NULL),
-       ('Transaction', 16, 30000.0, DATE '2020-09-16', 'Bonus', 'INCOME', NULL, NULL),
-       ('Transaction', 16, 30000.0, DATE '2020-09-16', 'Bonus', 'INCOME', NULL, NULL);
-// :TODO: finish script
+       ('PeriodicalTransaction', 17, 30000.0, DATE '2020-09-16', 'Expenses', 'EXPENDITURE', NULL, 'MONTH'),
+       ('MultipleTimesTransaction', 18, 20000.0, DATE '2020-09-16', 'Rent', 'INCOME', 5, NULL),
+       ('Transaction', 19, 5000.0, DATE '2020-08-16', 'Transaction1', 'INCOME', NULL, NULL),
+       ('Transaction', 20, 45000.0, DATE '2020-09-14', 'New dishwasher expense', 'EXPENDITURE', NULL, NULL);
+
+INSERT INTO HOUSEHOLD_TRANSACTIONS
+VALUES (13, 16),
+       (13, 17),
+       (14, 18),
+       (15, 19),
+       (15, 20);
