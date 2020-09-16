@@ -28,6 +28,7 @@ public class TransactionsScheduledService {
     private Double calculateBalanceForHousehold(Household household) {
         Date today = new Date();
 
+        // :TODO: handle other kinds of transactions
         return household.getTransactions().stream()
                 .filter(t -> isSameDay(today, t.getDate()))
                 .reduce(household.getBalance(), (subtotal, transaction) -> {
