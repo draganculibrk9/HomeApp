@@ -1,11 +1,11 @@
 package home.app.auth.service.services;
 
-import home.app.auth.configurations.AuthServiceUnitTestsConfiguration;
 import home.app.grpc.*;
 import home.app.grpc.api.mappers.UserMapper;
 import home.app.grpc.api.mappers.UserRoleMapper;
 import home.app.grpc.api.model.Address;
 import home.app.grpc.api.model.User;
+import home.app.grpc.api.model.UserRole;
 import home.app.grpc.api.repositories.UserRepository;
 import home.app.grpc.api.security.TokenService;
 import home.app.grpc.api.services.UserDetailsServiceImpl;
@@ -16,26 +16,23 @@ import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.internal.testing.StreamRecorder;
 import io.grpc.stub.StreamObserver;
 import io.grpc.testing.GrpcCleanupRule;
+import net.devh.boot.grpc.client.autoconfigure.GrpcClientAutoConfiguration;
 import net.devh.boot.grpc.client.config.GrpcChannelsProperties;
-import org.junit.Ignore;
+import net.devh.boot.grpc.server.autoconfigure.GrpcServerAutoConfiguration;
+import net.devh.boot.grpc.server.autoconfigure.GrpcServerFactoryAutoConfiguration;
 import org.junit.Rule;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.AdditionalAnswers;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -49,10 +46,16 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.util.AssertionErrors.fail;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, classes = AuthServiceUnitTestsConfiguration.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, classes = {AuthService.class,
+        BCryptPasswordEncoder.class, UserRoleMapper.class, GrpcChannelsProperties.class})
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @DirtiesContext
+@ImportAutoConfiguration({
+        GrpcServerAutoConfiguration.class,
+        GrpcServerFactoryAutoConfiguration.class,
+        GrpcClientAutoConfiguration.class
+})
 public class AuthServiceUnitTests {
     @Autowired
     private AuthService authService;
@@ -74,6 +77,9 @@ public class AuthServiceUnitTests {
 
     @MockBean
     private AuthenticationManager authenticationManager;
+
+    @MockBean
+    private UserDetailsServiceImpl userDetailsService;
 
     @Rule
     private final GrpcCleanupRule grpcCleanup = new GrpcCleanupRule();
@@ -258,7 +264,6 @@ public class AuthServiceUnitTests {
     }
 
     @Test
-    @WithUserDetails(value = "user@user.com")
     public void login_okCredentials_LoginResponseReturned() throws Exception {
         String email = "user@user.com";
         String password = "password";
@@ -278,7 +283,16 @@ public class AuthServiceUnitTests {
         User user = User.builder()
                 .email(email)
                 .password(password)
+                .phone("")
+                .lastName("ln")
+                .firstName("fn")
+                .address(Address.builder().build())
+                .role(UserRole.USER)
+                .blocked(false)
+                .id(0L)
                 .build();
+
+        when(userDetailsService.loadUserByUsername(loginMessage.getEmail())).thenReturn(user);
 
         String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
         when(tokenServiceMocked.generateToken(user)).thenReturn(token);
