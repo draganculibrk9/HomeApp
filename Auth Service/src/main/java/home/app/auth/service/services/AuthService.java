@@ -17,6 +17,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
@@ -88,6 +89,7 @@ public class AuthService extends AuthServiceGrpc.AuthServiceImplBase {
     }
 
 
+    @Transactional(propagation = Propagation.NEVER)
     @Override
     public void login(LoginRequest request, StreamObserver<LoginResponse> responseObserver) {
         LoginMessage loginMessage = request.getLogin();

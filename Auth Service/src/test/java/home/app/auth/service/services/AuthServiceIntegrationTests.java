@@ -1,14 +1,6 @@
 package home.app.auth.service.services;
 
 import home.app.grpc.*;
-import home.app.grpc.api.mappers.UserMapper;
-import home.app.grpc.api.mappers.UserRoleMapper;
-import home.app.grpc.api.model.Address;
-import home.app.grpc.api.model.User;
-import home.app.grpc.api.model.UserRole;
-import home.app.grpc.api.repositories.UserRepository;
-import home.app.grpc.api.security.TokenService;
-import home.app.grpc.api.services.UserDetailsServiceImpl;
 import io.grpc.Server;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
@@ -16,70 +8,33 @@ import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.internal.testing.StreamRecorder;
 import io.grpc.stub.StreamObserver;
 import io.grpc.testing.GrpcCleanupRule;
-import net.devh.boot.grpc.client.autoconfigure.GrpcClientAutoConfiguration;
 import net.devh.boot.grpc.client.config.GrpcChannelsProperties;
-import net.devh.boot.grpc.server.autoconfigure.GrpcServerAutoConfiguration;
-import net.devh.boot.grpc.server.autoconfigure.GrpcServerFactoryAutoConfiguration;
 import org.junit.Rule;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.AdditionalAnswers;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.util.AssertionErrors.fail;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, classes = {AuthService.class,
-        BCryptPasswordEncoder.class, UserRoleMapper.class, GrpcChannelsProperties.class})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @DirtiesContext
-@ImportAutoConfiguration({
-        GrpcServerAutoConfiguration.class,
-        GrpcServerFactoryAutoConfiguration.class,
-        GrpcClientAutoConfiguration.class
-})
-public class AuthServiceUnitTests {
+public class AuthServiceIntegrationTests {
     @Autowired
     private AuthService authService;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private UserRoleMapper userRoleMapper;
-
-    @MockBean
-    private UserRepository userRepositoryMocked;
-
-    @MockBean
-    private UserMapper userMapperMocked;
-
-    @MockBean
-    private TokenService tokenServiceMocked;
-
-    @MockBean
-    private AuthenticationManager authenticationManager;
-
-    @MockBean
-    private UserDetailsServiceImpl userDetailsService;
 
     @Rule
     private final GrpcCleanupRule grpcCleanup = new GrpcCleanupRule();
@@ -96,7 +51,7 @@ public class AuthServiceUnitTests {
                 .setCity("city")
                 .build();
 
-        String email = "user@user.com";
+        String email = "user1@user.com";
         UserMessage userMessage = UserMessage.newBuilder()
                 .setRole(UserMessage.Role.USER)
                 .setPhone("+381 640085454")
@@ -111,8 +66,6 @@ public class AuthServiceUnitTests {
         RegistrationRequest request = RegistrationRequest.newBuilder()
                 .setRegistration(userMessage)
                 .build();
-
-        when(userRepositoryMocked.findByEmail(email)).thenReturn(new User());
 
         StatusRuntimeException expected = new StatusRuntimeException(Status.ALREADY_EXISTS.withDescription(String.format("User with email '%s' already exists", email)));
 
@@ -131,6 +84,8 @@ public class AuthServiceUnitTests {
     }
 
     @Test
+    @Transactional
+    @Rollback
     public void register_everythingOk_RegistrationResponseReturned() throws Exception {
         HouseholdServiceGrpc.HouseholdServiceImplBase householdServiceImplBase = mock(HouseholdServiceGrpc.HouseholdServiceImplBase.class,
                 AdditionalAnswers.delegatesTo(new HouseholdServiceGrpc.HouseholdServiceImplBase() {
@@ -167,7 +122,7 @@ public class AuthServiceUnitTests {
                 .setCity("city")
                 .build();
 
-        String email = "user@user.com";
+        String email = "newuser@user.com";
         UserMessage userMessage = UserMessage.newBuilder()
                 .setRole(UserMessage.Role.USER)
                 .setPhone("+381 640085454")
@@ -182,32 +137,6 @@ public class AuthServiceUnitTests {
         RegistrationRequest request = RegistrationRequest.newBuilder()
                 .setRegistration(userMessage)
                 .build();
-
-        Address address = new Address();
-        address.setCity(addressMessage.getCity());
-        address.setCountry(addressMessage.getCountry());
-        address.setId(0L);
-        address.setNumber(addressMessage.getNumber());
-        address.setStreet(addressMessage.getStreet());
-
-        User beforeSave = new User();
-        beforeSave.setAddress(address);
-        beforeSave.setBlocked(userMessage.getBlocked());
-        beforeSave.setEmail(userMessage.getEmail());
-        beforeSave.setFirstName(userMessage.getFirstName());
-        beforeSave.setLastName(userMessage.getLastName());
-        beforeSave.setPassword(passwordEncoder.encode(userMessage.getPassword()));
-        beforeSave.setPhone(userMessage.getPhone());
-        beforeSave.setRole(userRoleMapper.toEntity(userMessage.getRole()));
-        beforeSave.setId(null);
-
-        long id = 0L;
-        User afterSave = beforeSave.toBuilder().build();
-        afterSave.setId(id);
-
-        when(userRepositoryMocked.findByEmail(email)).thenReturn(null);
-        when(userMapperMocked.toEntity(userMessage)).thenReturn(beforeSave);
-        when(userRepositoryMocked.save(beforeSave)).thenReturn(afterSave);
 
         StreamRecorder<RegistrationResponse> responseObserver = StreamRecorder.create();
 
@@ -224,7 +153,7 @@ public class AuthServiceUnitTests {
         assertEquals(1, results.size());
 
         RegistrationResponse response = results.get(0);
-        assertEquals(id, response.getUserId());
+        assertNotNull(response);
 
         server.shutdown().awaitTermination();
     }
@@ -232,7 +161,7 @@ public class AuthServiceUnitTests {
     @Test
     public void login_badCredentials_InvalidArgumentStatus() throws Exception {
         String email = "user@user.com";
-        String password = "password";
+        String password = "jhgjdfjfhgsfd";
 
         LoginMessage loginMessage = LoginMessage.newBuilder()
                 .setEmail(email)
@@ -242,10 +171,6 @@ public class AuthServiceUnitTests {
         LoginRequest request = LoginRequest.newBuilder()
                 .setLogin(loginMessage)
                 .build();
-
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
-        when(authenticationManager.authenticate(authenticationToken)).thenThrow(new AuthenticationException("Bad credentials") {
-        });
 
         StatusRuntimeException expected = new StatusRuntimeException(Status.INVALID_ARGUMENT.withDescription("Bad credentials"));
 
@@ -260,13 +185,13 @@ public class AuthServiceUnitTests {
         assertNotNull(responseObserver.getError());
         assertEquals(StatusRuntimeException.class, responseObserver.getError().getClass());
         assertEquals(expected.getStatus().getCode(), ((StatusRuntimeException) responseObserver.getError()).getStatus().getCode());
-        assertEquals("INVALID_ARGUMENT: Bad credentials", responseObserver.getError().getMessage());
+        assertEquals(expected.getMessage(), responseObserver.getError().getMessage());
     }
 
     @Test
     public void login_userAccountLocked_InvalidArgumentStatus() throws Exception {
-        String email = "user@user.com";
-        String password = "password";
+        String email = "user3@user.com";
+        String password = "u";
 
         LoginMessage loginMessage = LoginMessage.newBuilder()
                 .setEmail(email)
@@ -276,10 +201,6 @@ public class AuthServiceUnitTests {
         LoginRequest request = LoginRequest.newBuilder()
                 .setLogin(loginMessage)
                 .build();
-
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
-        when(authenticationManager.authenticate(authenticationToken)).thenThrow(new AuthenticationException("User account is locked") {
-        });
 
         StatusRuntimeException expected = new StatusRuntimeException(Status.INVALID_ARGUMENT.withDescription("User account is locked"));
 
@@ -299,8 +220,8 @@ public class AuthServiceUnitTests {
 
     @Test
     public void login_okCredentials_LoginResponseReturned() throws Exception {
-        String email = "user@user.com";
-        String password = "password";
+        String email = "user1@user.com";
+        String password = "u";
 
         LoginMessage loginMessage = LoginMessage.newBuilder()
                 .setEmail(email)
@@ -310,26 +231,6 @@ public class AuthServiceUnitTests {
         LoginRequest request = LoginRequest.newBuilder()
                 .setLogin(loginMessage)
                 .build();
-
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
-        when(authenticationManager.authenticate(authenticationToken)).thenReturn(authenticationToken);
-
-        User user = User.builder()
-                .email(email)
-                .password(password)
-                .phone("")
-                .lastName("ln")
-                .firstName("fn")
-                .address(Address.builder().build())
-                .role(UserRole.USER)
-                .blocked(false)
-                .id(0L)
-                .build();
-
-        when(userDetailsService.loadUserByUsername(loginMessage.getEmail())).thenReturn(user);
-
-        String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
-        when(tokenServiceMocked.generateToken(user)).thenReturn(token);
 
         StreamRecorder<LoginResponse> responseObserver = StreamRecorder.create();
 
@@ -346,18 +247,16 @@ public class AuthServiceUnitTests {
         LoginResponse response = responseObserver.getValues().get(0);
 
         assertNotNull(response);
-        assertEquals(token, response.getToken());
+        assertNotNull(response.getToken());
     }
 
     @Test
     public void toggleBlockOnUser_userNotFound_NotFoundStatusReturned() throws Exception {
-        long id = 0L;
+        long id = 100L;
 
         ToggleBlockRequest request = ToggleBlockRequest.newBuilder()
                 .setUserId(id)
                 .build();
-
-        when(userRepositoryMocked.findById(id)).thenReturn(Optional.empty());
 
         StatusRuntimeException expected = new StatusRuntimeException(
                 Status.NOT_FOUND
@@ -378,19 +277,14 @@ public class AuthServiceUnitTests {
     }
 
     @Test
+    @Transactional
+    @Rollback
     public void toggleBlockOnUser_userFound_SuccessResponseReturned() throws Exception {
-        long id = 0L;
+        long id = 7L;
 
         ToggleBlockRequest request = ToggleBlockRequest.newBuilder()
                 .setUserId(id)
                 .build();
-
-        User user = User.builder()
-                .id(id)
-                .blocked(false)
-                .build();
-
-        when(userRepositoryMocked.findById(id)).thenReturn(Optional.of(user));
 
         StreamRecorder<SuccessResponse> responseObserver = StreamRecorder.create();
 
