@@ -404,14 +404,11 @@ public class ServicesService extends ServicesServiceGrpc.ServicesServiceImplBase
                 .setOwner(request.getOwner())
                 .build();
 
-        HouseholdMessage household = householdServiceStub.getHousehold(householdRequest).getHousehold();
-
-        if (household == null) {
-            responseObserver.onError(
-                    Status.NOT_FOUND
-                            .withDescription(String.format("Household with owner '%s' not found", request.getOwner()))
-                            .asRuntimeException()
-            );
+        HouseholdMessage household;
+        try {
+            household = householdServiceStub.getHousehold(householdRequest).getHousehold();
+        } catch (Exception e) {
+            responseObserver.onError(e);
             return;
         }
 

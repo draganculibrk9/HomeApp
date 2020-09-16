@@ -7,12 +7,18 @@ import home.app.services.service.model.*;
 import home.app.services.service.repositories.AccommodationRepository;
 import home.app.services.service.repositories.AccommodationRequestRepository;
 import home.app.services.service.repositories.ServiceRepository;
+import io.grpc.Server;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
+import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.internal.testing.StreamRecorder;
-import net.devh.boot.grpc.client.inject.GrpcClient;
+import io.grpc.stub.StreamObserver;
+import io.grpc.testing.GrpcCleanupRule;
+import net.devh.boot.grpc.client.config.GrpcChannelsProperties;
+import org.junit.Rule;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.AdditionalAnswers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -48,9 +54,6 @@ public class ServicesServiceUnitTests {
     private AccommodationMapper accommodationMapper;
 
     @MockBean
-    private AccommodationTypeMapper accommodationTypeMapper;
-
-    @MockBean
     private AccommodationRepository accommodationRepository;
 
     @MockBean
@@ -62,8 +65,11 @@ public class ServicesServiceUnitTests {
     @MockBean
     private StatusMapper statusMapper;
 
-    @GrpcClient("test")
-    private HouseholdServiceGrpc.HouseholdServiceBlockingStub householdServiceStub;
+    @Rule
+    private final GrpcCleanupRule grpcCleanup = new GrpcCleanupRule();
+
+    @Autowired
+    private GrpcChannelsProperties grpcChannelsProperties;
 
     @Test
     public void getService_serviceDoesNotExist_NotFoundStatusReturned() throws Exception {
@@ -884,5 +890,132 @@ public class ServicesServiceUnitTests {
         verify(accommodationRequestRepository, times(1)).save(accommodationRequest);
         assertTrue(response.getSuccess());
     }
-    // TODO: requestAccommodation in future issue
+
+    @Test
+    public void requestAccommodation_householdDoesNotExist_NotFoundStatusReturned() throws Exception {
+        HouseholdServiceGrpc.HouseholdServiceImplBase householdServiceImplBase = mock(HouseholdServiceGrpc.HouseholdServiceImplBase.class,
+                AdditionalAnswers.delegatesTo(
+                        new HouseholdServiceGrpc.HouseholdServiceImplBase() {
+                            @Override
+                            public void getHousehold(HouseholdRequest request, StreamObserver<HouseholdResponse> responseObserver) {
+                                responseObserver.onError(new StatusRuntimeException(Status.INVALID_ARGUMENT.withDescription(String.format("Household with owner '%s' not found", request.getOwner()))));
+                            }
+                        }
+                ));
+
+        Server server = grpcCleanup.register(
+                InProcessServerBuilder
+                        .forName(grpcChannelsProperties.getGlobalChannel().getAddress().getSchemeSpecificPart())
+                        .directExecutor()
+                        .addService(householdServiceImplBase)
+                        .build()
+                        .start()
+        );
+        AccommodationRequestMessage accommodationRequestMessage = AccommodationRequestMessage.newBuilder()
+                .setAccommodation(0L)
+                .setFiledOn(new Date().getTime())
+                .setHousehold(0L)
+                .setRequestedFor(new Date().getTime())
+                .build();
+
+        String owner = "owner@owner.com";
+
+        RequestAccommodationRequest request = RequestAccommodationRequest.newBuilder()
+                .setAccommodationRequest(accommodationRequestMessage)
+                .setOwner(owner)
+                .build();
+
+        StatusRuntimeException expected = new StatusRuntimeException(Status.INVALID_ARGUMENT.withDescription(String.format("Household with owner '%s' not found", owner)));
+
+        StreamRecorder<SuccessResponse> responseObserver = StreamRecorder.create();
+
+        servicesService.requestAccommodation(request, responseObserver);
+
+        if (!responseObserver.awaitCompletion(5, TimeUnit.SECONDS)) {
+            fail("The call did not terminate in time");
+        }
+
+        assertNotNull(responseObserver.getError());
+        assertEquals(StatusRuntimeException.class, responseObserver.getError().getClass());
+        assertEquals(expected.getStatus().getCode(), ((StatusRuntimeException) responseObserver.getError()).getStatus().getCode());
+        assertEquals(expected.getMessage(), responseObserver.getError().getMessage());
+
+        server.shutdown().awaitTermination();
+    }
+
+    @Test
+    public void requestAccommodation_everythingOk_SuccessResponseReturned() throws Exception {
+        HouseholdServiceGrpc.HouseholdServiceImplBase householdServiceImplBase = mock(HouseholdServiceGrpc.HouseholdServiceImplBase.class,
+                AdditionalAnswers.delegatesTo(
+                        new HouseholdServiceGrpc.HouseholdServiceImplBase() {
+                            @Override
+                            public void getHousehold(HouseholdRequest request, StreamObserver<HouseholdResponse> responseObserver) {
+                                HouseholdMessage householdMessage = HouseholdMessage.newBuilder()
+                                        .setOwner(request.getOwner())
+                                        .setId(0L)
+                                        .setBalance(0.0)
+                                        .build();
+
+                                HouseholdResponse householdResponse = HouseholdResponse.newBuilder()
+                                        .setHousehold(householdMessage)
+                                        .build();
+
+                                responseObserver.onNext(householdResponse);
+                                responseObserver.onCompleted();
+                            }
+                        }
+                ));
+
+        Server server = grpcCleanup.register(
+                InProcessServerBuilder
+                        .forName(grpcChannelsProperties.getGlobalChannel().getAddress().getSchemeSpecificPart())
+                        .directExecutor()
+                        .addService(householdServiceImplBase)
+                        .build()
+                        .start()
+        );
+
+        AccommodationRequestMessage accommodationRequestMessage = AccommodationRequestMessage.newBuilder()
+                .setAccommodation(0L)
+                .setFiledOn(new Date().getTime())
+                .setHousehold(0L)
+                .setRequestedFor(new Date().getTime())
+                .build();
+
+        AccommodationRequest beforeSave = AccommodationRequest.builder()
+                .status(home.app.services.service.model.Status.PENDING)
+                .requestedFor(new Date(accommodationRequestMessage.getRequestedFor() * 1000))
+                .household(0L)
+                .filedOn(new Date(accommodationRequestMessage.getFiledOn() * 1000))
+                .accommodation(Accommodation.builder().build())
+                .build();
+
+        String owner = "owner@owner.com";
+
+        RequestAccommodationRequest request = RequestAccommodationRequest.newBuilder()
+                .setAccommodationRequest(accommodationRequestMessage)
+                .setOwner(owner)
+                .build();
+
+        when(accommodationRequestMapper.toEntity(accommodationRequestMessage)).thenReturn(beforeSave);
+
+        StreamRecorder<SuccessResponse> responseObserver = StreamRecorder.create();
+
+        servicesService.requestAccommodation(request, responseObserver);
+
+        if (!responseObserver.awaitCompletion(5, TimeUnit.SECONDS)) {
+            fail("The call did not terminate in time");
+        }
+
+        assertNull(responseObserver.getError());
+        assertNotNull(responseObserver.getValues());
+        assertEquals(1, responseObserver.getValues().size());
+
+        SuccessResponse response = responseObserver.getValues().get(0);
+        assertNotNull(response);
+        verify(accommodationRequestRepository, times(1)).save(beforeSave);
+        assertTrue(response.getSuccess());
+
+        server.shutdown().awaitTermination();
+    }
 }
