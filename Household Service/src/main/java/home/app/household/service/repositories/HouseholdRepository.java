@@ -7,9 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface HouseholdRepository extends JpaRepository<Household, Long> {
     Household getById(Long id);
-
-    Household getByOwner(Long owner);
-
+    
     Household getByOwner(String owner);
 
     @Query("select h from Household h join h.transactions b where b.id = :transaction_id")

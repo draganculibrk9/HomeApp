@@ -413,6 +413,16 @@ public class ServicesService extends ServicesServiceGrpc.ServicesServiceImplBase
         }
 
         AccommodationRequest accommodationRequest = accommodationRequestMapper.toEntity(request.getAccommodationRequest());
+
+        if (accommodationRequest.getAccommodation() == null) {
+            responseObserver.onError(
+                    Status.NOT_FOUND
+                            .withDescription(String.format("Accommodation with id '%d' not found", request.getAccommodationRequest().getAccommodation()))
+                            .asRuntimeException()
+            );
+            return;
+        }
+
         accommodationRequest.setStatus(home.app.services.service.model.Status.PENDING);
         accommodationRequest.setId(null);
         accommodationRequest.setHousehold(household.getId());
