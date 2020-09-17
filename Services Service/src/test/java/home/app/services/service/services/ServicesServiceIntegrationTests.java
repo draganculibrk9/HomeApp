@@ -1,12 +1,6 @@
 package home.app.services.service.services;
 
 import home.app.grpc.*;
-import home.app.grpc.api.model.Address;
-import home.app.services.service.mappers.*;
-import home.app.services.service.model.*;
-import home.app.services.service.repositories.AccommodationRepository;
-import home.app.services.service.repositories.AccommodationRequestRepository;
-import home.app.services.service.repositories.ServiceRepository;
 import io.grpc.Server;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
@@ -21,49 +15,26 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.AdditionalAnswers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 import static org.springframework.test.util.AssertionErrors.fail;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @DirtiesContext
-public class ServicesServiceUnitTests {
+public class ServicesServiceIntegrationTests {
     @Autowired
     private ServicesService servicesService;
-
-    @MockBean
-    private ServiceRepository serviceRepository;
-
-    @MockBean
-    private ServiceMapper serviceMapper;
-
-    @MockBean
-    private AccommodationMapper accommodationMapper;
-
-    @MockBean
-    private AccommodationRepository accommodationRepository;
-
-    @MockBean
-    private AccommodationRequestRepository accommodationRequestRepository;
-
-    @MockBean
-    private AccommodationRequestMapper accommodationRequestMapper;
-
-    @MockBean
-    private StatusMapper statusMapper;
 
     @Rule
     private final GrpcCleanupRule grpcCleanup = new GrpcCleanupRule();
@@ -78,8 +49,6 @@ public class ServicesServiceUnitTests {
         ServiceRequest request = ServiceRequest.newBuilder()
                 .setId(id)
                 .build();
-
-        when(serviceRepository.getById(id)).thenReturn(null);
 
         StatusRuntimeException expected = new StatusRuntimeException(Status.NOT_FOUND.withDescription(String.format("Service with id '%d' not found", id)));
 
@@ -99,30 +68,11 @@ public class ServicesServiceUnitTests {
 
     @Test
     public void getService_serviceDoesExist_ServiceResponseReturned() throws Exception {
-        long id = 0L;
+        long id = 21L;
 
         ServiceRequest request = ServiceRequest.newBuilder()
                 .setId(id)
                 .build();
-
-        Service service = Service.builder()
-                .accommodations(new HashSet<>())
-                .administrator("admin@admin.com")
-                .contact(new Contact())
-                .id(id)
-                .name("service")
-                .build();
-
-        when(serviceRepository.getById(id)).thenReturn(service);
-
-        ServiceMessage serviceMessage = ServiceMessage.newBuilder()
-                .setAdministrator(service.getAdministrator())
-                .setContact(ContactMessage.newBuilder().build())
-                .setId(service.getId())
-                .setName(service.getName())
-                .build();
-
-        when(serviceMapper.toDTO(service)).thenReturn(serviceMessage);
 
         StreamRecorder<ServiceResponse> responseObserver = StreamRecorder.create();
 
@@ -138,7 +88,8 @@ public class ServicesServiceUnitTests {
 
         ServiceResponse response = responseObserver.getValues().get(0);
         assertNotNull(response);
-        assertEquals(serviceMessage, response.getService());
+        assertNotNull(response.getService());
+        assertEquals(id, response.getService().getId());
     }
 
     @Test
@@ -148,8 +99,6 @@ public class ServicesServiceUnitTests {
         ServiceRequest request = ServiceRequest.newBuilder()
                 .setId(id)
                 .build();
-
-        when(serviceRepository.getById(id)).thenReturn(null);
 
         StatusRuntimeException expected = new StatusRuntimeException(Status.NOT_FOUND.withDescription(String.format("Service with id '%d' not found", id)));
 
@@ -169,67 +118,10 @@ public class ServicesServiceUnitTests {
 
     @Test
     public void getAccommodations_serviceDoesExist_AccommodationResponsesReturned() throws Exception {
-        long id = 0L;
+        long id = 21L;
 
         ServiceRequest request = ServiceRequest.newBuilder()
                 .setId(id)
-                .build();
-
-        Accommodation a1 = Accommodation.builder()
-                .available(true)
-                .id(0L)
-                .name("a1")
-                .price(300.0)
-                .type(AccommodationType.CATERING)
-                .build();
-
-        Accommodation a2 = Accommodation.builder()
-                .available(true)
-                .id(1L)
-                .name("a2")
-                .price(360.0)
-                .type(AccommodationType.CATERING)
-                .build();
-
-        Set<Accommodation> accommodations = new HashSet<>();
-        accommodations.add(a1);
-        accommodations.add(a2);
-
-        Service service = Service.builder()
-                .name("service")
-                .id(id)
-                .contact(new Contact())
-                .administrator("admin@admin.com")
-                .accommodations(accommodations)
-                .build();
-
-        when(serviceRepository.getById(id)).thenReturn(service);
-
-        AccommodationMessage am1 = AccommodationMessage.newBuilder()
-                .setType(AccommodationMessage.AccommodationType.CATERING)
-                .setPrice(a1.getPrice())
-                .setName(a1.getName())
-                .setId(a1.getId())
-                .setAvailable(a1.getAvailable())
-                .build();
-
-        AccommodationMessage am2 = AccommodationMessage.newBuilder()
-                .setType(AccommodationMessage.AccommodationType.CATERING)
-                .setPrice(a2.getPrice())
-                .setName(a2.getName())
-                .setId(a2.getId())
-                .setAvailable(a2.getAvailable())
-                .build();
-
-        when(accommodationMapper.toDTO(a1)).thenReturn(am1);
-        when(accommodationMapper.toDTO(a2)).thenReturn(am2);
-
-        AccommodationResponse ar1 = AccommodationResponse.newBuilder()
-                .setAccommodation(am1)
-                .build();
-
-        AccommodationResponse ar2 = AccommodationResponse.newBuilder()
-                .setAccommodation(am2)
                 .build();
 
         StreamRecorder<AccommodationResponse> responseObserver = StreamRecorder.create();
@@ -243,40 +135,37 @@ public class ServicesServiceUnitTests {
         assertNull(responseObserver.getError());
         assertNotNull(responseObserver.getValues());
         assertEquals(2, responseObserver.getValues().size());
-        assertTrue(responseObserver.getValues().contains(ar1));
-        assertTrue(responseObserver.getValues().contains(ar2));
+
+        responseObserver.getValues().forEach(ar -> assertNotNull(ar.getAccommodation()));
     }
 
     @Test
+    @Transactional
+    @Rollback
     public void createService_everythingOk_ServiceResponseReturned() throws Exception {
+        AddressMessage addressMessage = AddressMessage.newBuilder()
+                .setStreet("street")
+                .setNumber(1)
+                .setCountry("serbia")
+                .setCity("city")
+                .build();
+
+        ContactMessage contactMessage = ContactMessage.newBuilder()
+                .setAddress(addressMessage)
+                .setEmail("email@email.com")
+                .setPhone("+387 074439696")
+                .setWebsite("www.site.rs")
+                .build();
+
         ServiceMessage serviceMessage = ServiceMessage.newBuilder()
                 .setName("service")
-                .setContact(ContactMessage.newBuilder().setAddress(AddressMessage.newBuilder().build()).build())
+                .setContact(contactMessage)
                 .setAdministrator("admin@admin.com")
                 .build();
 
         CreateOrEditServiceRequest request = CreateOrEditServiceRequest.newBuilder()
                 .setService(serviceMessage)
                 .build();
-
-        Service beforeSave = Service.builder()
-                .accommodations(new HashSet<>())
-                .administrator(serviceMessage.getAdministrator())
-                .contact(Contact.builder().address(Address.builder().build()).build())
-                .name(serviceMessage.getName())
-                .build();
-
-        Service afterSave = beforeSave.toBuilder()
-                .id(0L)
-                .build();
-
-        ServiceMessage returnValue = serviceMessage.toBuilder()
-                .setId(afterSave.getId())
-                .build();
-
-        when(serviceMapper.toEntity(serviceMessage)).thenReturn(beforeSave);
-        when(serviceRepository.save(beforeSave)).thenReturn(afterSave);
-        when(serviceMapper.toDTO(afterSave)).thenReturn(returnValue);
 
         StreamRecorder<ServiceResponse> responseObserver = StreamRecorder.create();
 
@@ -295,8 +184,6 @@ public class ServicesServiceUnitTests {
 
         ServiceMessage responseMessage = response.getService();
         assertNotNull(responseMessage);
-
-        assertEquals(returnValue, responseMessage);
     }
 
     @Test
@@ -310,20 +197,9 @@ public class ServicesServiceUnitTests {
                 .setAdministrator("admin@admin.com")
                 .build();
 
-        Service service = Service.builder()
-                .id(serviceMessage.getId())
-                .accommodations(new HashSet<>())
-                .administrator(serviceMessage.getAdministrator())
-                .contact(Contact.builder().address(Address.builder().build()).build())
-                .name(serviceMessage.getName())
-                .build();
-
         CreateOrEditServiceRequest request = CreateOrEditServiceRequest.newBuilder()
                 .setService(serviceMessage)
                 .build();
-
-        when(serviceMapper.toEntity(serviceMessage)).thenReturn(service);
-        when(serviceRepository.findById(id)).thenReturn(Optional.empty());
 
         StatusRuntimeException expected = new StatusRuntimeException(Status.NOT_FOUND.withDescription(String.format("Service with id '%d' not found", id)));
 
@@ -342,36 +218,37 @@ public class ServicesServiceUnitTests {
     }
 
     @Test
+    @Transactional
+    @Rollback
     public void editService_everythingOk_ServiceResponseReturned() throws Exception {
-        long id = 0L;
+        long id = 21L;
+
+        AddressMessage addressMessage = AddressMessage.newBuilder()
+                .setId(13L)
+                .setStreet("street")
+                .setNumber(13)
+                .setCountry("serbia")
+                .setCity("city")
+                .build();
+
+        ContactMessage contactMessage = ContactMessage.newBuilder()
+                .setId(17L)
+                .setAddress(addressMessage)
+                .setEmail("email@email.com")
+                .setPhone("+387 074439696")
+                .setWebsite("www.site.rs")
+                .build();
 
         ServiceMessage serviceMessage = ServiceMessage.newBuilder()
                 .setId(id)
                 .setName("service")
-                .setContact(ContactMessage.newBuilder().setAddress(AddressMessage.newBuilder().build()).build())
+                .setContact(contactMessage)
                 .setAdministrator("admin@admin.com")
                 .build();
 
         CreateOrEditServiceRequest request = CreateOrEditServiceRequest.newBuilder()
                 .setService(serviceMessage)
                 .build();
-
-        Service beforeEdit = Service.builder()
-                .id(id)
-                .accommodations(new HashSet<>())
-                .administrator(serviceMessage.getAdministrator())
-                .contact(Contact.builder().address(Address.builder().build()).build())
-                .name("other name")
-                .build();
-
-        Service afterEdit = beforeEdit.toBuilder()
-                .name(serviceMessage.getName())
-                .build();
-
-        when(serviceMapper.toEntity(serviceMessage)).thenReturn(afterEdit);
-        when(serviceRepository.findById(id)).thenReturn(Optional.of(beforeEdit));
-        when(serviceRepository.save(afterEdit)).thenReturn(afterEdit);
-        when(serviceMapper.toDTO(afterEdit)).thenReturn(serviceMessage);
 
         StreamRecorder<ServiceResponse> responseObserver = StreamRecorder.create();
 
@@ -402,8 +279,6 @@ public class ServicesServiceUnitTests {
                 .setId(id)
                 .build();
 
-        when(serviceRepository.findById(id)).thenReturn(Optional.empty());
-
         StatusRuntimeException expected = new StatusRuntimeException(Status.NOT_FOUND.withDescription(String.format("Service with id '%d' not found", id)));
 
         StreamRecorder<SuccessResponse> responseObserver = StreamRecorder.create();
@@ -421,22 +296,14 @@ public class ServicesServiceUnitTests {
     }
 
     @Test
+    @Transactional
+    @Rollback
     public void deleteService_serviceDoesExist_SuccessResponseReturned() throws Exception {
-        long id = 0L;
+        long id = 21L;
 
         ServiceRequest request = ServiceRequest.newBuilder()
                 .setId(id)
                 .build();
-
-        Service service = Service.builder()
-                .id(id)
-                .name("service")
-                .contact(Contact.builder().address(Address.builder().build()).build())
-                .administrator("admin@admin.com")
-                .accommodations(new HashSet<>())
-                .build();
-
-        when(serviceRepository.findById(id)).thenReturn(Optional.of(service));
 
         StreamRecorder<SuccessResponse> responseObserver = StreamRecorder.create();
 
@@ -450,7 +317,6 @@ public class ServicesServiceUnitTests {
         assertNotNull(responseObserver.getValues());
         assertEquals(1, responseObserver.getValues().size());
 
-        verify(serviceRepository, times(1)).delete(service);
         SuccessResponse response = responseObserver.getValues().get(0);
         assertNotNull(response);
         assertTrue(response.getSuccess());
@@ -464,8 +330,6 @@ public class ServicesServiceUnitTests {
                 .setServiceId(id)
                 .setAccommodation(AccommodationMessage.newBuilder().build())
                 .build();
-
-        when(serviceRepository.findById(id)).thenReturn(Optional.empty());
 
         StatusRuntimeException expected = new StatusRuntimeException(Status.NOT_FOUND.withDescription(String.format("Service with id '%d' not found", id)));
 
@@ -484,8 +348,10 @@ public class ServicesServiceUnitTests {
     }
 
     @Test
+    @Transactional
+    @Rollback
     public void createAccommodation_serviceDoesExist_AccommodationResponseReturned() throws Exception {
-        long id = 0L;
+        long id = 21L;
 
         AccommodationMessage accommodationMessage = AccommodationMessage.newBuilder()
                 .setAvailable(true)
@@ -498,34 +364,6 @@ public class ServicesServiceUnitTests {
                 .setServiceId(id)
                 .setAccommodation(accommodationMessage)
                 .build();
-
-        Service service = Service.builder()
-                .accommodations(new HashSet<>())
-                .administrator("admin@admin.com")
-                .contact(Contact.builder().build())
-                .name("service")
-                .id(id)
-                .build();
-
-        Accommodation accommodationBeforeSave = Accommodation.builder()
-                .type(AccommodationType.CATERING)
-                .price(500.0)
-                .name("accommodation")
-                .available(true)
-                .build();
-
-        Accommodation accommodatioAfterSave = accommodationBeforeSave.toBuilder()
-                .id(0L)
-                .build();
-
-        AccommodationMessage responseMessage = accommodationMessage.toBuilder()
-                .setId(0L)
-                .build();
-
-        when(serviceRepository.findById(id)).thenReturn(Optional.of(service));
-        when(accommodationMapper.toEntity(accommodationMessage)).thenReturn(accommodationBeforeSave);
-        when(accommodationRepository.save(accommodationBeforeSave)).thenReturn(accommodatioAfterSave);
-        when(accommodationMapper.toDTO(accommodatioAfterSave)).thenReturn(responseMessage);
 
         StreamRecorder<AccommodationResponse> responseObserver = StreamRecorder.create();
 
@@ -542,12 +380,9 @@ public class ServicesServiceUnitTests {
         AccommodationResponse response = responseObserver.getValues().get(0);
         assertNotNull(response);
 
-        verify(serviceRepository, times(1)).save(service);
 
         AccommodationMessage responseAccommodation = response.getAccommodation();
         assertNotNull(responseAccommodation);
-
-        assertEquals(responseMessage, responseAccommodation);
     }
 
     @Test
@@ -556,18 +391,15 @@ public class ServicesServiceUnitTests {
 
         AccommodationMessage accommodationMessage = AccommodationMessage.newBuilder()
                 .setId(id)
-                .build();
-
-        Accommodation accommodation = Accommodation.builder()
-                .id(id)
+                .setType(AccommodationMessage.AccommodationType.CATERING)
+                .setPrice(300.0)
+                .setName("edited")
+                .setAvailable(false)
                 .build();
 
         CreateOrEditAccommodationRequest request = CreateOrEditAccommodationRequest.newBuilder()
                 .setAccommodation(accommodationMessage)
                 .build();
-
-        when(accommodationMapper.toEntity(accommodationMessage)).thenReturn(accommodation);
-        when(accommodationRepository.findById(id)).thenReturn(Optional.empty());
 
         StatusRuntimeException expected = new StatusRuntimeException(Status.NOT_FOUND.withDescription(String.format("Accommodation with id '%d' not found", id)));
 
@@ -586,8 +418,10 @@ public class ServicesServiceUnitTests {
     }
 
     @Test
+    @Transactional
+    @Rollback
     public void editAccommodation_accommodationDoesExist_AccommodationResponseReturned() throws Exception {
-        long id = 0L;
+        long id = 25L;
 
         AccommodationMessage accommodationMessage = AccommodationMessage.newBuilder()
                 .setId(id)
@@ -600,23 +434,6 @@ public class ServicesServiceUnitTests {
         CreateOrEditAccommodationRequest request = CreateOrEditAccommodationRequest.newBuilder()
                 .setAccommodation(accommodationMessage)
                 .build();
-
-        Accommodation accommodationBeforeSave = Accommodation.builder()
-                .type(AccommodationType.CATERING)
-                .price(500.0)
-                .name("accommodation1")
-                .available(true)
-                .id(id)
-                .build();
-
-        Accommodation accommodatioAfterSave = accommodationBeforeSave.toBuilder()
-                .name(accommodationMessage.getName())
-                .build();
-
-        when(accommodationMapper.toEntity(accommodationMessage)).thenReturn(accommodatioAfterSave);
-        when(accommodationRepository.findById(id)).thenReturn(Optional.of(accommodationBeforeSave));
-        when(accommodationRepository.save(accommodatioAfterSave)).thenReturn(accommodatioAfterSave);
-        when(accommodationMapper.toDTO(accommodatioAfterSave)).thenReturn(accommodationMessage);
 
         StreamRecorder<AccommodationResponse> responseObserver = StreamRecorder.create();
 
@@ -649,8 +466,6 @@ public class ServicesServiceUnitTests {
                 .setAccommodationId(accommodation_id)
                 .build();
 
-        when(serviceRepository.findById(service_id)).thenReturn(Optional.empty());
-
         StatusRuntimeException expected = new StatusRuntimeException(Status.NOT_FOUND.withDescription(String.format("Service with id '%d' not found", service_id)));
 
         StreamRecorder<SuccessResponse> responseObserver = StreamRecorder.create();
@@ -669,23 +484,13 @@ public class ServicesServiceUnitTests {
 
     @Test
     public void deleteAccommodation_accommodationDoesNotExist_NotFoundStatusReturned() throws Exception {
-        long service_id = 0L;
+        long service_id = 21L;
         long accommodation_id = 0L;
 
         DeleteAccommodationRequest request = DeleteAccommodationRequest.newBuilder()
                 .setServiceId(service_id)
                 .setAccommodationId(accommodation_id)
                 .build();
-
-        Service service = Service.builder()
-                .id(service_id)
-                .name("service")
-                .contact(Contact.builder().build())
-                .administrator("admin@admin.com")
-                .accommodations(new HashSet<>())
-                .build();
-
-        when(serviceRepository.findById(service_id)).thenReturn(Optional.of(service));
 
         StatusRuntimeException expected = new StatusRuntimeException(Status.NOT_FOUND.withDescription(String.format("Accommodation with id '%d' not found", accommodation_id)));
 
@@ -704,35 +509,16 @@ public class ServicesServiceUnitTests {
     }
 
     @Test
+    @Transactional
+    @Rollback
     public void deleteAccommodation_serviceAndAccommodatonDoExist_SuccessResponseReturned() throws Exception {
-        long service_id = 0L;
-        long accommodation_id = 0L;
+        long service_id = 21L;
+        long accommodation_id = 25L;
 
         DeleteAccommodationRequest request = DeleteAccommodationRequest.newBuilder()
                 .setServiceId(service_id)
                 .setAccommodationId(accommodation_id)
                 .build();
-
-        Accommodation accommodation = Accommodation.builder()
-                .name("accommodation")
-                .id(accommodation_id)
-                .available(true)
-                .price(300.0)
-                .type(AccommodationType.REPAIRS)
-                .build();
-
-        Set<Accommodation> accommodations = new HashSet<>();
-        accommodations.add(accommodation);
-
-        Service service = Service.builder()
-                .id(service_id)
-                .name("service")
-                .contact(Contact.builder().build())
-                .administrator("admin@admin.com")
-                .accommodations(accommodations)
-                .build();
-
-        when(serviceRepository.findById(service_id)).thenReturn(Optional.of(service));
 
         StreamRecorder<SuccessResponse> responseObserver = StreamRecorder.create();
 
@@ -748,7 +534,6 @@ public class ServicesServiceUnitTests {
 
         SuccessResponse successResponse = responseObserver.getValues().get(0);
         assertNotNull(successResponse);
-        verify(serviceRepository, times(1)).save(service);
         assertTrue(successResponse.getSuccess());
     }
 
@@ -760,8 +545,6 @@ public class ServicesServiceUnitTests {
                 .setAccommodationRequestId(id)
                 .setStatus(AccommodationRequestMessage.Status.ACCEPTED)
                 .build();
-
-        when(accommodationRequestRepository.findById(id)).thenReturn(Optional.empty());
 
         StatusRuntimeException expected = new StatusRuntimeException(Status.NOT_FOUND.withDescription(String.format("Accommodation request with id '%d' not found", id)));
 
@@ -781,23 +564,12 @@ public class ServicesServiceUnitTests {
 
     @Test
     public void decideAccommodationRequest_accommodationRequestIsNotPending_InvalidArgumentStatusReturned() throws Exception {
-        long id = 0L;
+        long id = 32L;
 
         DecideAccommodationRequestRequest request = DecideAccommodationRequestRequest.newBuilder()
                 .setAccommodationRequestId(id)
                 .setStatus(AccommodationRequestMessage.Status.ACCEPTED)
                 .build();
-
-        AccommodationRequest accommodationRequest = AccommodationRequest.builder()
-                .accommodation(Accommodation.builder().build())
-                .filedOn(new Date())
-                .household(0L)
-                .id(id)
-                .requestedFor(new Date())
-                .status(home.app.services.service.model.Status.REJECTED)
-                .build();
-
-        when(accommodationRequestRepository.findById(id)).thenReturn(Optional.of(accommodationRequest));
 
         StatusRuntimeException expected = new StatusRuntimeException(Status.INVALID_ARGUMENT.withDescription(String.format("Accommodation request with id '%d' has already been decided", id)));
 
@@ -817,24 +589,12 @@ public class ServicesServiceUnitTests {
 
     @Test
     public void decideAccommodationRequest_sentStatusIsPending_InvalidArgumentStatusReturned() throws Exception {
-        long id = 0L;
+        long id = 30L;
 
         DecideAccommodationRequestRequest request = DecideAccommodationRequestRequest.newBuilder()
                 .setAccommodationRequestId(id)
                 .setStatus(AccommodationRequestMessage.Status.PENDING)
                 .build();
-
-        AccommodationRequest accommodationRequest = AccommodationRequest.builder()
-                .accommodation(Accommodation.builder().build())
-                .filedOn(new Date())
-                .household(0L)
-                .id(id)
-                .requestedFor(new Date())
-                .status(home.app.services.service.model.Status.PENDING)
-                .build();
-
-        when(accommodationRequestRepository.findById(id)).thenReturn(Optional.of(accommodationRequest));
-        when(statusMapper.toEntity(request.getStatus())).thenReturn(home.app.services.service.model.Status.PENDING);
 
         StatusRuntimeException expected = new StatusRuntimeException(Status.INVALID_ARGUMENT.withDescription("Status is already pending"));
 
@@ -853,25 +613,15 @@ public class ServicesServiceUnitTests {
     }
 
     @Test
+    @Transactional
+    @Rollback
     public void decideAccommodationRequest_everythingOk_SuccessResponseReturned() throws Exception {
-        long id = 0L;
+        long id = 30L;
 
         DecideAccommodationRequestRequest request = DecideAccommodationRequestRequest.newBuilder()
                 .setAccommodationRequestId(id)
                 .setStatus(AccommodationRequestMessage.Status.ACCEPTED)
                 .build();
-
-        AccommodationRequest accommodationRequest = AccommodationRequest.builder()
-                .accommodation(Accommodation.builder().build())
-                .filedOn(new Date())
-                .household(0L)
-                .id(id)
-                .requestedFor(new Date())
-                .status(home.app.services.service.model.Status.PENDING)
-                .build();
-
-        when(accommodationRequestRepository.findById(id)).thenReturn(Optional.of(accommodationRequest));
-        when(statusMapper.toEntity(request.getStatus())).thenReturn(home.app.services.service.model.Status.ACCEPTED);
 
         StreamRecorder<SuccessResponse> responseObserver = StreamRecorder.create();
 
@@ -887,7 +637,6 @@ public class ServicesServiceUnitTests {
 
         SuccessResponse response = responseObserver.getValues().get(0);
         assertNotNull(response);
-        verify(accommodationRequestRepository, times(1)).save(accommodationRequest);
         assertTrue(response.getSuccess());
     }
 
@@ -988,15 +737,6 @@ public class ServicesServiceUnitTests {
                 .setOwner(owner)
                 .build();
 
-        AccommodationRequest accommodationRequest = AccommodationRequest.builder()
-                .accommodation(null)
-                .filedOn(new Date(accommodationRequestMessage.getFiledOn() * 1000))
-                .household(0L)
-                .requestedFor(new Date(accommodationRequestMessage.getRequestedFor() * 1000))
-                .build();
-
-        when(accommodationRequestMapper.toEntity(accommodationRequestMessage)).thenReturn(accommodationRequest);
-
         StatusRuntimeException expected = new StatusRuntimeException(Status.NOT_FOUND.withDescription(String.format("Accommodation with id '%d' not found", request.getAccommodationRequest().getAccommodation())));
 
         StreamRecorder<SuccessResponse> responseObserver = StreamRecorder.create();
@@ -1016,6 +756,8 @@ public class ServicesServiceUnitTests {
     }
 
     @Test
+    @Transactional
+    @Rollback
     public void requestAccommodation_everythingOk_SuccessResponseReturned() throws Exception {
         HouseholdServiceGrpc.HouseholdServiceImplBase householdServiceImplBase = mock(HouseholdServiceGrpc.HouseholdServiceImplBase.class,
                 AdditionalAnswers.delegatesTo(
@@ -1048,18 +790,10 @@ public class ServicesServiceUnitTests {
         );
 
         AccommodationRequestMessage accommodationRequestMessage = AccommodationRequestMessage.newBuilder()
-                .setAccommodation(0L)
+                .setAccommodation(25L)
                 .setFiledOn(new Date().getTime())
                 .setHousehold(0L)
                 .setRequestedFor(new Date().getTime())
-                .build();
-
-        AccommodationRequest beforeSave = AccommodationRequest.builder()
-                .status(home.app.services.service.model.Status.PENDING)
-                .requestedFor(new Date(accommodationRequestMessage.getRequestedFor() * 1000))
-                .household(0L)
-                .filedOn(new Date(accommodationRequestMessage.getFiledOn() * 1000))
-                .accommodation(Accommodation.builder().build())
                 .build();
 
         String owner = "owner@owner.com";
@@ -1068,8 +802,6 @@ public class ServicesServiceUnitTests {
                 .setAccommodationRequest(accommodationRequestMessage)
                 .setOwner(owner)
                 .build();
-
-        when(accommodationRequestMapper.toEntity(accommodationRequestMessage)).thenReturn(beforeSave);
 
         StreamRecorder<SuccessResponse> responseObserver = StreamRecorder.create();
 
@@ -1085,7 +817,6 @@ public class ServicesServiceUnitTests {
 
         SuccessResponse response = responseObserver.getValues().get(0);
         assertNotNull(response);
-        verify(accommodationRequestRepository, times(1)).save(beforeSave);
         assertTrue(response.getSuccess());
 
         server.shutdown().awaitTermination();
