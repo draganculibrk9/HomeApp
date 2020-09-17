@@ -17,6 +17,10 @@ export class LoginPage {
     return element(by.xpath('//*[@id="background"]/mat-card/mat-card-content/form/div/button[1]'));
   }
 
+  getRegistrationButton() {
+    return element(by.xpath('//*[@id="background"]/mat-card/mat-card-content/form/div/button[2]'));
+  }
+
   getSnackbar() {
     return element(by.className('mat-simple-snackbar'));
   }
@@ -35,5 +39,4 @@ export class LoginPage {
     this.getPasswordInput().sendKeys(password);
     this.getLoginButton().click();
   }
-
 }

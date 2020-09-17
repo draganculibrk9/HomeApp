@@ -13,6 +13,12 @@ describe('login page', () => {
     page.navigateTo();
   });
 
+  it('should go to registration page', () => {
+    page.getRegistrationButton().click().then(() => {
+      expect(browser.getCurrentUrl()).toMatch('http://localhost:4200/register');
+    });
+  });
+
   it('should not login with wrong credentials', () => {
     page.getEmailInput().sendKeys('JennifferHooker@example.com');
     expect(page.getLoginButton().isEnabled()).toBe(false);
