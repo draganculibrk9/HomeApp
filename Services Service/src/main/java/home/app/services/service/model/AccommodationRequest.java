@@ -31,6 +31,6 @@ public class AccommodationRequest {
     @Enumerated(value = EnumType.STRING)
     private Status status;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Accommodation accommodation;
 }

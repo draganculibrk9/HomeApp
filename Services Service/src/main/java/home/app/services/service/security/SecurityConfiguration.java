@@ -9,7 +9,6 @@ import net.devh.boot.grpc.server.security.check.ManualGrpcSecurityMetadataSource
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 @Import(BaseSecurityConfiguration.class)
 @Configuration

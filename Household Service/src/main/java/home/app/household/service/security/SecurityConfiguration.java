@@ -18,7 +18,7 @@ public class SecurityConfiguration {
         final ManualGrpcSecurityMetadataSource source = new ManualGrpcSecurityMetadataSource();
 
         source.set(HouseholdServiceGrpc.METHOD_GET_HOUSEHOLD, AccessPredicate.hasAnyRole("USER", "SERVICE_ADMINISTRATOR"));
-        source.set(HouseholdServiceGrpc.METHOD_GET_HOUSEHOLD_BY_ID, AccessPredicate.hasAnyRole("USER", "SERVICE_ADMINISTRATOR"));
+        source.set(HouseholdServiceGrpc.METHOD_GET_HOUSEHOLD_BY_ID, AccessPredicate.permitAll());
         source.set(HouseholdServiceGrpc.METHOD_CREATE_HOUSEHOLD, AccessPredicate.permitAll());
         source.set(HouseholdServiceGrpc.METHOD_GET_TRANSACTIONS, AccessPredicate.hasRole("USER"));
         source.set(HouseholdServiceGrpc.METHOD_GET_TRANSACTION, AccessPredicate.hasRole("USER"));

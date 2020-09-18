@@ -3,6 +3,7 @@ package home.app.services.service.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -27,4 +28,7 @@ public class Accommodation {
 
     @Column(nullable = false)
     private Boolean available;
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "accommodation")
+    private Set<AccommodationRequest> accommodationRequests;
 }

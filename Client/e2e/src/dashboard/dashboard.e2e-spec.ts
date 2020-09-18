@@ -1,4 +1,4 @@
-import {LoginPage} from "../login/login.po";
+import {LoginPage} from "../auth/login/login.po";
 import {browser, ExpectedConditions} from "protractor";
 import {DashboardPage} from "./dashboard.po";
 
@@ -57,7 +57,7 @@ describe('dashboard', () => {
       expect(dashboard.getLogoutLink().isDisplayed()).toBeTruthy();
       dashboard.getLogoutLink().click().then(() => {
           browser.wait(ExpectedConditions.urlIs('http://localhost:4200/login'), 3000);
-          expect(browser.getCurrentUrl()).toMatch('http://localhost:4200/login')
+          expect(browser.getCurrentUrl()).toMatch('http://localhost:4200/login');
         }
       );
     });
