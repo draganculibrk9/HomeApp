@@ -120,7 +120,8 @@ describe('service page for service administrator', () => {
     browser.wait(ExpectedConditions.visibilityOf(service.getServicesTable()), 3000);
     browser.wait(ExpectedConditions.visibilityOf(service.getServiceTableLastRow()), 3000);
 
-    service.getServiceTableLastRow().element(by.buttonText('Delete')).click().then(() => {
+    browser.driver.sleep(1000);
+    service.getServiceTableLastRow().element(by.cssContainingText('button', 'Delete')).click().then(() => {
       const snackbar = service.getSnackbar();
       browser.wait(ExpectedConditions.visibilityOf(snackbar), 3000);
       snackbar.getText().then((val) => {
@@ -130,7 +131,11 @@ describe('service page for service administrator', () => {
   });
 
   afterEach(() => {
+    dashboard.getLogoutLink().click().then(() => {
+        browser.wait(ExpectedConditions.urlIs('http://localhost:4200/login'), 3000);
+        expect(browser.getCurrentUrl()).toMatch('http://localhost:4200/login')
+      }
+    );
     browser.executeScript('window.localStorage.clear();');
   });
-
 });
