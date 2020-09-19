@@ -14,7 +14,7 @@ export class DashboardPage {
   }
 
   getServicesLink() {
-    return element(by.buttonText('Services'));
+    return element(by.cssContainingText('button span', 'Services'));
   }
 
   getAccommodationRequestsLink() {

@@ -39,6 +39,7 @@ describe('login page', () => {
     expect(page.getLoginButton().isEnabled()).toBe(false);
     page.getPasswordInput().sendKeys('u');
     expect(page.getLoginButton().isEnabled()).toBe(true);
+    browser.driver.sleep(1000);
     page.getLoginButton().click().then(() => {
       const snackbar = page.getSnackbar();
       browser.wait(ExpectedConditions.visibilityOf(snackbar), 3000);
