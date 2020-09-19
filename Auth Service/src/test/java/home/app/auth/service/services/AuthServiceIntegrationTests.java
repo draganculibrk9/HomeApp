@@ -105,11 +105,20 @@ public class AuthServiceIntegrationTests {
                     }
                 }));
 
-        Server server = grpcCleanup.register(
+        Server server1 = grpcCleanup.register(
                 InProcessServerBuilder
-                        .forName(grpcChannelsProperties.getGlobalChannel().getAddress().getSchemeSpecificPart())
+                        .forName(grpcChannelsProperties.getChannel("householdService").getAddress().getSchemeSpecificPart())
                         .directExecutor()
                         .addService(householdServiceImplBase)
+                        .addService(authServiceImplBase)
+                        .build()
+                        .start()
+        );
+
+        Server server2 = grpcCleanup.register(
+                InProcessServerBuilder
+                        .forName(grpcChannelsProperties.getChannel("servicesService").getAddress().getSchemeSpecificPart())
+                        .directExecutor()
                         .addService(authServiceImplBase)
                         .build()
                         .start()
@@ -155,7 +164,8 @@ public class AuthServiceIntegrationTests {
         RegistrationResponse response = results.get(0);
         assertNotNull(response);
 
-        server.shutdown().awaitTermination();
+        server1.shutdown().awaitTermination();
+        server2.shutdown().awaitTermination();
     }
 
     @Test

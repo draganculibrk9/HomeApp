@@ -654,7 +654,7 @@ public class ServicesServiceIntegrationTests {
 
         Server server = grpcCleanup.register(
                 InProcessServerBuilder
-                        .forName(grpcChannelsProperties.getGlobalChannel().getAddress().getSchemeSpecificPart())
+                        .forName(grpcChannelsProperties.getChannel("householdService").getAddress().getSchemeSpecificPart())
                         .directExecutor()
                         .addService(householdServiceImplBase)
                         .build()
@@ -717,7 +717,7 @@ public class ServicesServiceIntegrationTests {
 
         Server server = grpcCleanup.register(
                 InProcessServerBuilder
-                        .forName(grpcChannelsProperties.getGlobalChannel().getAddress().getSchemeSpecificPart())
+                        .forName(grpcChannelsProperties.getChannel("householdService").getAddress().getSchemeSpecificPart())
                         .directExecutor()
                         .addService(householdServiceImplBase)
                         .build()
@@ -782,7 +782,7 @@ public class ServicesServiceIntegrationTests {
 
         Server server = grpcCleanup.register(
                 InProcessServerBuilder
-                        .forName(grpcChannelsProperties.getGlobalChannel().getAddress().getSchemeSpecificPart())
+                        .forName(grpcChannelsProperties.getChannel("householdService").getAddress().getSchemeSpecificPart())
                         .directExecutor()
                         .addService(householdServiceImplBase)
                         .build()

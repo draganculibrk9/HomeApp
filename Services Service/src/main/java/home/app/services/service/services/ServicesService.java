@@ -11,6 +11,7 @@ import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -230,6 +231,7 @@ public class ServicesService extends ServicesServiceGrpc.ServicesServiceImplBase
 
         Accommodation accommodation = accommodationMapper.toEntity(request.getAccommodation());
         accommodation.setId(null);
+        accommodation.setAccommodationRequests(new HashSet<>());
 
         Service service = s.get();
         service.getAccommodations().add(accommodation);

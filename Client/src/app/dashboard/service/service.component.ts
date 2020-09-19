@@ -240,6 +240,12 @@ export class ServiceComponent implements OnInit, AfterViewInit {
     }
   }
 
+  onRowClick($event, id: number) {
+    if ($event.target.innerHtml !== 'Edit' && $event.target.innerHtml !== 'Delete') {
+      this.getAccommodations(id);
+    }
+  }
+
   getAccommodations(id: number) {
     const request = new ServiceRequest();
     request.setId(id);

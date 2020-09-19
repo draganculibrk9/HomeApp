@@ -1,5 +1,5 @@
 <div fxLayout="column" id="parent">
-  <table mat-table matSort [dataSource]="dataSource" class="mat-elevation-z8">
+  <table id="accommodation-requests-table" mat-table matSort [dataSource]="dataSource" class="mat-elevation-z8">
     <ng-container matColumnDef="id" *ngIf="tokenService.role === 'SERVICE_ADMINISTRATOR'">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
       <td mat-cell *matCellDef="let row">{{row.id}}</td>
