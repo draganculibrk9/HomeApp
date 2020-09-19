@@ -63,5 +63,4 @@ describe('registration page', () => {
     browser.driver.sleep(1000);
     browser.waitForAngular();
   });
-
 });

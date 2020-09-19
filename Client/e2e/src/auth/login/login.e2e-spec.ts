@@ -108,5 +108,4 @@ describe('login page', () => {
     browser.waitForAngular();
     browser.executeScript('window.localStorage.clear();')
   });
-
 });

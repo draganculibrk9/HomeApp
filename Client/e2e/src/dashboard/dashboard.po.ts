@@ -18,6 +18,6 @@ export class DashboardPage {
   }
 
   getAccommodationRequestsLink() {
-    return element(by.buttonText('Accommodation Requests'));
+    return element(by.cssContainingText('button span', 'Accommodation Requests'));
   }
 }
